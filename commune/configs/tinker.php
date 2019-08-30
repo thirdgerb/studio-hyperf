@@ -26,7 +26,7 @@ return [
     'translation' =>
         [
             'loader' => 'php',
-            'resourcesPath' => COMMUNE_PATH . '/langs',
+            'resourcesPath' => BASE_PATH . '/resources/langs',
             'defaultLocale' => 'zh',
             'cacheDir' => NULL,
         ],

@@ -76,14 +76,11 @@ class TinkerMessageRequest implements MessageRequest, HasIdGenerator
         return TinkerChatServer::class;
     }
 
-    public function fetchMessage(): Message
+    protected function makeInputMessage($input): Message
     {
-        return $this->inputMessage
-            ?? $this->inputMessage = ($this->line instanceof Message
-                ? $this->line
-                : new Text(strval($this->line))
-            );
+        return new Text($input);
     }
+
 
     public function fetchUserId(): string
     {
