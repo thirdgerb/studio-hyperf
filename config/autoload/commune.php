@@ -8,6 +8,7 @@ return [
 
     'apps' => [
         'tcp' => include COMMUNE_PATH . '/configs/apps/tcp.php',
+        'dueros' => include COMMUNE_PATH . '/configs/apps/dueros.php',
     ]
 
 ];
