@@ -52,8 +52,9 @@ class DuerOSServer implements OnRequestInterface
         $botResponse->setShouldEndSession(false);
         if ($botRequest->getType() === 'IntentRequset') {
             $output = $botResponse->build(['outputSpeech' => '你好']);
+            $botResponse->setShouldEndSession(false);
         } else {
-            $output = $botResponse->build([]);
+            $output = $botResponse->build(['outputSpeech' => '你好啊']);
         }
 
         $this->logger->info($rawInput);
