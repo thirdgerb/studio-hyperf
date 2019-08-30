@@ -37,7 +37,8 @@
         "hyperf/utils": "~1.0.0",
         "hyperf/async-queue": "~1.0.0",
         "commune/chatbot": "dev-master",
-        "hyperf/websocket-server": "^1.0"
+        "hyperf/websocket-server": "^1.0",
+        "dueros/bot-sdk": "^2.2"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",

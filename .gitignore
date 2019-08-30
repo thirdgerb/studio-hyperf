@@ -11,3 +11,5 @@ vendor/
 .DS_Store
 *.lock
 .phpunit*
+.rocketeer/
+deploy.sh
