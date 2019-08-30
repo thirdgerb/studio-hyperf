@@ -47,6 +47,7 @@ class DuerOSServer implements OnRequestInterface
             $botRequest->getNlu()
         );
 
+        $botResponse->setShouldEndSession(false);
         $output = $botResponse->build(['outputSpeech' => '你好']);
 
         $this->logger->info($output);
