@@ -14,6 +14,7 @@ use Commune\Hyperf\Foundations\Dependencies\StdConsoleLogger;
 use Hyperf\Contract\OnRequestInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
+use Hyperf\HttpMessage\Server\Request as Psr7Request;
 
 class DuerOSServer implements OnRequestInterface
 {
@@ -34,8 +35,9 @@ class DuerOSServer implements OnRequestInterface
 
     public function onRequest(SwooleRequest $request, SwooleResponse $response): void
     {
+        $psr7Request = Psr7Request::loadFromSwooleRequest($request);
         // prepare duer os bot request
-        $rawInput = $request->getData();
+        $rawInput = $psr7Request->getBody()->getContents();
         $rawInput = str_replace("", "", $rawInput);
         $postData = json_decode($rawInput, true);
         $botRequest = new Request($postData);
