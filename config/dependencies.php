@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 return [
     'dependencies' => [
-        \Commune\Hyperf\Foundations\Dependencies\HyperfBotOption::class
-            => \Commune\Hyperf\Foundations\Dependencies\HyperfBotOptionFactory::class,
+        \Commune\Hyperf\Foundations\Options\HyperfBotOption::class
+            => \Commune\Hyperf\Foundations\Factories\HyperfBotOptionFactory::class,
 
         \Commune\Chatbot\Blueprint\Application::class
             => \Commune\Hyperf\Foundations\ChatAppFactory::class

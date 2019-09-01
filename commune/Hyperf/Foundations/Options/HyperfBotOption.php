@@ -5,7 +5,7 @@
  * @package Commune\Hyperf\Options
  */
 
-namespace Commune\Hyperf\Foundations\Dependencies;
+namespace Commune\Hyperf\Foundations\Options;
 
 use Commune\Chatbot\Config\ChatbotConfig;
 use Commune\Support\Option;
@@ -16,8 +16,10 @@ use Hyperf\Framework\Bootstrap;
 
 /**
  * @property-read ChatbotConfig $chatbot
+ * @property-read bool $bufferMessage 是否缓存消息 whether buffer sending message to cache.
  * @property-read string $redisPool
  * @property-read string $dbPool
+ * @property-read string $loggerPool
  * @property-read array $server
  *
  */
@@ -37,6 +39,10 @@ class HyperfBotOption extends Option
             'redisPool' => 'default',
 
             'dbPool' => 'default',
+
+            'loggerPool' => 'default',
+
+            'bufferMessage' => true,
 
             'server' => [
                 'mode' => SWOOLE_PROCESS,

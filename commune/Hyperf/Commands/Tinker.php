@@ -9,7 +9,7 @@ namespace Commune\Hyperf\Commands;
 
 use Commune\Chatbot\Contracts\ChatServer;
 use Commune\Chatbot\Framework\ChatApp;
-use Commune\Hyperf\Foundations\Dependencies\StdConsoleLogger;
+use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
 use Commune\Hyperf\Foundations\ProcessContainer;
 use Commune\Hyperf\Servers\Tinker\TinkerChatServer;
 use Hyperf\Contract\ConfigInterface;

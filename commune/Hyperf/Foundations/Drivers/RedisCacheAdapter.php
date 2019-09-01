@@ -10,23 +10,31 @@ namespace Commune\Hyperf\Foundations\Drivers;
 
 use Commune\Chatbot\Contracts\CacheAdapter;
 use Commune\Chatbot\Framework\Conversation\RunningSpyTrait;
+use Commune\Hyperf\Foundations\Contracts\ClientDriver;
 
 class RedisCacheAdapter implements CacheAdapter
 {
     use RunningSpyTrait;
 
     /**
-     * @var HyperfDriver
+     * @var ClientDriver
      */
     protected $driver;
 
     /**
-     * HyperfCacheAdapter constructor.
-     * @param HyperfDriver $driver
+     * @var string
      */
-    public function __construct(HyperfDriver $driver)
+    protected $traceId;
+
+    /**
+     * HyperfCacheAdapter constructor.
+     * @param ClientDriver $driver
+     */
+    public function __construct(ClientDriver $driver)
     {
         $this->driver = $driver;
+        $this->traceId = $driver->getTraceId();
+        static::addRunningTrace($this->traceId, $this->traceId);
     }
 
 
@@ -52,7 +60,7 @@ class RedisCacheAdapter implements CacheAdapter
         $redis = $this->driver->getRedis();
         $bool = $redis->setnx($key, 'true');
         if ($bool && isset($ttl) && $ttl > 0) {
-            $redis->expire($key, $ttl);
+            $redis->expire($key, (int) $ttl);
         }
         return $bool;
     }
@@ -67,5 +75,9 @@ class RedisCacheAdapter implements CacheAdapter
         return $this->driver->getRedis()->del($key);
     }
 
+    public function __destruct()
+    {
+        static::removeRunningTrace($this->traceId);
+    }
 
 }

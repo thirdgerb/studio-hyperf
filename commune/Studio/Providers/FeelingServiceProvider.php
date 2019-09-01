@@ -11,6 +11,8 @@ use Commune\Chatbot\OOHost\Emotion\Feeling;
 
 /**
  * nlu emotion configuration
+ *
+ * todo need better way 需要更合适的方案
  */
 class FeelingServiceProvider extends BaseServiceProvider
 {
@@ -32,7 +34,7 @@ class FeelingServiceProvider extends BaseServiceProvider
         ]
     ];
 
-    protected function experience(Feeling $feels) : void
+    protected function registerExperience(Feeling $feels) : void
     {
         //$feels->experience(Positive::class, function(){
         //
@@ -40,6 +42,9 @@ class FeelingServiceProvider extends BaseServiceProvider
     }
 
 
+    /**
+     * @param \Commune\Container\ContainerContract $app
+     */
     public function boot($app)
     {
         /**
@@ -51,7 +56,7 @@ class FeelingServiceProvider extends BaseServiceProvider
             $feels->setIntentMap($emotion, $intents);
         }
 
-        $this->experience($feels);
+        $this->registerExperience($feels);
     }
 
     public function register()

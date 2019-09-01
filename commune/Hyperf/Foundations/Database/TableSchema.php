@@ -6,7 +6,7 @@
  * @author BrightRed
  */
 
-namespace Commune\Hyperf\Database;
+namespace Commune\Hyperf\Foundations\Database;
 
 
 use Commune\Chatbot\Blueprint\Conversation\Conversation;
@@ -15,9 +15,15 @@ use Hyperf\Database\Schema\Blueprint;
 
 class TableSchema
 {
-    const CONTEXTS_TABLE = 'chatbot_contexts';
-    const BREAKPOINTS_TABLE = 'chatbot_breakpoints';
     const SESSION_DATA_TABLE = 'chatbot_session_data';
+    const SESSION_DATA_ID = 'data_id';
+    const SESSION_DATA_TYPE = 'data_type';
+    const SESSION_DATA_SERIALIZED = 'serialized';
+
+    public static function serialized(Blueprint $blueprint) : void
+    {
+        $blueprint->binary(self::SESSION_DATA_SERIALIZED);
+    }
 
     public static function scope(Blueprint $table) : void
     {
@@ -45,7 +51,7 @@ class TableSchema
             'chat_id' => $scope->chatId,
             'user_id' => $scope->userId,
             'platform_id' => $scope->platformId,
-            'chatbot_user_id' => $scope->chatbotName,
+            'chatbot_name' => $scope->chatbotName,
             'conversation_id' => $scope->conversationId,
         ];
     }

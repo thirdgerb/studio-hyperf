@@ -10,7 +10,7 @@ namespace Commune\DuerOS\Servers;
 
 use Baidu\Duer\Botsdk\Request;
 use Baidu\Duer\Botsdk\Response;
-use Commune\Hyperf\Foundations\Dependencies\StdConsoleLogger;
+use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
 use Hyperf\Contract\OnRequestInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
@@ -56,9 +56,6 @@ class DuerOSServer implements OnRequestInterface
         } else {
             $output = $botResponse->build(['outputSpeech' => '你好啊']);
         }
-
-        $this->logger->info($rawInput);
-        $this->logger->info($output);
 
         $response->end($output);
     }

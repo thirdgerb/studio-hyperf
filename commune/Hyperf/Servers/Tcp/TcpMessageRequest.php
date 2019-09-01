@@ -15,7 +15,7 @@ use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\Blueprint\Message\VerboseMsg;
 use Commune\Chatbot\Framework\Conversation\MessageRequestHelper;
 use Commune\Chatbot\Framework\Predefined\SimpleConsoleLogger;
-use Commune\Hyperf\Foundations\Requests\SwooleRequest;
+use Commune\Hyperf\Foundations\Contracts\SwooleRequest;
 use Commune\Support\Uuid\HasIdGenerator;
 use Swoole\Server;
 

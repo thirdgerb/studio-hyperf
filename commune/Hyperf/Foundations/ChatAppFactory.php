@@ -9,8 +9,8 @@ namespace Commune\Hyperf\Foundations;
 
 
 use Commune\Chatbot\Framework\ChatApp;
-use Commune\Hyperf\Foundations\Dependencies\HyperfBotOption;
-use Commune\Hyperf\Foundations\Dependencies\StdConsoleLogger;
+use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
+use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Psr\Container\ContainerInterface;
 
 class ChatAppFactory

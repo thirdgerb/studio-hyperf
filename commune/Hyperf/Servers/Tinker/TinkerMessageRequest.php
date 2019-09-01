@@ -78,7 +78,7 @@ class TinkerMessageRequest implements MessageRequest, HasIdGenerator
 
     protected function makeInputMessage($input): Message
     {
-        return new Text($input);
+        return new Text(strval($input));
     }
 
 

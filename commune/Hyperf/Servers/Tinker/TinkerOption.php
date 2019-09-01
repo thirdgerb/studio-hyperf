@@ -12,16 +12,14 @@ use Commune\Support\Option as CommuneOption;
 /**
  * @property-read string $userId;
  * @property-read string $userName;
- * @property-read string $chatbotUserId;
  */
 class TinkerOption extends CommuneOption
 {
     public static function stub(): array
     {
         return [
-            'userId' => 'testUserId',
-            'userName' => 'testUserName',
-            'chatbotUserId' => 'tinkerUserId',
+            'userId' => 'tinkerUserId',
+            'userName' => 'tinkerUserName',
         ];
     }
 

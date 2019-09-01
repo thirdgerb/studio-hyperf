@@ -5,7 +5,7 @@
  * @package Commune\Hyperf\Foundations\Dependencies
  */
 
-namespace Commune\Hyperf\Foundations\Dependencies;
+namespace Commune\Hyperf\Foundations\Drivers;
 
 
 use Commune\Chatbot\Contracts\ConsoleLogger;

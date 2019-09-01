@@ -12,6 +12,9 @@ use Commune\Studio\Abilities\IsSupervisor;
 use Commune\Chatbot\App\Abilities\Supervise;
 use Commune\Chatbot\Framework\Providers\BaseServiceProvider;
 
+/**
+ * register user ability policies
+ */
 class AbilityServiceProvider extends BaseServiceProvider
 {
     const IS_PROCESS_SERVICE_PROVIDER = false;

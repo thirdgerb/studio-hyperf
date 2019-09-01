@@ -11,12 +11,13 @@ use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Conversation\MessageRequest;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\Framework\Conversation\MessageRequestHelper;
-use Commune\Hyperf\Foundations\Dependencies\HyperfBotOption;
-use Commune\Hyperf\Foundations\Drivers\HyperfDriver;
+use Commune\Hyperf\Foundations\Contracts\MessageQueue;
+use Commune\Hyperf\Foundations\Contracts\SwooleRequest;
+use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Support\Uuid\HasIdGenerator;
 use Commune\Support\Uuid\IdGeneratorHelper;
 
-abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator
+abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator, SwooleRequest
 {
     use IdGeneratorHelper, MessageRequestHelper;
 
@@ -28,30 +29,41 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator
      */
     protected $input;
 
-
-    /**
-     * @var HyperfDriver
-     */
-    protected $driver;
-
-
     /**
      * @var HyperfBotOption
      */
     protected $botOption;
 
+    /**
+     * @var MessageQueue
+     */
+    protected $queue;
 
     /*-------- cached --------*/
 
     /**
-     * @var ConversationMessage[]
+     * @var ConversationMessage[][]
      */
     protected $buffer = [];
 
     /**
      * @var bool
      */
-    protected $render = false;
+    protected $rendered = false;
+
+    /**
+     * AbstractMessageRequest constructor.
+     * @param Message|mixed $input
+     * @param HyperfBotOption $botOption
+     */
+    public function __construct($input, HyperfBotOption $botOption)
+    {
+        $this->input = $input;
+        $this->botOption = $botOption;
+    }
+
+
+    /*-------- methods --------*/
 
     public function getInput()
     {
@@ -67,64 +79,72 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator
 
     public function bufferConversationMessage(ConversationMessage $message): void
     {
-        $this->buffer[] = $message;
+        $key = $this->userMessageBufferKey($message->getUserId());
+        $this->buffer[$key][] = $message;
     }
-
-    public function getPlatformId(): string
-    {
-        return $this->botOption->platformId;
-    }
-
 
     protected function userMessageBufferKey(string $userId) : string
     {
-        $platformId = $this->getPlatformId();
+        $botName = $this->getChatbotName();
+        return "$botName:$userId";
+    }
 
-        return "commune:message:buffer:$platformId:$userId";
+    protected function queue() : MessageQueue
+    {
+        return $this->queue
+            ?? $this->queue = $this->conversation
+                ->make(MessageQueue::class);
     }
 
 
     public function flushChatMessages(): void
     {
-        // 入队
-        if (!empty($this->buffer)) {
-            $this->bufferToCache($this->buffer);
-            $this->buffer = [];
+        // 使用一个queue 做buffer, 在分布式系统中 有一定必要性. 可选.
+        if ($this->botOption->bufferMessage) {
+            $cached = $this->sendMessagesThroughBuffer();
+
+        } else {
+
+            $key = $this->userMessageBufferKey($this->fetchUserId());
+            $cached = $this->buffer[$key] ?? [];
         }
 
-        // 只渲染一次.
-        if ($this->render) {
-            return;
-        }
 
-        // 出队
-        $cached = $this->fetchCachedMessages();
         if (!empty($cached)) {
-            $this->render = true;
+            $this->rendered = true;
             $this->renderChatMessages($cached);
         }
     }
 
+    public function sendMessagesThroughBuffer() : array
+    {
+        // 入队
+        if (!empty($this->buffer)) {
+            foreach ($this->buffer as $key => $messages) {
+                $this->bufferToCache($key, $messages);
+            }
+            $this->buffer = [];
+        }
+
+        // 只渲染一次.
+        if ($this->rendered) {
+            return [];
+        }
+
+        // 出队
+        return $this->fetchCachedMessages();
+    }
 
     /**
-     * @param ConversationMessage[] $messages
+     * @param string $bufferKey
+     * @param array $messages
      */
-    protected function bufferToCache(array $messages) : void
+    protected function bufferToCache(string $bufferKey, array $messages) : void
     {
         if (empty($messages)) {
             return;
         }
-
-        $redis = $this->driver->getRedis();
-
-        // 先把消息压到队列里.
-        $pipe = $redis->multi(\Redis::PIPELINE);
-        foreach ($messages as $message) {
-            $key = $this->userMessageBufferKey($message->getUserId());
-            $payload = serialize($key);
-            $pipe->lpush($key, $payload);
-        }
-        $pipe->exec();
+        $this->queue()->push($bufferKey, $messages);
     }
 
     /**
@@ -133,10 +153,7 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator
     protected function fetchCachedMessages() : array
     {
         $key = $this->userMessageBufferKey($this->fetchUserId());
-        $redis = $this->driver->getRedis();
-
-        $list = $redis->lRange($key, 0, -1);
-        $redis->del($key);
+        $list = $this->queue()->dump($key);
 
         // 需要 render 的消息
         $rendering = [];
@@ -144,31 +161,24 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator
         $delay = [];
         $now = time();
 
-        foreach ($list as $serialized) {
-            /**
-             * @var ConversationMessage $unserialized
-             */
-            $unserialized = unserialize($serialized);
-            if (!$unserialized instanceof ConversationMessage) {
-                // 一般不会出现这种情况. 除非 conversationMessage 本身不能序列化
-                $this->driver
-                    ->getLogger()
-                    ->warning(__METHOD__ . ' meet deserializable message ' . $serialized);
+        foreach ($list as $cachedMessage) {
+
+            if (!$cachedMessage instanceof ConversationMessage) {
                 continue;
             }
 
             // 发送时间.
-            $deliverAt = $unserialized->message->getDeliverAt();
+            $deliverAt = $cachedMessage->message->getDeliverAt();
 
             if (!isset($deliverAt) || $deliverAt->timestamp < $now) {
-                array_unshift($rendering, $unserialized);
+                array_unshift($rendering, $cachedMessage);
             } else {
-                $delay[] = $serialized;
+                $delay[] = $cachedMessage;
             }
         }
 
         if (!empty($delay)) {
-            $this->bufferToCache($delay);
+            $this->bufferToCache($key, $delay);
         }
         return $rendering;
     }

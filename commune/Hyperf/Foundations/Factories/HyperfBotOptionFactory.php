@@ -5,8 +5,10 @@
  * @package Commune\Hyperf\Options
  */
 
-namespace Commune\Hyperf\Foundations\Dependencies;
+namespace Commune\Hyperf\Foundations\Factories;
 
+
+use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 
 class HyperfBotOptionFactory
 {

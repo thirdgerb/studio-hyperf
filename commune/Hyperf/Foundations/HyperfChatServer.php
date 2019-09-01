@@ -10,8 +10,10 @@ namespace Commune\Hyperf\Foundations;
 use Commune\Chatbot\Blueprint\Application;
 use Commune\Chatbot\Blueprint\Conversation\Conversation;
 use Commune\Chatbot\Contracts\ChatServer;
-use Commune\Hyperf\Foundations\Dependencies\HyperfBotOption;
-use Commune\Hyperf\Foundations\Requests\SwooleRequest;
+use Commune\Chatbot\Framework\ChatApp;
+use Commune\Hyperf\Foundations\Contracts\SwooleRequest;
+use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
+use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Hyperf\Server\ServerInterface as HyperfServer;
 use Psr\Container\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -47,8 +49,8 @@ class HyperfChatServer implements ChatServer
 
     public function run(): void
     {
-        // 初始化chatbot
         $chatApp = $this->container->get(Application::class);
+        // 初始化chatbot
         $chatApp->getProcessContainer()->instance(ChatServer::class, $this);
         $chatApp->bootApp();
 

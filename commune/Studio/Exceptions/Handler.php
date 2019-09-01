@@ -21,6 +21,16 @@ class Handler implements ExceptionHandler
      */
     protected $logger;
 
+    /**
+     * Handler constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+
     public function reportServiceStopException(
         string $method,
         StopServiceExceptionInterface $e

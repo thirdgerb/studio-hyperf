@@ -7,8 +7,8 @@
 
 namespace Commune\Hyperf\Commands;
 
-use Commune\Hyperf\Foundations\Dependencies\HyperfBotOption;
-use Commune\Hyperf\Foundations\Dependencies\HyperfBotOptionFactory;
+use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Factories\HyperfBotOptionFactory;
 use Commune\Hyperf\Foundations\HyperfChatServer;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
