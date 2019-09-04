@@ -15,11 +15,11 @@ use Commune\Hyperf\Foundations\Contracts\MessageQueue;
 use Commune\Hyperf\Foundations\Contracts\SwooleRequest;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Support\Uuid\HasIdGenerator;
-use Commune\Support\Uuid\IdGeneratorHelper;
+use Swoole\Server;
 
 abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator, SwooleRequest
 {
-    use IdGeneratorHelper, MessageRequestHelper;
+    use MessageRequestHelper;
 
 
     /*------- params -------*/
@@ -34,10 +34,16 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
      */
     protected $botOption;
 
+
     /**
-     * @var MessageQueue
+     * @var int
      */
-    protected $queue;
+    protected $fd;
+
+    /**
+     * @var Server
+     */
+    protected $server;
 
     /*-------- cached --------*/
 
@@ -49,17 +55,32 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
     /**
      * @var bool
      */
-    protected $rendered = false;
+    protected $flushed = false;
+
+
+    /**
+     * @var MessageQueue
+     */
+    protected $queue;
 
     /**
      * AbstractMessageRequest constructor.
      * @param Message|mixed $input
      * @param HyperfBotOption $botOption
+     * @param int $fd
+     * @param Server $server
      */
-    public function __construct($input, HyperfBotOption $botOption)
+    public function __construct(
+        HyperfBotOption $botOption,
+        $input,
+        int $fd,
+        Server $server
+    )
     {
         $this->input = $input;
         $this->botOption = $botOption;
+        $this->fd = $fd;
+        $this->server = $server;
     }
 
 
@@ -71,15 +92,21 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
     }
 
     /**
-     * 如何渲染并输出数据.
+     * 渲染消息, 但未输出.
      * @param ConversationMessage[] $messages
      */
     abstract protected function renderChatMessages(array $messages) : void;
 
+    /**
+     * 输出消息.
+     */
+    abstract protected function flushResponse() : void;
+
 
     public function bufferConversationMessage(ConversationMessage $message): void
     {
-        $key = $this->userMessageBufferKey($message->getUserId());
+        $id = $message->getUserId();
+        $key = $this->userMessageBufferKey($id);
         $this->buffer[$key][] = $message;
     }
 
@@ -109,10 +136,13 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
             $cached = $this->buffer[$key] ?? [];
         }
 
-
         if (!empty($cached)) {
-            $this->rendered = true;
             $this->renderChatMessages($cached);
+        }
+
+        if (!$this->flushed) {
+            $this->flushResponse();
+            $this->flushed = true;
         }
     }
 
@@ -127,7 +157,7 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
         }
 
         // 只渲染一次.
-        if ($this->rendered) {
+        if ($this->flushed) {
             return [];
         }
 
@@ -182,5 +212,23 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
         }
         return $rendering;
     }
+
+    /**
+     * @return int
+     */
+    public function getFd(): int
+    {
+        return $this->fd;
+    }
+
+    /**
+     * @return Server
+     */
+    public function getServer(): Server
+    {
+        return $this->server;
+    }
+
+
 
 }

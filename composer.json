@@ -63,7 +63,7 @@
             "Commune\\Hyperf\\": "commune/Hyperf/",
             "Commune\\Components\\": "commune/Components/",
             "Commune\\DuerOS\\": "commune/DuerOS/",
-            "Commune\\Studio\\": "commune/Studio/"
+            "Commune\\Studio\\": "app-studio"
         },
         "files": []
     },

@@ -10,8 +10,13 @@ namespace Commune\DuerOS\Servers;
 
 use Baidu\Duer\Botsdk\Request;
 use Baidu\Duer\Botsdk\Response;
+use Commune\Chatbot\Blueprint\Application;
+use Commune\Chatbot\Framework\ChatApp;
 use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
+use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Hyperf\Contract\OnRequestInterface;
+use Hyperf\Server\ServerFactory;
+use Psr\Container\ContainerInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Hyperf\HttpMessage\Server\Request as Psr7Request;
@@ -19,45 +24,47 @@ use Hyperf\HttpMessage\Server\Request as Psr7Request;
 class DuerOSServer implements OnRequestInterface
 {
     /**
-     * @var StdConsoleLogger
+     * @var ContainerInterface
      */
-    protected $logger;
+    protected $container;
+
+    /**
+     * @var Application
+     */
+    protected $chatApp;
+
+    /**
+     * @var HyperfBotOption
+     */
+    protected $botOption;
+
+    protected $server;
 
     /**
      * DuerOSServer constructor.
      * @param StdConsoleLogger $logger
      */
-    public function __construct(StdConsoleLogger $logger)
+    public function __construct(ContainerInterface $container, Application $chatApp, HyperfBotOption $botOption)
     {
-        $this->logger = $logger;
+        $this->chatApp = $chatApp;
+        $this->botOption = $botOption;
+        $this->container = $container;
+        $this->server = $this->container
+            ->get(ServerFactory::class)
+            ->getServer()
+            ->getServer();
     }
 
 
     public function onRequest(SwooleRequest $request, SwooleResponse $response): void
     {
-        $psr7Request = Psr7Request::loadFromSwooleRequest($request);
-        // prepare duer os bot request
-        $rawInput = $psr7Request->getBody()->getContents();
-        $rawInput = str_replace("", "", $rawInput);
-        $postData = json_decode($rawInput, true);
-        $botRequest = new Request($postData);
-
-
-        $botResponse = new Response(
-            $botRequest,
-            $botRequest->getSession(),
-            $botRequest->getNlu()
+        $chatbotRequest = new DuerOSRequest(
+            $this->botOption,
+            $this->server,
+            $request,
+            $response
         );
-
-        $botResponse->setShouldEndSession(false);
-        if ($botRequest->getType() === 'IntentRequset') {
-            $output = $botResponse->build(['outputSpeech' => '你好']);
-            $botResponse->setShouldEndSession(false);
-        } else {
-            $output = $botResponse->build(['outputSpeech' => '你好啊']);
-        }
-
-        $response->end($output);
+        $this->chatApp->getKernel()->onUserMessage($chatbotRequest);
     }
 
 }

@@ -13,7 +13,7 @@ use Commune\Container\ContainerContract;
 use Commune\Hyperf\Foundations\Contracts\MessageQueue;
 use Commune\Hyperf\Foundations\Drivers\RedisMessageQueue;
 
-class MessageRequestServiceProvider extends BaseServiceProvider
+class MessageQueueServiceProvider extends BaseServiceProvider
 {
     const IS_PROCESS_SERVICE_PROVIDER = false;
 

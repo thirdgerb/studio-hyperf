@@ -44,17 +44,19 @@ return [
     // 在worker中注册的服务, 多个请求共享
     'conversationProviders' => [
         // 权限识别
-        Providers\AbilityServiceProvider::class,
+        'ability' => Providers\AbilityServiceProvider::class,
+        // 默认的rendering
+        'render' => Providers\RenderServiceProvider::class,
         // hyperf client driver . redis, db
         // hyperf 的协程客户端
-        \Commune\Hyperf\Foundations\Providers\ClientDriverServiceProvider::class,
+        'client' => \Commune\Hyperf\Foundations\Providers\ClientDriverServiceProvider::class,
         // cache adapter driver
         // 实现 chatbot 需要的 cache adapter
-        \Commune\Hyperf\Foundations\Providers\CacheServiceProvider::class,
+        'cache' => \Commune\Hyperf\Foundations\Providers\CacheServiceProvider::class,
         // oo host session driver
-        \Commune\Hyperf\Foundations\Providers\SessionServiceProvider::class,
+        'session' => \Commune\Hyperf\Foundations\Providers\SessionServiceProvider::class,
         // message request service
-        \Commune\Hyperf\Foundations\Providers\MessageRequestServiceProvider::class,
+        'message' => \Commune\Hyperf\Foundations\Providers\MessageQueueServiceProvider::class,
     ],
 
     'chatbotPipes' =>
@@ -114,8 +116,6 @@ return [
         'rootContextName' => \Commune\Demo\App\Contexts\TestCase::class,
 
         'sessionPipes' => [
-            // 系统默认回复
-            \Commune\Chatbot\App\SessionPipe\DefaultReplyPipe::class,
             // event 转 message
             // transfer curtain event messages to other messages
             \Commune\Chatbot\App\SessionPipe\EventMsgPipe::class,

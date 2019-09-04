@@ -44,9 +44,12 @@ class RedisMessageQueue implements MessageQueue
     public function dump(string $key): array
     {
         $redis = $this->driver->getRedis();
-        $list = $redis->lTrim($key, 0, -1);
+        $key = self::KEY_PREFIX . $key;
 
-        if (empty($list)) {
+        $list = $redis->lRange($key, 0, -1);
+        $redis->del($key);
+
+        if (empty($list) || is_bool($list)) {
             return [];
         }
 
