@@ -151,7 +151,7 @@ class SessionDriver implements Contract
         );
 
         // only memory should be save to persist database
-        if (!$context instanceof Memory) {
+        if ($context instanceof Memory) {
             $this->saveSessionData($session, $context);
         }
     }

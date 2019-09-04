@@ -144,11 +144,11 @@ class DuerOSRequest extends AbstractMessageRequest
 
     protected function flushResponse(): void
     {
-        $this->response->end(
-            $this->botResponse->build([
-                'outputSpeech' => trim($this->outSpeech)
-            ])
-        );
+        $output =$this->botResponse->build([
+            'outputSpeech' => trim($this->outSpeech)
+        ]);
+
+        $this->response->end($output);
     }
 
     public function getPlatformId(): string

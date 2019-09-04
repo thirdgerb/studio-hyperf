@@ -7,6 +7,8 @@ use Hyperf\Framework\Bootstrap;
 $chatbot = include COMMUNE_PATH . '/configs/chatbot.php';
 $chatbot['conversationProviders']['render'] = \Commune\DuerOS\Providers\RenderServiceProvider::class;
 
+$chatbot['host']['rootContextName'] = \Commune\DuerOS\Demo\TestCase::class;
+
 return [
 
     'chatbot' => $chatbot,
