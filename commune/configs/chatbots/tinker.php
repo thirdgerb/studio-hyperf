@@ -53,7 +53,7 @@ return [
     ],
 
     'host' => [
-            'rootContextName' => \Commune\Demo\App\Contexts\TestCase::class,
+            'rootContextName' => \Commune\DuerOS\Demo\TestCase::class,
             'sessionPipes' => [
                 \Commune\Chatbot\App\SessionPipe\EventMsgPipe::class,
                 \Commune\Chatbot\App\Commands\UserCommandsPipe::class,

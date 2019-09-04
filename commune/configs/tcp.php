@@ -4,7 +4,7 @@ use Hyperf\Server\Server;
 use Hyperf\Server\SwooleEvent;
 use Hyperf\Framework\Bootstrap;
 
-$chatbot = include COMMUNE_PATH . '/configs/chatbot.php';
+$chatbot = include COMMUNE_PATH . '/configs/chatbots/chatbot.php';
 
 return [
     'chatbot' => $chatbot,
@@ -33,7 +33,7 @@ return [
         'settings' => [
             'enable_coroutine' => true,
             'worker_num' => 1,
-            'pid_file' => BASE_PATH . '/runtime/hyperf_tcp.pid',
+            'pid_file' => BASE_PATH . '/runtime/pid/tcp.pid',
             'open_tcp_nodelay' => true,
             'max_coroutine' => 100000,
             'open_http2_protocol' => true,
