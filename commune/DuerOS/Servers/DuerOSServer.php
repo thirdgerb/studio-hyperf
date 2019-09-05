@@ -12,6 +12,7 @@ use Baidu\Duer\Botsdk\Request;
 use Baidu\Duer\Botsdk\Response;
 use Commune\Chatbot\Blueprint\Application;
 use Commune\Chatbot\Framework\ChatApp;
+use Commune\DuerOS\Options\DuerOSOption;
 use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Hyperf\Contract\OnRequestInterface;
@@ -38,7 +39,15 @@ class DuerOSServer implements OnRequestInterface
      */
     protected $botOption;
 
+    /**
+     * @var \Swoole\Server
+     */
     protected $server;
+
+    /**
+     * @var string
+     */
+    protected $privateKeyContent;
 
     /**
      * DuerOSServer constructor.
@@ -55,16 +64,45 @@ class DuerOSServer implements OnRequestInterface
             ->getServer();
     }
 
+    protected function getPrivateKeyContent() : string
+    {
+        if (isset($this->privateKeyContent)) {
+            return $this->privateKeyContent;
+        }
+        $option =$this->chatApp->getProcessContainer()->get(DuerOSOption::class);
+        $keyFile = $option->privateKey;
+
+        if (empty($keyFile)) {
+            $this->chatApp->getConsoleLogger()->warning('dueros openssl verify with empty private key');
+            return $this->privateKeyContent = '';
+        }
+
+        if (!file_exists($keyFile)) {
+            $this->chatApp->getConsoleLogger()->error('dueros openssl private key file '.$keyFile .' not exists!');
+            return $this->privateKeyContent = '';
+        }
+
+        $this->privateKeyContent = file_get_contents($keyFile);
+        return $this->privateKeyContent;
+    }
 
     public function onRequest(SwooleRequest $request, SwooleResponse $response): void
     {
+        $privateKeyContent = $this->getPrivateKeyContent();
         $chatbotRequest = new DuerOSRequest(
             $this->botOption,
             $this->server,
             $request,
-            $response
+            $response,
+            $privateKeyContent
         );
-        $this->chatApp->getKernel()->onUserMessage($chatbotRequest);
+
+        if ($chatbotRequest->verify()) {
+            $this->chatApp->getKernel()->onUserMessage($chatbotRequest);
+
+        } else {
+            $chatbotRequest->illegalResponse();
+        }
     }
 
 }

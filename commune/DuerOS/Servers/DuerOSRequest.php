@@ -8,6 +8,7 @@
 namespace Commune\DuerOS\Servers;
 
 
+use Baidu\Duer\Botsdk\Certificate;
 use Commune\Chatbot\App\Components\Predefined\Navigation\HomeInt;
 use Commune\Chatbot\App\Components\Predefined\Navigation\QuitInt;
 use Commune\Chatbot\App\Messages\Text;
@@ -75,32 +76,73 @@ class DuerOSRequest extends AbstractMessageRequest
     protected $outSpeech = '';
 
     /**
+     * @var DuerOSCertificate
+     */
+    protected $certificate;
+
+    /**
      * DuerOSRequest constructor.
      * @param HyperfBotOption $option
+     * @param Server $server
      * @param SwooleRequest $input
      * @param SwooleResponse $response
+     * @param string|null $privateKey
      */
     public function __construct(
         HyperfBotOption $option,
         Server $server,
         SwooleRequest $input,
-        SwooleResponse $response
+        SwooleResponse $response,
+        string $privateKey
     )
     {
         $this->response = $response;
-        $this->response->header('Context-Type', 'application/json;charset=utf-8');
+        $this->response->header('Content-Type', 'application/json;charset=utf-8');
         parent::__construct($option, $input, $input->fd, $server);
-        $this->botRequest = static::wrapBotRequest($input);
+        $rawInput = static::fetchRawInputOfRequest($input);
+        $this->certificate = new DuerOSCertificate(
+            $privateKey,
+            $input->server,
+            $rawInput
+        );
+
+        $this->botRequest = static::wrapBotRequest($rawInput);
         $this->botResponse = static::wrapBotResponse($this->botRequest);
         $this->botResponse->setShouldEndSession(false);
     }
 
+    /**
+     * @return DuerOSCertificate
+     */
+    public function getCertificate(): DuerOSCertificate
+    {
+        return $this->certificate;
+    }
 
-    public static function wrapBotRequest(SwooleRequest $request) : BotRequest
+    public function verify() : bool
+    {
+        return $this->certificate->verifyRequest();
+    }
+
+    public function illegalResponse() :void
+    {
+        $this->response->end($this->botResponse->illegalRequest());
+    }
+
+
+
+
+
+    public static function fetchRawInputOfRequest(SwooleRequest $request) : string
     {
         $psr7Request = Psr7Request::loadFromSwooleRequest($request);
         // prepare duer os bot request
         $rawInput = $psr7Request->getBody()->getContents();
+        return $rawInput;
+    }
+
+    public static function wrapBotRequest(string $rawInput) : BotRequest
+    {
         $rawInput = str_replace("", "", $rawInput);
         $postData = json_decode($rawInput, true);
         return new BotRequest($postData);

@@ -9,6 +9,9 @@ use Commune\Studio\SessionPipes;
  * @see \Commune\Chatbot\Config\ChatbotConfig
  */
 return [
+
+    'chatbotName' => 'commune-tcp',
+
     'debug' => true,
 
 
@@ -19,7 +22,6 @@ return [
     // 2. 类名 => 数组,  会用数组内的值覆盖 stub 的相关参数.
     // 3. 类名 => 子类名, 会用子类的实例来绑定父类类名.
     'configBindings' => [
-        \Commune\Hyperf\Servers\Tinker\TinkerOption::class,
     ],
 
 

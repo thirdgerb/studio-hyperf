@@ -4,10 +4,7 @@ use Hyperf\Server\Server;
 use Hyperf\Server\SwooleEvent;
 use Hyperf\Framework\Bootstrap;
 
-$chatbot = include COMMUNE_PATH . '/configs/chatbots/chatbot.php';
-$chatbot['conversationProviders']['render'] = \Commune\DuerOS\Providers\RenderServiceProvider::class;
-
-$chatbot['host']['rootContextName'] = \Commune\DuerOS\Demo\TestCase::class;
+$chatbot = include COMMUNE_PATH . '/configs/chatbots/duerosbot.php';
 
 return [
 

@@ -1,7 +1,11 @@
 <?php
 
 return [
+
+    'chatbotName' => 'commune-tinker',
+
     'debug' => true,
+
     'configBindings' => [
         \Commune\Hyperf\Servers\Tinker\TinkerOption::class,
     ],
