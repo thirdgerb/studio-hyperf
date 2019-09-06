@@ -1,0 +1,4 @@
+*
+!logs/
+!pid/
+!.gitignore
