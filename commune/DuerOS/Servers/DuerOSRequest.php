@@ -110,8 +110,6 @@ class DuerOSRequest extends AbstractMessageRequest
         $this->duerResponse = static::wrapBotResponse($this->duerRequest);
         $this->duerResponse->setShouldEndSession(false);
         $this->nluParser = new DuerOSNLUParser($this->duerRequest);
-
-        $this->duerRequest->getNlu()->ask();
     }
 
     /**
