@@ -130,10 +130,6 @@ class DuerOSRequest extends AbstractMessageRequest
         $this->response->end($this->duerResponse->illegalRequest());
     }
 
-
-
-
-
     public static function fetchRawInputOfRequest(SwooleRequest $request) : string
     {
         $psr7Request = Psr7Request::loadFromSwooleRequest($request);
@@ -172,6 +168,10 @@ class DuerOSRequest extends AbstractMessageRequest
      */
     protected function renderChatMessages(array $messages): void
     {
+        var_dump(implode("\n", array_map(function(ConversationMessage $message){
+            return $message->message->getTrimmedText();
+        }, $messages)));
+
         foreach ($messages as $message) {
             $this->renderMessage($message);
         }
@@ -191,6 +191,7 @@ class DuerOSRequest extends AbstractMessageRequest
             'outputSpeech' => trim($this->outSpeech)
         ]);
 
+        var_dump($output);
         $this->response->end($output);
     }
 

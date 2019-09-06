@@ -31,14 +31,13 @@ class RedisMessageQueue implements MessageQueue
     public function push(string $key, array $messages): void
     {
         $redis = $this->driver->getRedis();
-        $pipe = $redis->multi(\Redis::PIPELINE);
-
         $key = self::KEY_PREFIX . $key;
 
+        $serialized = [];
         foreach ($messages as $message) {
-            $pipe->rPush($key, serialize($message));
+            $serialized[] = serialize($message);
         }
-        $pipe->exec();
+        $redis->rPush($key, ...$serialized);
     }
 
     public function dump(string $key): array
