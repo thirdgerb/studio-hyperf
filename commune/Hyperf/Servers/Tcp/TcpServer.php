@@ -8,6 +8,7 @@
 namespace Commune\Hyperf\Servers\Tcp;
 
 
+use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Swoole\Server;
 use Commune\Chatbot\Blueprint\Application as ChatApp;
 use Commune\Chatbot\Framework\Messages\Events\ConnectionEvt;
@@ -29,15 +30,21 @@ class TcpServer
     /**
      * @var TcpOption
      */
-    protected $option;
+    protected $tcpOption;
+
+    /**
+     * @var HyperfBotOption
+     */
+    protected $botOption;
 
     /**
      * TcpServer constructor.
      * @param ChatApp $chatApp
      */
-    public function __construct(ChatApp $chatApp)
+    public function __construct(ChatApp $chatApp, HyperfBotOption $option)
     {
         $this->chatApp = $chatApp;
+        $this->botOption = $option;
     }
 
 
@@ -53,9 +60,10 @@ class TcpServer
                 ->info("connection $fd for $ip open");
 
             $request = new TcpMessageRequest(
-                $server,
+                $this->botOption,
+                new ConnectionEvt(),
                 $fd,
-                new ConnectionEvt()
+                $server
             );
 
             $this->chatApp->getKernel()->onUserMessage($request);
@@ -73,8 +81,8 @@ class TcpServer
 
     protected function getTcpOption() : TcpOption
     {
-        return $this->option
-            ?? $this->option = $this->chatApp
+        return $this->tcpOption
+            ?? $this->tcpOption = $this->chatApp
                 ->getProcessContainer()
                 ->get(TcpOption::class);
     }
@@ -83,9 +91,10 @@ class TcpServer
     {
         $server->send($fd, $this->starting);
         $request = new TcpMessageRequest(
-            $server,
+            $this->botOption,
+            $data,
             $fd,
-            $data
+            $server
         );
 
         $this->chatApp->getKernel()->onUserMessage($request);

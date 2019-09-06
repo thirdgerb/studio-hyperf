@@ -201,7 +201,7 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
             $deliverAt = $cachedMessage->message->getDeliverAt();
 
             if (!isset($deliverAt) || $deliverAt->timestamp < $now) {
-                array_unshift($rendering, $cachedMessage);
+                $rendering[] = $cachedMessage;
             } else {
                 $delay[] = $cachedMessage;
             }

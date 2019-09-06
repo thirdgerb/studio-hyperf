@@ -10,36 +10,16 @@ namespace Commune\Hyperf\Servers\Tcp;
 
 use Commune\Chatbot\App\Messages\Text;
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
-use Commune\Chatbot\Blueprint\Conversation\MessageRequest;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\Blueprint\Message\VerboseMsg;
-use Commune\Chatbot\Framework\Conversation\MessageRequestHelper;
 use Commune\Chatbot\Framework\Predefined\SimpleConsoleLogger;
-use Commune\Hyperf\Foundations\Contracts\SwooleRequest;
-use Commune\Support\Uuid\HasIdGenerator;
+use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Requests\AbstractMessageRequest;
 use Swoole\Server;
 
-class TcpMessageRequest implements MessageRequest, HasIdGenerator, SwooleRequest
+class TcpMessageRequest extends AbstractMessageRequest
 {
-    use MessageRequestHelper;
-
-    /**
-     * @var string|Message
-     */
-    protected $input;
-
-    /**
-     * 客户端连接
-     * @var int
-     */
-    protected $fd;
-
-    /**
-     * @var Server
-     */
-    protected $server;
-
-    /**
+   /**
      * @var array
      */
     protected $clientInfo;
@@ -50,39 +30,22 @@ class TcpMessageRequest implements MessageRequest, HasIdGenerator, SwooleRequest
     protected $userId;
 
     /**
-     * @var array
-     */
-    protected $buffer = [];
-
-    /**
      * TcpMessageRequest constructor.
+     * @param HyperfBotOption $option
      * @param Server $server
      * @param int $fd
-     * @param string|Message $input
+     * @param $input
      */
     public function __construct(
-        Server $server,
+        HyperfBotOption $option,
+        $input,
         int $fd,
-        $input
+        Server $server
     )
     {
-        $this->input = $input;
-        $this->fd = $fd;
-        $this->server = $server;
-        $this->clientInfo = $this->server->getClientInfo($fd);
+        $this->clientInfo = $server->getClientInfo($fd);
+        parent::__construct($option, $input, $fd, $server);
     }
-
-
-    public function getFd() : int
-    {
-        return $this->fd;
-    }
-
-    public function getInput()
-    {
-        return $this->input;
-    }
-
 
     public function getPlatformId(): string
     {
@@ -92,12 +55,6 @@ class TcpMessageRequest implements MessageRequest, HasIdGenerator, SwooleRequest
     protected function makeInputMessage($input): Message
     {
         return new Text(strval($input));
-    }
-
-
-    public function fetchTraceId(): string
-    {
-        return $this->fetchMessageId();
     }
 
     protected function getUserIp() : string
@@ -121,18 +78,20 @@ class TcpMessageRequest implements MessageRequest, HasIdGenerator, SwooleRequest
         return [];
     }
 
-    public function bufferConversationMessage(ConversationMessage $message): void
+    /**
+     * @param ConversationMessage[] $messages
+     */
+    protected function renderChatMessages(array $messages): void
     {
-        $this->buffer[] = $message;
+        foreach ($messages as $message) {
+            $this->write($message->message);
+        }
     }
 
-    public function flushChatMessages(): void
+    protected function flushResponse(): void
     {
-        while ($message = array_shift($this->buffer)) {
-            $this->write($message->getMessage());
-        }
-        $this->buffer = [];
     }
+
 
     protected function write(Message $msg) : void
     {
@@ -165,11 +124,6 @@ class TcpMessageRequest implements MessageRequest, HasIdGenerator, SwooleRequest
             $this->server->send($this->fd, $msg->getText() . PHP_EOL);
         }
 
-    }
-
-    public function getServer(): Server
-    {
-        return $this->server;
     }
 
 

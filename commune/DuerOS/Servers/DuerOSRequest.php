@@ -168,10 +168,6 @@ class DuerOSRequest extends AbstractMessageRequest
      */
     protected function renderChatMessages(array $messages): void
     {
-        var_dump(implode("\n", array_map(function(ConversationMessage $message){
-            return $message->message->getTrimmedText();
-        }, $messages)));
-
         foreach ($messages as $message) {
             $this->renderMessage($message);
         }
@@ -190,8 +186,6 @@ class DuerOSRequest extends AbstractMessageRequest
         $output =$this->duerResponse->build([
             'outputSpeech' => trim($this->outSpeech)
         ]);
-
-        var_dump($output);
         $this->response->end($output);
     }
 

@@ -54,19 +54,25 @@ class TestCase extends OOContext
         return $stage->buildTalk()
             ->askVerbose('请问我能为您做什么?')
             ->hearing()
-            ->is('你好', function(Dialog $dialog){
-                $dialog->say()->info('你也好啊');
-                return $dialog->wait();
-            })
-            ->is('迷宫', function(Dialog $dialog) {
-                $this->to = MazeTask::class;
-                return $dialog->goStage('once');
-            })
-            ->is('退出', function(Dialog $dialog){
-                $dialog->say()->info("您说了退出.");
-                return $dialog->quit();
-            })
-            ->end();
+                ->todo(function(Dialog $dialog){
+                    $dialog->say()->info('你也好啊');
+                    return $dialog->wait();
+                })
+                    ->is('hello')
+                    ->is('你好')
+                ->todo(function(Dialog $dialog) {
+                    $this->to = MazeTask::class;
+                    return $dialog->goStage('once');
+                })
+                    ->is('maze')
+                    ->is('迷宫')
+                ->todo(function(Dialog $dialog){
+                    $dialog->say()->info("您说了退出.");
+                    return $dialog->quit();
+                })
+                    ->is('quit')
+                    ->is('退出')
+                ->end();
     }
 
     public function __onAskName(Stage $stage) : Navigator
