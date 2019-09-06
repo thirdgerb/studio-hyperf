@@ -20,6 +20,10 @@ class DuerOSOption extends Option
         return [
             'privateKey' => env('DUEROS_PRIVATE_KEY', ''),
 
+            'intentMapping' => [
+
+            ],
+
         ];
     }
 

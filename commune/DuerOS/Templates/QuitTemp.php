@@ -39,7 +39,7 @@ class QuitTemp implements ReplyTemplate
 
         $request = $conversation->getRequest();
         if ($request instanceof DuerOSRequest) {
-            $request->getBotResponse()->setShouldEndSession(true);
+            $request->getDuerResponse()->setShouldEndSession(true);
         }
 
         return [new Text($text)];

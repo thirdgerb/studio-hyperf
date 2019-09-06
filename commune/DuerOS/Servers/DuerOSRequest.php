@@ -8,24 +8,19 @@
 namespace Commune\DuerOS\Servers;
 
 
-use Baidu\Duer\Botsdk\Certificate;
-use Commune\Chatbot\App\Components\Predefined\Navigation\HomeInt;
-use Commune\Chatbot\App\Components\Predefined\Navigation\QuitInt;
 use Commune\Chatbot\App\Messages\Text;
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Conversation\NLU;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\Blueprint\Message\VerboseMsg;
-use Commune\Chatbot\Framework\Conversation\NatureLanguageUnit;
 use Commune\Chatbot\Framework\Messages\Events\ConnectionEvt;
 use Commune\Chatbot\Framework\Messages\Events\QuitEvt;
-use Commune\DuerOS\Constants\DuerOSCommonIntents;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Hyperf\Foundations\Requests\AbstractMessageRequest;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
-use Baidu\Duer\Botsdk\Request as BotRequest;
-use Baidu\Duer\Botsdk\Response as BotResponse;
+use Baidu\Duer\Botsdk\Request as DuerRequest;
+use Baidu\Duer\Botsdk\Response as DuerResponse;
 use Hyperf\HttpMessage\Server\Request as Psr7Request;
 use Swoole\Server;
 
@@ -44,14 +39,14 @@ class DuerOSRequest extends AbstractMessageRequest
 
 
     /**
-     * @var BotRequest
+     * @var DuerRequest
      */
-    protected $botRequest;
+    protected $duerRequest;
 
     /**
-     * @var BotResponse
+     * @var DuerResponse
      */
-    protected $botResponse;
+    protected $duerResponse;
 
     /*--------- cached ---------*/
 
@@ -81,6 +76,11 @@ class DuerOSRequest extends AbstractMessageRequest
     protected $certificate;
 
     /**
+     * @var DuerOSNLUParser
+     */
+    protected $nluParser;
+
+    /**
      * DuerOSRequest constructor.
      * @param HyperfBotOption $option
      * @param Server $server
@@ -106,9 +106,12 @@ class DuerOSRequest extends AbstractMessageRequest
             $rawInput
         );
 
-        $this->botRequest = static::wrapBotRequest($rawInput);
-        $this->botResponse = static::wrapBotResponse($this->botRequest);
-        $this->botResponse->setShouldEndSession(false);
+        $this->duerRequest = static::wrapBotRequest($rawInput);
+        $this->duerResponse = static::wrapBotResponse($this->duerRequest);
+        $this->duerResponse->setShouldEndSession(false);
+        $this->nluParser = new DuerOSNLUParser($this->duerRequest);
+
+        $this->duerRequest->getNlu()->ask();
     }
 
     /**
@@ -126,7 +129,7 @@ class DuerOSRequest extends AbstractMessageRequest
 
     public function illegalResponse() :void
     {
-        $this->response->end($this->botResponse->illegalRequest());
+        $this->response->end($this->duerResponse->illegalRequest());
     }
 
 
@@ -141,16 +144,16 @@ class DuerOSRequest extends AbstractMessageRequest
         return $rawInput;
     }
 
-    public static function wrapBotRequest(string $rawInput) : BotRequest
+    public static function wrapBotRequest(string $rawInput) : DuerRequest
     {
         $rawInput = str_replace("", "", $rawInput);
         $postData = json_decode($rawInput, true);
-        return new BotRequest($postData);
+        return new DuerRequest($postData);
     }
 
-    public static function wrapBotResponse(BotRequest $request) : BotResponse
+    public static function wrapBotResponse(DuerRequest $request) : DuerResponse
     {
-        return new BotResponse(
+        return new DuerResponse(
             $request,
             $request->getSession(),
             $request->getNlu()
@@ -158,11 +161,11 @@ class DuerOSRequest extends AbstractMessageRequest
     }
 
     /**
-     * @return BotRequest
+     * @return DuerRequest
      */
-    public function getBotRequest(): BotRequest
+    public function getDuerRequest(): DuerRequest
     {
-        return $this->botRequest;
+        return $this->duerRequest;
     }
 
 
@@ -186,7 +189,7 @@ class DuerOSRequest extends AbstractMessageRequest
 
     protected function flushResponse(): void
     {
-        $output =$this->botResponse->build([
+        $output =$this->duerResponse->build([
             'outputSpeech' => trim($this->outSpeech)
         ]);
 
@@ -200,7 +203,7 @@ class DuerOSRequest extends AbstractMessageRequest
 
     public function fetchUserId(): string
     {
-        return $this->botRequest->getUserId() ?? '';
+        return $this->duerRequest->getUserId() ?? '';
     }
 
     public function fetchUserName(): string
@@ -214,7 +217,7 @@ class DuerOSRequest extends AbstractMessageRequest
      */
     public function fetchUserData(): array
     {
-        return $this->botRequest->getUserInfo() ?? [];
+        return $this->duerRequest->getUserInfo() ?? [];
     }
 
     /**
@@ -223,96 +226,42 @@ class DuerOSRequest extends AbstractMessageRequest
      */
     protected function makeInputMessage($input): Message
     {
-        if ($this->botRequest->isLaunchRequest()) {
+        if ($this->duerRequest->isLaunchRequest()) {
             return new ConnectionEvt();
         }
-        if ($this->botRequest->isSessionEndedRequest()) {
+        if ($this->duerRequest->isSessionEndedRequest()) {
             return new QuitEvt();
         }
 
-        return new Text($this->botRequest->getQuery());
+        return new Text($this->duerRequest->getQuery());
     }
 
     public function fetchNLU(): ? NLU
     {
-        if (isset($this->nlu)) {
-            return $this->nlu;
-        }
-        $nlu = new NatureLanguageUnit();
 
-        $userId = $this->fetchUserId();
-        if (empty($userId)) {
-            $nlu->setMatchedIntent(QuitInt::getContextName());
+        return $this->nlu ?? $this->nlu = $this->nluParser->parseNLU();
 
-        } elseif ($this->botRequest->isLaunchRequest()) {
-            $nlu->setMatchedIntent(HomeInt::class);
-
-        } elseif ($this->botRequest->isSessionEndedRequest()) {
-            $nlu->setMatchedIntent(QuitInt::class);
-        } else {
-            $nlu = $this->bootIntentNLU($nlu);
-        }
-
-        return $this->nlu = $nlu;
-    }
-
-    protected function bootIntentNLU(NLU $nlu) : NLU
-    {
-        $botNLU = $this->botRequest->getNlu();
-
-        // matched nlu
-        $matchedIntent = $botNLU->getIntentName();
-        if (empty($matchedIntent)) {
-            return $nlu;
-        }
-
-        // 默认模式下, 视作没有匹配到任何意图.
-        if ($matchedIntent === DuerOSCommonIntents::COMMON_DEFAULT) {
-            return $nlu;
-        }
-
-        $nlu->setMatchedIntent($botNLU);
-        $intentData = $this->botRequest->getData()['request']['intents'];
-        // possible intent and entities
-        foreach ($intentData as $intentDatum) {
-            $name = $intentDatum['name'] ?? '';
-            if (empty($name)) {
-                continue;
-            }
-
-            $nlu->addPossibleIntent($name, 0);
-            $slots = $intentDatum['slots'] ?? [];
-            if (!empty($slots)) {
-                $entities = array_map(function($slot){
-                    return $slot['values'] ?? $slot['value'] ?? null;
-                }, $slots);
-                $nlu->setIntentEntities($name, $entities);
-
-                //todo duer os 的 confirm 先没有处理
-            }
-        }
-        return $nlu;
     }
 
     public function fetchMessageId(): string
     {
-        return $this->messageId = $this->botRequest->getLogId() ?? $this->generateMessageId();
+        return $this->messageId = $this->duerRequest->getLogId() ?? $this->generateMessageId();
     }
 
     public function fetchSessionId(): ? string
     {
         return $this->sessionId
                 //todo bot-sdk 开发规范不够好.
-            ?? $this->sessionId = $this->botRequest->getSession()->sessionId;
+            ?? $this->sessionId = $this->duerRequest->getSession()->sessionId;
     }
 
 
     /**
-     * @return BotResponse
+     * @return DuerResponse
      */
-    public function getBotResponse(): BotResponse
+    public function getDuerResponse(): DuerResponse
     {
-        return $this->botResponse;
+        return $this->duerResponse;
     }
 
 }
