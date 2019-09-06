@@ -54,20 +54,18 @@ class SessionDriver implements Contract
         $belongsTo = $snapshot->belongsTo;
         $key = $this->sessionKey($belongsTo);
         $caching = serialize($snapshot);
-//        $bool = $this->driver->getRedis()->set($key, $caching, $expireSeconds);
 
         $redis = $this->driver->getRedis();
-        $bool = $redis->hSet($key, self::SNAPSHOT_HASH_KEY, $caching);
+        $result = $redis->hSet($key, self::SNAPSHOT_HASH_KEY, $caching);
 
-        if ( $bool) {
-
-            $redis->expire($key, $expireSeconds);
-
-        } else {
+        if ( $result === false) {
             $this->logger->error(__METHOD__ . ' failed', [
                 'belongsTo' => $belongsTo,
                 'sessionId' => $snapshot->sessionId,
             ]);
+        } else {
+            $redis->expire($key, $expireSeconds);
+
         }
     }
     
