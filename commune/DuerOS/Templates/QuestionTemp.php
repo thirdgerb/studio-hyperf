@@ -122,7 +122,7 @@ class QuestionTemp extends AbstractTemp
 
         // 语音和文字不一样的地方. 不会主动渲染 default 和 suggestions
         // 最好是手写进描述里.
-        $question = $this->translator->trans($query, $slots);
+        $question = $this->translator->trans($query, $slots->all());
         return [ new Text($question)];
     }
 
