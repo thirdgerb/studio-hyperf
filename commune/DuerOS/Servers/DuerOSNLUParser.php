@@ -12,7 +12,10 @@ use Commune\Chatbot\Blueprint\Conversation\NLU;
 use Commune\Chatbot\App\Components\Predefined\Navigation\HomeInt;
 use Commune\Chatbot\App\Components\Predefined\Navigation\QuitInt;
 use Commune\Chatbot\Framework\Conversation\NatureLanguageUnit;
-use Commune\DuerOS\Constants\DuerOSCommonIntents;
+use Commune\Chatbot\OOHost\Context\Intent\IntentMessage;
+use Commune\DuerOS\Constants\CommonIntents;
+use Commune\DuerOS\Constants\DuerOSIntent;
+use Commune\DuerOS\DuerOSComponent;
 
 class DuerOSNLUParser
 {
@@ -26,6 +29,11 @@ class DuerOSNLUParser
      * @var NLU
      */
     protected $nlu;
+
+    /**
+     * @var DuerOSComponent
+     */
+    protected $duerOSComponent;
 
     /**
      * DuerOSNLUParser constructor.
@@ -70,12 +78,16 @@ class DuerOSNLUParser
         }
 
         // 默认模式下, 视作没有匹配到任何意图.
-        if ($matchedIntent === DuerOSCommonIntents::COMMON_DEFAULT) {
+        if ($matchedIntent === CommonIntents::COMMON_DEFAULT) {
             return $nlu;
         }
 
-        // 默认意图.
+        // 意图转换.
         $communeMatchedIntent = $this->parseDuerOSIntentToCommune($matchedIntent);
+        if (empty($communeMatchedIntent)) {
+            return $nlu;
+        }
+
         $nlu->setMatchedIntent($communeMatchedIntent);
         $intentData = $this->duerRequest->getData()['request']['intents'];
 
@@ -87,21 +99,58 @@ class DuerOSNLUParser
             }
 
             $name = $this->parseDuerOSIntentToCommune($duerOSIntentName);
-
             $nlu->addPossibleIntent($name, 0);
+
+            // entities 赋值.
+            $entities = [];
+
+            // confirmed 赋值.
+            $intentConfirmed = $intentDatum[DuerOSIntent::CONFIRMATION_STATUS] ?? null;
+            if ($intentConfirmed === DuerOSIntent::STATUS_CONFIRMED) {
+                $entities[IntentMessage::INTENT_CONFIRMATION] = true;
+            } elseif ($intentConfirmed === DuerOSIntent::STATUS_DENIED) {
+                $entities[IntentMessage::INTENT_CONFIRMATION] = false;
+            }
+
+            // slots 赋值.
             $slots = $intentDatum['slots'] ?? [];
+            $confirmedSlots = [];
             if (!empty($slots)) {
-                $entities = array_map(function($slot){
-                    return $slot['values'] ?? $slot['value'] ?? null;
-                }, $slots);
+
+                foreach ($slots as $slotName => $slotValue) {
+
+                    $entityName = $slotValue['name'] ?? $slotName;
+                    $entities[$entityName] = $slotValue['values']
+                        ?? $slotValue['name']
+                        ?? null;
+
+                    // confirmation
+                    if (isset($slotValue[DuerOSIntent::CONFIRMATION_STATUS])) {
+                        $confirmedSlots[$entityName] = $slotValue[DuerOSIntent::CONFIRMATION_STATUS] == DuerOSIntent::STATUS_CONFIRMED;
+                    }
+
+                }
+            }
+
+            if (!empty($confirmedSlots)) {
+                $entities[IntentMessage::ENTITIES_CONFIRMATION] = $confirmedSlots;
+            }
+
+            if (!empty($entities)) {
                 $nlu->setIntentEntities($name, $entities);
             }
         }
         return $nlu;
     }
 
-    protected function parseDuerOSIntentToCommune(string $duerOSIntentName) : string
+    protected function parseDuerOSIntentToCommune(string $duerOSIntentName) : ? string
     {
+        $mapping = $this->duerOSComponent->intentMapping;
 
+        if (array_key_exists($duerOSIntentName, $mapping)) {
+            return $mapping[$duerOSIntentName];
+        }
+
+        return $duerOSIntentName;
     }
 }

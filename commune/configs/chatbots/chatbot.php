@@ -21,7 +21,6 @@ return [
     // 2. 类名 => 数组,  会用数组内的值覆盖 stub 的相关参数.
     // 3. 类名 => 子类名, 会用子类的实例来绑定父类类名.
     'configBindings' => [
-        \Commune\DuerOS\Options\DuerOSOption::class,
     ],
 
 
@@ -29,7 +28,6 @@ return [
     // 但component 不仅会预加载配置, 而且还能注册各种组件, 进行初始化等.
     'components' => [
         \Commune\Demo\App\DemoComponent::class,
-        \Commune\DuerOS\Demo\DuerOSDemo::class,
     ],
 
     'baseServices' => [],
@@ -37,11 +35,11 @@ return [
     // 进程级别的服务注册
     'processProviders' => [
         // 基础service
-        Providers\StudioServiceProvider::class,
+        'studio' => Providers\StudioServiceProvider::class,
         // 注册 feel emotion 模块
-        Providers\FeelingServiceProvider::class,
+        'feeling' => Providers\FeelingServiceProvider::class,
         // register chatbot event
-        Providers\EventServiceProvider::class,
+        'event' => Providers\EventServiceProvider::class,
     ],
 
     // 在worker中注册的服务, 多个请求共享
@@ -116,7 +114,7 @@ return [
             ]
         ],
 
-        'rootContextName' => \Commune\DuerOS\Demo\TestCase::class,
+        'rootContextName' => \Commune\DuerOS\Contexts\TestCase::class,
 
         'sessionPipes' => [
             // event 转 message

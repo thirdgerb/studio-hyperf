@@ -63,13 +63,15 @@
             "Commune\\Hyperf\\": "commune/Hyperf/",
             "Commune\\Components\\": "commune/Components/",
             "Commune\\DuerOS\\": "commune/DuerOS/",
-            "Commune\\Studio\\": "app-studio"
+            "Commune\\Studio\\": "app-studio",
+            "Commune\\Apps\\": "apps"
         },
         "files": []
     },
     "autoload-dev": {
         "psr-4": {
-            "HyperfTest\\": "./test/"
+            "HyperfTest\\": "./test/",
+            "Commune\\Test\\Studio\\" : "commune/tests"
         }
     },
     "minimum-stability": "dev",

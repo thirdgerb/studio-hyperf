@@ -11,7 +11,7 @@ namespace Commune\Hyperf\Servers\Tcp;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Swoole\Server;
 use Commune\Chatbot\Blueprint\Application as ChatApp;
-use Commune\Chatbot\Framework\Messages\Events\ConnectionEvt;
+use Commune\Chatbot\App\Messages\Events\ConnectionEvt;
 
 class TcpServer
 {

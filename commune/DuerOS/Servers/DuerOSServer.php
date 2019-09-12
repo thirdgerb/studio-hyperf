@@ -8,11 +8,8 @@
 namespace Commune\DuerOS\Servers;
 
 
-use Baidu\Duer\Botsdk\Request;
-use Baidu\Duer\Botsdk\Response;
 use Commune\Chatbot\Blueprint\Application;
-use Commune\Chatbot\Framework\ChatApp;
-use Commune\DuerOS\Options\DuerOSOption;
+use Commune\DuerOS\DuerOSComponent;
 use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Hyperf\Contract\OnRequestInterface;
@@ -20,7 +17,6 @@ use Hyperf\Server\ServerFactory;
 use Psr\Container\ContainerInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
-use Hyperf\HttpMessage\Server\Request as Psr7Request;
 
 class DuerOSServer implements OnRequestInterface
 {
@@ -38,6 +34,11 @@ class DuerOSServer implements OnRequestInterface
      * @var HyperfBotOption
      */
     protected $botOption;
+
+    /**
+     * @var DuerOSComponent
+     */
+    protected $duerOSOption;
 
     /**
      * @var \Swoole\Server
@@ -62,6 +63,8 @@ class DuerOSServer implements OnRequestInterface
             ->get(ServerFactory::class)
             ->getServer()
             ->getServer();
+
+        $this->duerOSOption =$this->chatApp->getProcessContainer()->get(DuerOSComponent::class);
     }
 
     protected function getPrivateKeyContent() : string
@@ -69,8 +72,8 @@ class DuerOSServer implements OnRequestInterface
         if (isset($this->privateKeyContent)) {
             return $this->privateKeyContent;
         }
-        $option =$this->chatApp->getProcessContainer()->get(DuerOSOption::class);
-        $keyFile = $option->privateKey;
+
+        $keyFile = $this->duerOSOption->privateKey;
 
         if (empty($keyFile)) {
             $this->chatApp->getConsoleLogger()->warning('dueros openssl verify with empty private key');
@@ -91,6 +94,7 @@ class DuerOSServer implements OnRequestInterface
         $privateKeyContent = $this->getPrivateKeyContent();
         $chatbotRequest = new DuerOSRequest(
             $this->botOption,
+            $this->duerOSOption,
             $this->server,
             $request,
             $response,
@@ -98,11 +102,17 @@ class DuerOSServer implements OnRequestInterface
         );
 
         if ($chatbotRequest->verify()) {
-            $this->chatApp->getKernel()->onUserMessage($chatbotRequest);
+
+            $this->handleRequest($chatbotRequest);
 
         } else {
             $chatbotRequest->illegalResponse();
         }
     }
 
+
+    protected function handleRequest(DuerOSRequest $request) : void
+    {
+        $this->chatApp->getKernel()->onUserMessage($request);
+    }
 }

@@ -47,19 +47,27 @@ class StartApp extends SymfonyCommand
 
         $this->checkEnvironment($output);
 
+
         // 名称检查
         $name = $input->getArgument('chatbot_name');
-        if (empty($name)) {
-            $output->writeln('<error>Error</error> chatbot name is required');
-            exit(0);
-        }
 
         // 获取配置
         $communeConfig = $this->container
             ->get(ConfigInterface::class)
             ->get('commune');
 
+        if (empty($name)) {
+            $apps = array_keys($communeConfig['apps']);
+            $output->writeln('<error>Error</error> chatbot name is required');
+            $output->writeln('you may want to start : ');
+            foreach ($apps as $app) {
+                $output->writeln("- $app");
+            }
+            exit(0);
+        }
+
         $config = $communeConfig['apps'][$name] ?? [];
+
         if (empty($config)) {
             $output->writeln('<error>Error</error> chatbot '.$name.' not exists');
             exit(0);

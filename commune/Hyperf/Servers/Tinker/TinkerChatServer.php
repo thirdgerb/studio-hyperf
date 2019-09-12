@@ -11,7 +11,7 @@ namespace Commune\Hyperf\Servers\Tinker;
 use Commune\Chatbot\Blueprint\Conversation\Conversation;
 use Commune\Chatbot\Contracts\ChatServer;
 use Commune\Chatbot\Framework\ChatApp;
-use Commune\Chatbot\Framework\Messages\Events\ConnectionEvt;
+use Commune\Chatbot\App\Messages\Events\ConnectionEvt;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TinkerChatServer implements ChatServer

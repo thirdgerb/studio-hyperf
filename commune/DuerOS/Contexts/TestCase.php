@@ -5,7 +5,7 @@
  * @package Commune\DuerOS\Demo
  */
 
-namespace Commune\DuerOS\Demo;
+namespace Commune\DuerOS\Contexts;
 
 
 use Commune\Chatbot\App\Callables\Actions\Redirector;
@@ -16,8 +16,8 @@ use Commune\Chatbot\OOHost\Context\OOContext;
 use Commune\Chatbot\OOHost\Context\Stage;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
 use Commune\Chatbot\OOHost\Directing\Navigator;
-use Commune\Demo\App\Cases\Maze\MazeTask;
-use Commune\DuerOS\Demo\Memories\UserInfoMem;
+use Commune\Demo\App\Cases\Maze\MazeInt;
+use Commune\DuerOS\Contexts\Memories\UserInfoMem;
 
 /**
  * @property-read string $to
@@ -61,9 +61,10 @@ class TestCase extends OOContext
                     ->is('hello')
                     ->is('你好')
                 ->todo(function(Dialog $dialog) {
-                    $this->to = MazeTask::class;
+                    $this->to = MazeInt::class;
                     return $dialog->goStage('once');
                 })
+                    ->isIntent(MazeInt::class)
                     ->is('maze')
                     ->is('迷宫')
                 ->todo(function(Dialog $dialog){

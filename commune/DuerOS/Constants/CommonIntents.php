@@ -8,7 +8,7 @@
 namespace Commune\DuerOS\Constants;
 
 
-class DuerOSCommonIntents
+class CommonIntents
 {
     const INTENT_REQUEST = 'IntentRequest';
 

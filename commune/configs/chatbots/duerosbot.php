@@ -3,7 +3,10 @@
 
 
 $chatbot = include __DIR__ . '/chatbot.php';
+
+// 替换掉系统默认的render
 $chatbot['conversationProviders']['render'] = \Commune\DuerOS\Providers\RenderServiceProvider::class;
+
 
 /**
  * 机器人的默认配置.
@@ -13,7 +16,7 @@ $chatbot['conversationProviders']['render'] = \Commune\DuerOS\Providers\RenderSe
 return [
     'chatbotName' => 'commune-dueros',
 
-    'configBindings' => [
-        \Commune\DuerOS\Options\DuerOSOption::class,
+    'components' => [
+        \Commune\DuerOS\DuerOSComponent::class,
     ],
 ] + $chatbot;
