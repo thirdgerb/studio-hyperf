@@ -156,7 +156,7 @@ class DuerOSRequest extends AbstractMessageRequest
         $this->duerResponse = static::wrapBotResponse($this->duerRequest);
 
         $this->duerResponsePolicy();
-        $this->nluParser = new DuerOSNLUParser($this->duerRequest);
+        $this->nluParser = new DuerOSNLUParser($this->duerRequest, $this->duerOSOption);
 
         // 默认回复
         $this->rePrompt = $this->duerOSOption->rePrompt;

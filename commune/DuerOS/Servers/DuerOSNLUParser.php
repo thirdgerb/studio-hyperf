@@ -38,10 +38,12 @@ class DuerOSNLUParser
     /**
      * DuerOSNLUParser constructor.
      * @param DuerRequest $duerRequest
+     * @param DuerOSComponent $component
      */
-    public function __construct(DuerRequest $duerRequest)
+    public function __construct(DuerRequest $duerRequest, DuerOSComponent $component)
     {
         $this->duerRequest = $duerRequest;
+        $this->duerOSComponent = $component;
     }
 
     public function parseNLU() : NLU
@@ -145,7 +147,7 @@ class DuerOSNLUParser
 
     protected function parseDuerOSIntentToCommune(string $duerOSIntentName) : ? string
     {
-        $mapping = $this->duerOSComponent->intentMapping;
+        $mapping = $this->duerOSComponent->intentMapping ?? [];
 
         if (array_key_exists($duerOSIntentName, $mapping)) {
             return $mapping[$duerOSIntentName];
