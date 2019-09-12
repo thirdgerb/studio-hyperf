@@ -17,6 +17,7 @@ return [
     'chatbotName' => 'commune-dueros',
 
     'components' => [
+        \Commune\Demo\App\DemoComponent::class,
         \Commune\DuerOS\DuerOSComponent::class,
     ],
 ] + $chatbot;

@@ -8,7 +8,6 @@
 namespace Commune\DuerOS\Templates;
 
 
-use Commune\Chatbot\App\Messages\QA\Contextual\ContextualQ;
 use Commune\Chatbot\App\Messages\Text;
 use Commune\Chatbot\Blueprint\Conversation\Conversation;
 use Commune\Chatbot\Blueprint\Message\Message;
