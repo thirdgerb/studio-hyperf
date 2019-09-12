@@ -21,16 +21,16 @@ class OrdinalDirective extends AbsDirective
     protected $suggestions;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $entityName;
 
     /**
      * OrdinalDirective constructor.
      * @param array $suggestions
-     * @param string $entityName
+     * @param string|null $entityName
      */
-    public function __construct(array $suggestions, string $entityName)
+    public function __construct(array $suggestions, string $entityName = null)
     {
         $this->suggestions = $suggestions;
         $this->entityName = $entityName;
