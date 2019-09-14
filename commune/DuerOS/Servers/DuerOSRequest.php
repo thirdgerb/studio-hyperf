@@ -137,7 +137,6 @@ class DuerOSRequest extends AbstractMessageRequest
         string $privateKeyContent
     )
     {
-
         $this->response = $response;
         $this->duerOSOption = $duerOSOption;
         $this->response->header('Content-Type', 'application/json;charset=utf-8');
@@ -253,7 +252,7 @@ class DuerOSRequest extends AbstractMessageRequest
 
         // verbose
         } elseif ($message instanceof VerboseMsg) {
-            $this->outSpeech .= PHP_EOL . $message->getText();
+            $this->outSpeech .= '. ' . $message->getText();
 
         // 有特殊的 Reprompt
         } elseif ($message instanceof RePrompt) {
@@ -275,9 +274,9 @@ class DuerOSRequest extends AbstractMessageRequest
 
     protected function flushResponse(): void
     {
-        $data = [
-            'reprompt' => $this->rePrompt
-        ];
+        $data = [];
+        // todo 目前没有别的办法处理了. 除非duerOS 修改有问题的api
+        $data['reprompt'] = $this->rePrompt;
 
         if (!empty($this->outSpeech)) {
             $data['outputSpeech'] = '<speak>'.trim($this->outSpeech) .'</speak>';

@@ -21,6 +21,7 @@ use Hyperf\Framework\Bootstrap;
  * @property-read string $dbPool
  * @property-read string $loggerPool
  * @property-read array $server
+ * @property-read bool $debug
  *
  */
 class HyperfBotOption extends Option
@@ -33,6 +34,8 @@ class HyperfBotOption extends Option
     public static function stub(): array
     {
         return [
+
+            'debug' => env('DUEROS_DEBUG', true),
 
             'chatbot' => ChatbotConfig::stub(),
 

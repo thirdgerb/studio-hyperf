@@ -101,8 +101,11 @@ class DuerOSServer implements OnRequestInterface
             $privateKeyContent
         );
 
-        if ($chatbotRequest->verify()) {
+        if (!$this->botOption->debug) {
+            $chatbotRequest->getCertificate()->enableVerifyRequestSign();
+        }
 
+        if ($chatbotRequest->verify()) {
             $this->handleRequest($chatbotRequest);
 
         } else {

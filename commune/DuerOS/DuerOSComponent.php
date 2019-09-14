@@ -17,7 +17,6 @@ use Commune\Chatbot\App\Components\Predefined\Loop;
  * @property-read string $name 技能的名字
  * @property-read string $privateKey 私钥的文件路径.
  * @property-read array $intentMapping duerOS 的intent 变成本地的Intent
- * @property-read string[] $registerIntents 项目已注册的 intents.
  * @property-read string $rePrompt 用户没有及时响应多轮对话时的回复.
  */
 class DuerOSComponent extends ComponentOption
@@ -37,13 +36,17 @@ class DuerOSComponent extends ComponentOption
     {
         return [
             // 技能名字.
-            'name' => 'dueros',
+            'name' => 'commune_test',
 
-            'privateKey' => '',
+            'privateKey' => env('DUEROS_PRIVATE_KEY', ''),
 
+
+            // 系统
             'rePrompt' => '没听清, 请再说一次?',
 
-
+            /**
+             * DuerOS intent name 和本地 intent name 的映射关系.
+             */
             'intentMapping' => [
                 // 默认
                 DuerIntents::COMMON_DEFAULT => null,
@@ -62,10 +65,6 @@ class DuerOSComponent extends ComponentOption
 
             ],
 
-            // 项目
-            'registerIntents' => [
-
-            ],
         ];
     }
 
