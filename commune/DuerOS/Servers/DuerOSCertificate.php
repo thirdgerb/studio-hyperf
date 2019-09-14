@@ -137,11 +137,6 @@ class DuerOSCertificate
         }
         $sig = $this->getRequestSig();
 
-        // 百度没有发的情况.
-        if (empty($sig)) {
-            return true;
-        }
-
         // 公钥解密
         $verify = openssl_verify(
             $this->rawInput,
