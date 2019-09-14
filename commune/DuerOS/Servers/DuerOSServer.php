@@ -15,6 +15,7 @@ use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Hyperf\Contract\OnRequestInterface;
 use Hyperf\Server\ServerFactory;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 
@@ -109,6 +110,15 @@ class DuerOSServer implements OnRequestInterface
             $this->handleRequest($chatbotRequest);
 
         } else {
+            $this->chatApp
+                ->getProcessContainer()
+                ->get(LoggerInterface::class)
+                ->warning('request failed certificate', [
+                    'debug' => $this->botOption->debug,
+                    'servers' => $request->server,
+                    'privateKeyExists' => !empty($privateKeyContent),
+                ]);
+
             $chatbotRequest->illegalResponse();
         }
     }

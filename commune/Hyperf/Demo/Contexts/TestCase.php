@@ -5,7 +5,7 @@
  * @package Commune\DuerOS\Demo
  */
 
-namespace Commune\DuerOS\Contexts;
+namespace Commune\Hyperf\Demo\Contexts;
 
 
 use Commune\Chatbot\App\Callables\Actions\Redirector;
@@ -17,9 +17,10 @@ use Commune\Chatbot\OOHost\Context\Stage;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
 use Commune\Chatbot\OOHost\Directing\Navigator;
 use Commune\Demo\App\Cases\Maze\MazeInt;
-use Commune\DuerOS\Contexts\Memories\UserInfoMem;
+use Commune\Hyperf\Demo\Memories\UserInfoMem;
 
 /**
+ * @property-read string $name;
  * @property-read string $to
  */
 class TestCase extends OOContext
@@ -29,23 +30,21 @@ class TestCase extends OOContext
 
     public static function __depend(Depending $depending): void
     {
+        $depending->onMemoryVal('name', UserInfoMem::class, 'name');
+    }
+
+
+    public function __exiting(Exiting $listener): void
+    {
+        // 如果被cancel了就直接退出.
+        $listener->onCancel(Redirector::goQuit());
     }
 
     public function __onStart(Stage $stage): Navigator
     {
-        $userInfo = UserInfoMem::from($this);
-
-        if (isset($userInfo->name)) {
-            return $stage->buildTalk()
-                ->info('你好啊! %name%', ['name' => $userInfo->name])
-                ->goStage('menu');
-
-        } else {
-
-            return $stage->buildTalk()
-                ->goStage('askName');
-        }
-
+        return $stage->buildTalk()
+            ->info('你好啊! %name%', ['name' => $this->name])
+            ->goStage('menu');
 
     }
 
@@ -67,6 +66,7 @@ class TestCase extends OOContext
                     ->isIntent(MazeInt::class)
                     ->is('maze')
                     ->is('迷宫')
+
                 ->todo(function(Dialog $dialog){
                     $dialog->say()->info("您说了退出.");
                     return $dialog->quit();
@@ -99,14 +99,16 @@ class TestCase extends OOContext
             ->end();
     }
 
+    /**
+     * 退出整个机器人.
+     * @param Stage $stage
+     * @return Navigator
+     */
     public function __onOnce(Stage $stage) : Navigator
     {
         return $stage->sleepTo($this->to, Redirector::goQuit());
     }
 
-    public function __exiting(Exiting $listener): void
-    {
-    }
 
 
 }

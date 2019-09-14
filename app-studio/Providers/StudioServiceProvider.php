@@ -38,17 +38,6 @@ class StudioServiceProvider extends BaseServiceProvider
             ExceptionHandler::class,
             Handler::class
         );
-
-        $botOption = $this->app->get(HyperfBotOption::class);
-
-        /**
-         * 用 hyperf 的logger 覆盖掉
-         * @var ContainerInterface $di
-         */
-        $di = $this->app[ProcessContainer::HYPERF_CONTAINER_ID];
-        $logger = $di->get(LoggerFactory::class)->get($botOption->loggerPool);
-        $this->app->instance(LoggerInterface::class, $logger);
-
     }
 
 

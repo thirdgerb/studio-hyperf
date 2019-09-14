@@ -7,6 +7,16 @@
 
 namespace Commune\DuerOS\Servers;
 
+/**
+ * todo 未来还是要和 bot-sdk同步才行.
+ *
+ * 由于 DuerOS 的 bot-sdk 自己的 certificate 用了大量private方法
+ * 同时又用了全局变量, 导致在swoole 里不兼容, 又无法 hack
+ *
+ * 所以我特别反对把 java 的习惯带到 php. 用private 作为默认
+ * 只有特别明白为什么用 private, 才应该用. 否则都默认是 protected
+ *
+ */
 class DuerOSCertificate
 {
     protected $verifyRequestSign = false;
@@ -125,11 +135,17 @@ class DuerOSCertificate
         if(empty($publicKey) || empty($this->rawInput)) {
             return false;
         }
+        $sig = $this->getRequestSig();
+
+        // 百度没有发的情况.
+        if (empty($sig)) {
+            return true;
+        }
 
         // 公钥解密
         $verify = openssl_verify(
             $this->rawInput,
-            base64_decode($this->getRequestSig()),
+            base64_decode($sig),
             $publicKey,
             OPENSSL_ALGO_SHA1
         );

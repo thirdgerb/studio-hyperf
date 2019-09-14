@@ -10,7 +10,7 @@ use Commune\Studio\SessionPipes;
  */
 return [
 
-    'chatbotName' => 'commune-hyperf',
+    'chatbotName' => 'commune-demo',
 
     'debug' => true,
 
@@ -27,7 +27,7 @@ return [
     // 预加载的组件. 使用方法类似 configBindings
     // 但component 不仅会预加载配置, 而且还能注册各种组件, 进行初始化等.
     'components' => [
-        \Commune\Demo\App\DemoComponent::class,
+        \Commune\Hyperf\Demo\HyperfDemoComponent::class,
     ],
 
     'baseServices' => [],
@@ -80,8 +80,8 @@ return [
     // logger module
     'logger' => [
         'name' => 'chatbot',
-        'path' => BASE_PATH . '/runtime/commune_chatbot.log',
-        'days' => 0,
+        'path' => BASE_PATH . '/runtime/commune_demo.log',
+        'days' => 7,
         'level' => 'debug',
         'bubble' => true,
         'permission' => NULL,
@@ -104,17 +104,17 @@ return [
         // multi-dimension array will be flatten to dot pattern
         // such as 'self.name'
         'slots' => [
-            'self' => [
-                'name' => 'CommuneChatbot',
-                'project' => 'commune/chatbot',
-                'fullname' => 'commune/chatbot demo',
-                'author' => 'thirdgerb',
-                'email' => 'thirdgerb@gmail.com',
-                'desc' => '多轮对话机器人开发框架',
-            ]
+            //'self' => [
+            //    'name' => 'CommuneChatbot',
+            //    'project' => 'commune/chatbot',
+            //    'fullname' => 'commune/chatbot demo',
+            //    'author' => 'thirdgerb',
+            //    'email' => 'thirdgerb@gmail.com',
+            //    'desc' => '多轮对话机器人开发框架',
+            //]
         ],
 
-        'rootContextName' => \Commune\DuerOS\Contexts\TestCase::class,
+        'rootContextName' => \Commune\Hyperf\Demo\Contexts\TestCase::class,
 
         'sessionPipes' => [
             // event 转 message

@@ -19,7 +19,6 @@ use Hyperf\Framework\Bootstrap;
  * @property-read bool $bufferMessage 是否缓存消息 whether buffer sending message to cache.
  * @property-read string $redisPool
  * @property-read string $dbPool
- * @property-read string $loggerPool
  * @property-read array $server
  * @property-read bool $debug
  *
@@ -42,8 +41,6 @@ class HyperfBotOption extends Option
             'redisPool' => 'default',
 
             'dbPool' => 'default',
-
-            'loggerPool' => 'default',
 
             'bufferMessage' => true,
 
