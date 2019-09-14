@@ -12,6 +12,12 @@ $chatbot['conversationProviders']['render'] = \Commune\DuerOS\Providers\RenderSe
 $chatbot['logger']['path'] = BASE_PATH . '/runtime/logs/dueros_maze.log';
 $chatbot['host']['rootContextName'] = \Commune\Demo\App\Cases\Maze\MazeInt::class;
 
+$chatbot['components'] = array_merge($chatbot['components'], [
+    \Commune\DuerOS\DuerOSComponent::class => [
+        'name' => '方向迷宫',
+    ],
+]);
+
 /**
  * 默认的迷宫demo
  */
