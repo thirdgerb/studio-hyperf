@@ -142,6 +142,9 @@ class DuerOSNLUParser
                 $nlu->setIntentEntities($name, $entities);
             }
         }
+
+        // 标记 NLU 已经处理过.
+        $nlu->done();
         return $nlu;
     }
 

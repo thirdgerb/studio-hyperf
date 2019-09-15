@@ -11,6 +11,7 @@ namespace Commune\Hyperf\Foundations\Drivers;
 use Commune\Chatbot\Contracts\ConsoleLogger;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Log\LoggerTrait;
+use Psr\Log\LogLevel;
 
 class StdConsoleLogger implements ConsoleLogger
 {
@@ -33,7 +34,10 @@ class StdConsoleLogger implements ConsoleLogger
 
     public function log($level, $message, array $context = array())
     {
-        $this->logger->log($level, strval($message), $context);
+        if (CHATBOT_DEBUG === false && $level == LogLevel::DEBUG) {
+            return;
+        }
+        $this->logger->log($level, $message, $context);
     }
 
 

@@ -76,28 +76,28 @@ class TestCase extends OOContext
                 ->end();
     }
 
-    public function __onAskName(Stage $stage) : Navigator
-    {
-        return $stage->buildTalk()
-            ->askVerbose('请问我应该如何称呼您?')
-            ->hearing()
-            ->isAnswer(function(Answer $answer, Dialog $dialog){
-                $name = $answer->toResult();
-                if (mb_strlen($name) > 5) {
-                    $dialog->say()->warning('不好意思, 称呼请控制在五个字以内. 换一个称呼可否?');
-                    return $dialog->wait();
-                }
-
-                $info = UserInfoMem::from($this);
-                $info->name = $name;
-
-
-                $dialog->say()->info("您好, %name%!", ['name'=> $info->name ]);
-
-                return $dialog->goStage('menu');
-            })
-            ->end();
-    }
+//    public function __onAskName(Stage $stage) : Navigator
+//    {
+//        return $stage->buildTalk()
+//            ->askVerbose('请问我应该如何称呼您?')
+//            ->hearing()
+//            ->isAnswer(function(Answer $answer, Dialog $dialog){
+//                $name = $answer->toResult();
+//                if (mb_strlen($name) > 5) {
+//                    $dialog->say()->warning('不好意思, 称呼请控制在五个字以内. 换一个称呼可否?');
+//                    return $dialog->wait();
+//                }
+//
+//                $info = UserInfoMem::from($this);
+//                $info->name = $name;
+//
+//
+//                $dialog->say()->info("您好, %name%!", ['name'=> $info->name ]);
+//
+//                return $dialog->goStage('menu');
+//            })
+//            ->end();
+//    }
 
     /**
      * 退出整个机器人.

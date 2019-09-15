@@ -2,6 +2,8 @@
 
 return [
 
+    'tinker' => include BASE_PATH . '/config/commune/chatbots/tinker.php',
+
     // 可以通过 commune:start 命令启动的, 真实客户端.
     // 所有配置都是 HyperfBotOption
     'apps' => [

@@ -10,9 +10,9 @@ use Commune\Studio\SessionPipes;
  */
 return [
 
-    'chatbotName' => 'commune-demo',
+    'chatbotName' => 'tinker',
 
-    'debug' => true,
+    'debug' => false,
 
     // 在这里可以预先绑定一些用 Option 类封装的配置.
     // 会将该配置预绑定到worker容器上, 作为单例.
@@ -21,6 +21,7 @@ return [
     // 2. 类名 => 数组,  会用数组内的值覆盖 stub 的相关参数.
     // 3. 类名 => 子类名, 会用子类的实例来绑定父类类名.
     'configBindings' => [
+        \Commune\Hyperf\Servers\Tinker\TinkerOption::class,
     ],
 
 
@@ -44,20 +45,20 @@ return [
 
     // 在worker中注册的服务, 多个请求共享
     'conversationProviders' => [
+
         // 权限识别
         'ability' => Providers\AbilityServiceProvider::class,
-        // 公共的rendering
+
+        // 公共d的rendering
         'render' =>  Providers\RenderServiceProvider::class,
-        // hyperf client driver . redis, db
-        // hyperf 的协程客户端
-        'client' => \Commune\Hyperf\Foundations\Providers\ClientDriverServiceProvider::class,
+
         // cache adapter driver
         // 实现 chatbot 需要的 cache adapter
-        'cache' => \Commune\Hyperf\Foundations\Providers\CacheServiceProvider::class,
-        // oo host session driver
-        'session' => \Commune\Hyperf\Foundations\Providers\SessionServiceProvider::class,
-        // message request service
-        'message' => \Commune\Hyperf\Foundations\Providers\MessageQueueServiceProvider::class,
+        // test only driver
+        'cache' => \Commune\Chatbot\App\Drivers\Demo\CacheServiceProvider::class,
+
+        // test only driver
+        'session' => \Commune\Chatbot\App\Drivers\Demo\SessionServiceProvider::class,
     ],
 
     'chatbotPipes' =>
@@ -80,8 +81,8 @@ return [
     // logger module
     'logger' => [
         'name' => 'chatbot',
-        'path' => BASE_PATH . '/runtime/commune_demo.log',
-        'days' => 7,
+        'path' => BASE_PATH . '/runtime/logs/tinker.log',
+        'days' => 0,
         'level' => 'debug',
         'bubble' => true,
         'permission' => NULL,
