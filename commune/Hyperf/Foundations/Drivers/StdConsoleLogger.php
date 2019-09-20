@@ -37,7 +37,7 @@ class StdConsoleLogger implements ConsoleLogger
         if (CHATBOT_DEBUG === false && $level == LogLevel::DEBUG) {
             return;
         }
-        $this->logger->log($level, $message, $context);
+        $this->logger->log($level, strval($message), $context);
     }
 
 

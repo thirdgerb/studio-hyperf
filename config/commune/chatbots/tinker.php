@@ -29,6 +29,8 @@ return [
     // 但component 不仅会预加载配置, 而且还能注册各种组件, 进行初始化等.
     'components' => [
         \Commune\Hyperf\Demo\HyperfDemoComponent::class,
+
+        \Commune\Components\StoryComponent::class,
     ],
 
     'baseServices' => [],
@@ -115,7 +117,7 @@ return [
             //]
         ],
 
-        'rootContextName' => \Commune\Hyperf\Demo\Contexts\TestCase::class,
+        'rootContextName' => 'story.examples.sanguo.changbanpo',
 
         'sessionPipes' => [
             // event 转 message

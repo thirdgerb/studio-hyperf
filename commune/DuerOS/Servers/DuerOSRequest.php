@@ -292,6 +292,22 @@ class DuerOSRequest extends AbstractMessageRequest
 
         $output =$this->duerResponse->build($data);
 
+        // 记录有效request的日志
+        $logger = $this->conversation->getLogger();
+        $logger->info('replyDuerOSQuery', [
+            'query' => $this->duerRequest->getQuery(),
+            'outSpeech' => $data['outputSpeech'] ?? '',
+        ]);
+        $logger->info(
+            'finishDuerOSRequest',
+            [
+                'input' => $this->rawInput,
+                'output' => $output,
+                'sig' => $this->certificate->getRequestSig(),
+                'cert' => $this->certificate->getSignatureCertUrl(),
+            ]
+        );
+
         // 触发事件, 可用于记录来回消息.
         $event = new DialogComplete(
             $this->conversation->getTraceId(),

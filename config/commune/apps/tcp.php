@@ -18,7 +18,7 @@ return [
                 'name' => 'http',
                 'type' => Server::SERVER_TCP,
                 'host' => 'localhost',
-                'port' => 9501,
+                'port' => intval(env('APP_TCP_IP', 9501)),
                 'sock_type' => SWOOLE_SOCK_TCP,
                 'callbacks' => [
                     SwooleEvent::ON_RECEIVE

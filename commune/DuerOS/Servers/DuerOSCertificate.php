@@ -95,13 +95,18 @@ class DuerOSCertificate
         return false;
     }
 
+    public function getSignatureCertUrl() : string
+    {
+        return $this->server['HTTP_SIGNATURECERTURL'] ?? '';
+    }
+
     /**
      * @param null
      * @return resource|null
      */
     protected function getRequestPublicKey()
     {
-        $filename = $this->server['HTTP_SIGNATURECERTURL'] ?? '';
+        $filename = $this->getSignatureCertUrl();
         if(!self::isBaiduDomain($filename) || empty($filename)) {
             return null;
         }
@@ -168,7 +173,7 @@ class DuerOSCertificate
     /**
      * @return string
      */
-    protected function getRequestSig() : string
+    public function getRequestSig() : string
     {
         return  $this->server['HTTP_SIGNATURE'] ?? '';
     }

@@ -1,7 +1,5 @@
-## 2019-09-15
+## 2019-09-20
 
-
--   把tinker 的配置加了回来, 但tinker 仍然无法取代 mock
--   std logger  实现了 debug
--   打算开始开发赵云传作为story component 的示例
-
+-   几个app监听的端口都移动到了 .env.example
+-   duerOsRequest 添加了接口日志.
+-   添加了 story 组件和 story app, 先用于测试.

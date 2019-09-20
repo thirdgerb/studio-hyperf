@@ -1,0 +1,266 @@
+id : story.examples.sanguo.changbanpo
+title : 赵云传-长坂坡
+messagePrefix : storyComponent.sanguo.changbanpo
+defaultSlots :
+  test: 长坂坡
+itemDef :
+  - id : helpJian
+    title : 帮助简雍
+    enums :
+      - true
+      - false
+  - id : sendJian
+    title : 亲自护送简雍
+    enums :
+      - true
+      - false
+  - id : saveMiZhu
+    title : 救下糜竺
+    enums :
+      - true
+      - false
+  - id : qingGang
+    title : 获得青釭剑
+    enums :
+      - true
+      - false
+defaultEpisodes :
+  - searchGan
+episodes :
+  - id: searchGan
+    title: 寻找甘夫人
+    defaultSlots:
+      test: 长板桥
+    stages :
+      - id : go
+        title : 出发救主
+        stories :
+          - searchGan
+          - imZhaoYun
+          - fightWholeNight
+        confirms :
+          - query: ifGoFindGan
+            yes : meetCivilians
+            no : endDieRegrat
+
+      - id : meetCivilians
+        title : 遇到平民
+        stories :
+          - startSearchGan
+          - meetCivilians
+        confirms :
+          - query : shouldHelpCivilians
+            yes : meetJianYong
+            no : missJianYong
+
+      - id : missJianYong
+        title : 错过简雍
+        stories :
+          - missJianYong
+        redirects :
+          - to : meetSoldier
+
+      - id : meetJianYong
+        title : 遇到简雍
+        stories :
+          - meetJianYong
+        choose :
+          - query: shouldHelpJianYong
+            choices:
+            - id : 派人护送
+              getItems :
+                helpJian : true
+                sendJian : false
+              to : sendSoldiersWithJian
+            - id : 亲自护送
+              getItems :
+                helpJian : true
+                sendJian : true
+              to : takeCareJian
+            - id : 给予马匹
+              getItems :
+                helpJian : false
+                sendJian : false
+              to : giveJianHorse
+
+      - id : sendSoldiersWithJian
+        title : 派兵护送简雍离开.
+        stories :
+          - sendSoldierWithJian
+        redirects :
+          - to : meetSoldier
+
+      - id : takeCareJian
+        title : 亲自护送简雍
+        stories :
+          - takeCareJian
+        redirects :
+          - to : meetSoldier
+
+      - id : giveJianHorse
+        title : 给简雍马匹
+        stories :
+          - giveJianHorse
+        redirects :
+          - to : meetSoldier
+
+
+      - id : meetSoldier
+        title : 遇到军士
+        redirects :
+          - ifItem :
+              sendJian: true
+            to : soldierDied
+          - to : toldAboutGan
+
+      - id : soldierDied
+        title : 军士已阵亡
+        stories :
+          - meetDiedSoldier
+        redirects :
+          - to : endNotFoundGan
+
+      - id : toldAboutGan
+        title : 军士报信
+        stories:
+          - meetSoldier
+          - toldAboutGan
+        redirects :
+          - to : searchWhichCrowd
+
+      - id : searchWhichCrowd
+        title : 在百姓中寻找甘夫人
+        stories :
+          - meetThreeCrowds
+        choose :
+          - query : searchWhichCrowd
+            choices :
+              - id : 百姓
+                to : foundGan
+              - id : 残兵
+                to : searchRunners
+              - id : 战士
+                to : searchFighters
+
+      - id : searchRunners
+        title : 在残兵中寻找甘夫人
+        stories :
+          - searchRunners
+        redirects :
+          - to : endNotFoundGan
+
+      - id : searchFighters
+        title : 在战士中寻找甘夫人
+        stories :
+          - searchFighters
+        redirects :
+          - to : endNotFoundGan
+
+
+      - id : foundGan
+        title : 在百姓中发现甘夫人
+        stories :
+          - foundGan
+          - toldMi
+        unlockEpisode: searchMi
+
+      - id : endNotFoundGan
+        title : 难觅寻踪
+        stories :
+          - notFoundGan
+
+      - id : endGuardGanMissMi
+        title : 不见糜夫人
+        stories :
+          - guardGanButMissMi
+
+      - id : endDieRegrat
+        title : 悔恨终身
+        stories :
+          - endDieRegrat
+
+  - id: searchMi
+    title : 寻找糜夫人
+    stages :
+      - id : fightChun
+        title : 打败淳于导
+        stories :
+          - meetChun
+
+  - id: ladyMi
+    title : 舍命托孤
+    stages :
+      - id : cryBaby
+        title : 阿斗哭泣
+        stories :
+          - hideInCorner
+          - armyIsNeer
+        confirms :
+          - query: shouldDouCry
+            yes : foundByZhao
+            no : endNotBeFound
+
+      - id : foundByZhao
+        title : 被赵将军找到
+        stories :
+          - foundByZhao
+        confirms :
+          - query : askRideHorse1
+            yes : endDieHalfWay
+            no : rideHorse2
+
+      - id : rideHorse2
+        title : 第二次催上马
+        stories :
+          - rideHorse2
+        confirms :
+          - query : askRideHorse2
+            yes : endDieHalfWay
+            no : rideHorse3
+
+      - id : rideHorse3
+        title : 第三次催上马
+        stories :
+          - enemyIsNeer
+          - rideHorse3
+        choose :
+          - query: rideOrRun
+            choices :
+              - id : 骑马
+                to : endDieHalfWay
+              - id : 步行
+                to : endDieRunning
+              - id : 投井
+                to : jumpWell
+
+      - id : jumpWell
+        title : 糜夫人投井
+        unlockEpisode : saveDou
+        stories :
+          - miJumpWell
+          - MiPoetry
+
+      - id : endDieRunning
+        title : 步行殒命
+        stories :
+          - endDieRunning
+
+      - id : endDieHalfWay
+        title : 命丧追兵
+        stories :
+          - endDieHalfWay
+
+      - id : endNotBeFound
+        title : 无人援救
+        stories :
+          - endNotSaved
+
+
+  - id: saveDou
+    title : 杀出重围
+    stages :
+      - id : carryDou
+        title : 怀抱阿斗
+        stories :
+          - carryDou
+        isGoodEnding : true

@@ -11,4 +11,5 @@ vendor/
 *.lock
 .phpunit*
 .rocketeer/
-deploy.sh
+deploy/
+test.php

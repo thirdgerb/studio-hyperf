@@ -9,6 +9,7 @@ return [
     'apps' => [
         'tcp' => include BASE_PATH. '/config/commune/apps/tcp.php',
         'dueros-maze' => include BASE_PATH . '/config/commune/apps/dueros-maze.php',
+        'dueros-story' => include BASE_PATH . '/config/commune/apps/dueros-story.php',
     ],
 
     // 可用的机器人. 每个chatbotName应该是独立的.
