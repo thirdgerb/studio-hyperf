@@ -250,10 +250,6 @@ class DuerOSRequest extends AbstractMessageRequest
         } elseif ($message instanceof SSML) {
             $this->outSpeech .= $message->getFormatted();
 
-        // verbose
-        } elseif ($message instanceof VerboseMsg) {
-            $this->outSpeech .= '. ' . $message->getText();
-
         // 有特殊的 Reprompt
         } elseif ($message instanceof RePrompt) {
             $this->rePrompt = $message->getText();
@@ -265,9 +261,14 @@ class DuerOSRequest extends AbstractMessageRequest
         // 卡片
         } elseif ($message instanceof AbsCard) {
             $this->cards[] = $message->toCardArray();
+
+        // verbose
+        } elseif ($message instanceof VerboseMsg) {
+            $this->outSpeech .= '. ' . $message->getText();
         }
 
-        // todo 还有模板. body template
+
+    // todo 还有模板. body template
 
         // 其它情况暂不处理.
     }

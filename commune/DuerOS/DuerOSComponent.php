@@ -11,12 +11,14 @@ use Commune\Chatbot\Framework\Component\ComponentOption;
 use Commune\DuerOS\Constants\CommonIntents as DuerIntents;
 use Commune\Chatbot\App\Components\Predefined\Attitudes;
 use Commune\Chatbot\App\Components\Predefined\Loop;
+use Commune\DuerOS\Constants\Dictionary;
 
 
 /**
  * @property-read string $name 技能的名字
  * @property-read string $privateKey 私钥的文件路径.
  * @property-read array $intentMapping duerOS 的intent 变成本地的Intent
+ * @property-read array[] $entityMapping duerOs 的entity 变成本地的entity
  * @property-read string $rePrompt 用户没有及时响应多轮对话时的回复.
  */
 class DuerOSComponent extends ComponentOption
@@ -56,6 +58,13 @@ class DuerOSComponent extends ComponentOption
                 DuerIntents::COMMON_PREVIOUS => Loop\PreviousInt::getContextName(),
                 // continue
                 DuerIntents::COMMON_CONTINUE => Loop\ContinueInt::getContextName(),
+
+            ],
+
+            'entityMapping' => [
+                'dialogue.ordinal' => [
+                    Dictionary::SYSTEM_NUMBER => 'ordinal'
+                ]
 
             ],
 

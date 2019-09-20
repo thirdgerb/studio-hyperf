@@ -121,7 +121,7 @@ class DuerOSNLUParser
 
                 foreach ($slots as $slotName => $slotValue) {
 
-                    $entityName = $slotValue['name'] ?? $slotName;
+                    $entityName = $this->parseEntityName($slotValue['name'] ?? $slotName);
                     $entities[$entityName] = $slotValue['values']
                         ?? $slotValue['name']
                         ?? null;
@@ -151,11 +151,13 @@ class DuerOSNLUParser
     protected function parseDuerOSIntentToCommune(string $duerOSIntentName) : ? string
     {
         $mapping = $this->duerOSComponent->intentMapping ?? [];
+        return $mapping[$duerOSIntentName] ?? $duerOSIntentName;
+    }
 
-        if (array_key_exists($duerOSIntentName, $mapping)) {
-            return $mapping[$duerOSIntentName];
-        }
-
-        return $duerOSIntentName;
+    protected function parseEntityName(string $intentName, string $duerEntityName) : string
+    {
+        $mapping = $this->duerOSComponent->entityMapping ?? [];
+        $parsing = $mapping[$intentName] ?? [];
+        return $parsing[$duerEntityName] ?? $duerEntityName;
     }
 }
