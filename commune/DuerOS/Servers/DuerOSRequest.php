@@ -256,7 +256,9 @@ class DuerOSRequest extends AbstractMessageRequest
 
         // 命令
         } elseif ($message instanceof AbsDirective) {
-            $this->directives[] = $message->toDirectiveArray();
+            $directive = $message->toDirectiveArray();
+            var_dump($directive);
+            $this->directives[] = $directive;
 
         // 卡片
         } elseif ($message instanceof AbsCard) {
