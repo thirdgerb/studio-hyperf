@@ -24,7 +24,7 @@ class DuerOSCertificate
     /**
      * @var string
      */
-    protected $privateKey;
+    protected $privateKeyContent;
 
     /**
      * @var array
@@ -55,7 +55,7 @@ class DuerOSCertificate
         array $server,
         string $rawInput
     ) {
-        $this->privateKey = $privateKeyContent;
+        $this->privateKeyContent = $privateKeyContent;
         $this->rawInput = $rawInput;
         $this->server = $server;
     }
@@ -132,7 +132,7 @@ class DuerOSCertificate
      * @return boolean
      */
     public function verifyRequest() {
-        if(empty($this->privateKey) || !$this->verifyRequestSign) {
+        if(empty($this->privateKeyContent) || !$this->verifyRequestSign) {
             return true;
         }
 
@@ -160,10 +160,10 @@ class DuerOSCertificate
      */
     public function getSig(string $content) : ? string
     {
-        if(empty($this->privateKey) || empty($content)) {
+        if(empty($this->privateKeyContent) || empty($content)) {
             return null;
         }
-        $privateKey = openssl_pkey_get_private($this->privateKey, '');
+        $privateKey = openssl_pkey_get_private($this->privateKeyContent, '');
         $encryptedData = '';
         // 私钥加密
         openssl_sign($content, $encryptedData, $privateKey, OPENSSL_ALGO_SHA1);

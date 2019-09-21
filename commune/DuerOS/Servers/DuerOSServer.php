@@ -92,15 +92,7 @@ class DuerOSServer implements OnRequestInterface
 
     public function onRequest(SwooleRequest $request, SwooleResponse $response): void
     {
-        $privateKeyContent = $this->getPrivateKeyContent();
-        $chatbotRequest = new DuerOSRequest(
-            $this->botOption,
-            $this->duerOSOption,
-            $this->server,
-            $request,
-            $response,
-            $privateKeyContent
-        );
+        $chatbotRequest = $this->generateRequest($request, $response);
 
         if (!$this->botOption->debug) {
             $chatbotRequest->getCertificate()->enableVerifyRequestSign();
@@ -123,6 +115,58 @@ class DuerOSServer implements OnRequestInterface
         }
     }
 
+    protected function generateRequest(SwooleRequest $request, SwooleResponse $response) : DuerOSRequest
+    {
+        $mock = DuerOSRequest::isMockingRequest($request);
+        if ($this->botOption->debug && !empty($mock)) {
+            return $this->makeMockDuerOSRequest($request, $response, $mock);
+        }
+
+        $privateKeyContent = $this->getPrivateKeyContent();
+        return new DuerOSRequest(
+            $this->botOption,
+            $this->duerOSOption,
+            $this->server,
+            $request,
+            $response,
+            DuerOSRequest::fetchRawInputOfRequest($request),
+            $privateKeyContent
+        );
+    }
+
+
+    protected function makeMockDuerOSRequest(SwooleRequest $request, SwooleResponse $response, string $mock) : DuerOSRequest
+    {
+        $rawInput = DuerOSRequest::fetchRawInputOfRequest($request);
+
+        $requestData = [];
+        if (!empty($rawInput)) {
+            $requestData = json_decode($rawInput, true) ?? [];
+        }
+
+        $requestData = empty($requestData)
+            ? $this->duerOSOption->requestStub
+            : array_replace_recursive($this->duerOSOption->requestStub, $requestData);
+
+        // 敏感数据脱敏. 避免有知道mock可用的做坏事.
+        $requestData['session']['sessionId'] = 'test-session-id';
+        $requestData['context']['System']['user']['userId'] = 'test-user-id';
+        $requestData['context']['System']['user']['userInfo'] = [];
+        $requestData['request']['query']['original'] = $mock;
+        $requestData['request']['requestId'] = DuerOSRequest::generateUuid();
+        $requestData['request']['timestamp'] = strval(time());
+
+        return new DuerOSRequest(
+            $this->botOption,
+            $this->duerOSOption,
+            $this->server,
+            $request,
+            $response,
+            json_encode($requestData),
+            ''
+        );
+
+    }
 
     protected function handleRequest(DuerOSRequest $request) : void
     {

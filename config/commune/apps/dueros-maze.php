@@ -6,6 +6,8 @@ use Hyperf\Framework\Bootstrap;
 
 return [
 
+    'debug' => false,
+
     'chatbot' => include BASE_PATH . '/config/commune/chatbots/dueros_maze.php',
 
     'redisDriver' => 'default',

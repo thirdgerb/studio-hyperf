@@ -155,9 +155,11 @@ class ScriptMenu extends AbsScriptTask
      */
     public function __onConfirmPlay(Stage $stage) : Navigator
     {
+        $playing = $this->mem->playingEpisode;
+        $title = $this->getScriptOption()->getEpisodeIdToTitles()[$playing] ?? '';
         return $stage
             ->buildTalk([
-                'episode' => $this->mem->playingEpisode
+                'episode' => $title
             ])
             ->askConfirm(
                 $this->getScriptOption()->parseReplyId('confirmPlay')

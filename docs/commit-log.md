@@ -1,5 +1,4 @@
-## 2019-09-20
+## 2019-09-21
 
--   几个app监听的端口都移动到了 .env.example
--   duerOsRequest 添加了接口日志.
--   添加了 story 组件和 story app, 先用于测试.
+-   duerRequest 增加了简单的mock策略
+-   修复了duerOS sdk-response 的一个问题, directive 只允许传官方的directive 对象.

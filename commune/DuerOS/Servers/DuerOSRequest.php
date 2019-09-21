@@ -42,9 +42,9 @@ class DuerOSRequest extends AbstractMessageRequest
     /*--------- property ---------*/
 
     /**
-     * @var string
+     * @var SwooleRequest
      */
-    protected $rawInput;
+    protected $request;
 
     /**
      * @var SwooleResponse
@@ -132,22 +132,21 @@ class DuerOSRequest extends AbstractMessageRequest
         HyperfBotOption $option,
         DuerOSComponent $duerOSOption,
         Server $server,
-        SwooleRequest $input,
+        SwooleRequest $request,
         SwooleResponse $response,
+        string $rawInput,
         string $privateKeyContent
     )
     {
+        $this->request = $request;
         $this->response = $response;
         $this->duerOSOption = $duerOSOption;
         $this->response->header('Content-Type', 'application/json;charset=utf-8');
-        parent::__construct($option, $input, $input->fd, $server);
-
-        $rawInput = static::fetchRawInputOfRequest($input);
-        $this->rawInput = $rawInput;
+        parent::__construct($option, $rawInput, $request->fd, $server);
 
         $this->certificate = new DuerOSCertificate(
             $privateKeyContent,
-            $input->server,
+            $request->server,
             $rawInput
         );
 
@@ -257,7 +256,6 @@ class DuerOSRequest extends AbstractMessageRequest
         // 命令
         } elseif ($message instanceof AbsDirective) {
             $directive = $message->toDirectiveArray();
-            var_dump($directive);
             $this->directives[] = $directive;
 
         // 卡片
@@ -304,7 +302,7 @@ class DuerOSRequest extends AbstractMessageRequest
         $logger->info(
             'finishDuerOSRequest',
             [
-                'input' => $this->rawInput,
+                'input' => $this->input,
                 'output' => $output,
                 'sig' => $this->certificate->getRequestSig(),
                 'cert' => $this->certificate->getSignatureCertUrl(),
@@ -314,7 +312,7 @@ class DuerOSRequest extends AbstractMessageRequest
         // 触发事件, 可用于记录来回消息.
         $event = new DialogComplete(
             $this->conversation->getTraceId(),
-            $this->rawInput,
+            $this->input,
             $output
         );
         $this->conversation->fire($event);
@@ -460,5 +458,11 @@ class DuerOSRequest extends AbstractMessageRequest
             'requestId' => $this->getDuerRequest()->getLogId(),
             'userId' => $this->getDuerRequest()->getUserId(),
         ] + $context;
+    }
+
+
+    public static function isMockingRequest(SwooleRequest $request) : string
+    {
+        return $request->get['mocking'] ?? '';
     }
 }
