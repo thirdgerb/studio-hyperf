@@ -192,7 +192,7 @@ class EpisodeDefinition implements Definition
                 // 优先中间件
                 $this->runStageMiddleware($stage, $option)
                 // 获取道具环节.
-                ?? $this->runStageGetItems($stage, $option)
+                ?? $this->runStagegetItem($stage, $option)
                 // 读故事文本.
                 ?? $this->runStageStories($stage, $option)
                 // 查看是否检索了章节.
@@ -258,14 +258,14 @@ class EpisodeDefinition implements Definition
     }
 
 
-    protected function runStageGetItems(Stage $stage, StageOption $option) : ? Navigator
+    protected function runStagegetItem(Stage $stage, StageOption $option) : ? Navigator
     {
         if (!$stage->isStart()) {
             return null;
         }
 
-        $getItems = $option->getItems;
-        if (empty($getItems)) {
+        $getItem = $option->getItem;
+        if (empty($getItem)) {
             return null;
         }
 
@@ -274,12 +274,12 @@ class EpisodeDefinition implements Definition
          */
         $self = $stage->self;
         $scriptMem = ScriptMem::from($self);
-        $this->recordItems($scriptMem, $getItems, $stage->dialog->logger);
+        $this->recordItems($scriptMem, $getItem, $stage->dialog->logger);
 
         return null;
     }
 
-    protected function recordItems(ScriptMem $mem, array $getItems, LoggerInterface $logger) : void
+    protected function recordItems(ScriptMem $mem, array $getItem, LoggerInterface $logger) : void
     {
         $items = $mem->items;
         $itemDefs = $this->script->itemDef;
@@ -289,7 +289,7 @@ class EpisodeDefinition implements Definition
             $availableItems[$itemDef->id] = $itemDef->enums;
         }
 
-        foreach ($getItems as $name => $value) {
+        foreach ($getItem as $name => $value) {
             if (
                 array_key_exists($name, $availableItems)
                 && in_array($value, $availableItems[$name])
@@ -464,9 +464,9 @@ class EpisodeDefinition implements Definition
                             return null;
                         }
 
-                        $getItems = $choice->getItems;
-                        if (!empty($getItems)) {
-                            $this->recordItems($mem, $getItems, $dialog->logger);
+                        $getItem = $choice->getItem;
+                        if (!empty($getItem)) {
+                            $this->recordItems($mem, $getItem, $dialog->logger);
                         }
 
                         $to = $choice->to;
@@ -539,7 +539,7 @@ class EpisodeDefinition implements Definition
         );
 
 
-        $toEnding = $stageOption->isGoodEnding == 'true'
+        $toEnding = $stageOption->isGoodEnding != 0
             ? 'goodEnding'
             : 'badEnding';
 

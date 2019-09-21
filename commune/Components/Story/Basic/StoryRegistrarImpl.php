@@ -81,9 +81,9 @@ class StoryRegistrarImpl extends ContextRegistrarImpl implements StoryRegistrar
 
                 }
 
-                // getItems
-                if (!$this->validateItems($option, $stage->getItems)) {
-                    $this->validateError('invalid getItems', $option, $episode, $stage);
+                // getItem
+                if (!$this->validateItems($option, $stage->getItem)) {
+                    $this->validateError('invalid getItem', $option, $episode, $stage);
                 }
 
                 $unlockEpisode = $stage->unlockEpisode;
@@ -115,7 +115,7 @@ class StoryRegistrarImpl extends ContextRegistrarImpl implements StoryRegistrar
                             $this->validateError('invalid choose ifItems', $option, $episode, $stage);
                         }
 
-                        if (!$this->validateItems($option, $choice->getItems)) {
+                        if (!$this->validateItems($option, $choice->getItem)) {
                             $this->validateError('invalid items ifItems', $option, $episode, $stage);
                         }
 

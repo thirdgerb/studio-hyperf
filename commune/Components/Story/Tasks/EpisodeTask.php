@@ -134,8 +134,10 @@ class EpisodeTask extends AbsScriptTask
     public function __onGoodEnding(Stage $stage) : Navigator
     {
         return $stage->buildTalk()
-            ->info($this->getScriptOption()->parseReplyId('goodEnding'))
-            ->action($this->goMenu());
+            ->info(
+                $this->getScriptOption()->parseReplyId('goodEnding')
+            )
+            ->action(Redirector::goFulfill());
 
     }
 

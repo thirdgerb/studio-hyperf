@@ -13,7 +13,7 @@ use Commune\Support\Option;
  * @property-read string $title 结局的介绍.
  * @property-read string[] $stories 故事内容, 都是 replyId. 进入结局时会依次播放.
  * @property-read string[] $middleware 中间件, 类名, 传入Stage实例化, 执行__invoke, 返回Navigator的话会中断后续流程.
- * @property-read string[] $getItems 用户得到的道具. 会按键值对给道具赋值.
+ * @property-read string[] $getItem 用户得到的道具. 会按键值对给道具赋值.
  * @property-read string $unlockEpisode 解锁的章节名称. 用户可以玩新的章节.
  * @property-read RedirectOption[] $redirects 可选, 会触发重定向逻辑.
  * @property-read ConfirmOption[] $confirms 可选, 会触发确认要求逻辑.
@@ -45,7 +45,7 @@ class StageOption extends Option
             'middleware' => [
             ],
             // 可选. 获取道具事件.
-            'getItems' => [
+            'getItem' => [
                 //'item' => 'enum',
             ],
             // 可选. 解锁章节事件.
@@ -58,7 +58,7 @@ class StageOption extends Option
             ],
             'choose' => [
             ],
-            'isGoodEnding' => 'false',
+            'isGoodEnding' => 0,
 
         ];
     }
