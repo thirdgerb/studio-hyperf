@@ -14,7 +14,6 @@ use Commune\Chatbot\OOHost\Dialogue\Redirect;
 use Commune\Chatbot\OOHost\Directing\Navigator;
 use Commune\Components\Story\Basic\AbsScriptTask;
 use Commune\Components\Story\Basic\EpisodeDefinition;
-use Commune\Components\Story\Basic\ScriptMem;
 use Commune\Components\Story\Options\ScriptOption;
 
 /**
@@ -143,7 +142,8 @@ class EpisodeTask extends AbsScriptTask
     public function __onUnlockEpisode(Stage $stage) : Navigator
     {
         $unlockingEpisode = $this->mem->unlockingEpisode;
-        return $stage->buildTalk(['episode' => $unlockingEpisode])
+        $title = $this->getScriptOption()->getEpisodeIdToTitles()[$unlockingEpisode] ?? '';
+        return $stage->buildTalk(['episode' => $title])
             ->askConfirm(
                 $this->getScriptOption()->parseReplyId('startNewEpisode')
             )

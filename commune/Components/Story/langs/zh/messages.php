@@ -72,6 +72,7 @@ $changbanpo = [
 
     'needConfirmation' => '没能明白您的意思. 可以试着说"是的", 或者"不要"',
 
+    'confirmPlay' => '是否开始章节{episode}?',
 ];
 
 $data = [];

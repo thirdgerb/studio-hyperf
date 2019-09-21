@@ -63,7 +63,7 @@ abstract class AbsScriptTask extends AbsContext implements HasIdGenerator
 
     /*----------- stages -----------*/
 
-    public function __heard(Hearing $hearing) : void
+    public function __hearing(Hearing $hearing) : void
     {
         $commands = $this->getScriptOption()->commands;
         $hearing
@@ -79,6 +79,7 @@ abstract class AbsScriptTask extends AbsContext implements HasIdGenerator
             // 重复
             ->todo(Redirector::goRepeat())
                 ->is($commands->repeat)
+
             ->otherwise()
 
             // 默认回复.
