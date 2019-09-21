@@ -28,7 +28,7 @@ defaultEpisodes :
   - searchGan
 episodes :
   - id: searchGan
-    title: 寻找甘夫人
+    title: 第一章 寻找甘夫人
     defaultSlots:
       test: 长板桥
     stages :
@@ -180,7 +180,7 @@ episodes :
           - endDieRegrat
 
   - id: searchMi
-    title : 寻找糜夫人
+    title : 第二章 寻找糜夫人
     stages :
       - id : fightChun
         title : 打败淳于导
@@ -188,7 +188,7 @@ episodes :
           - meetChun
 
   - id: ladyMi
-    title : 舍命托孤
+    title : 第三章 舍命托孤
     stages :
       - id : cryBaby
         title : 阿斗哭泣

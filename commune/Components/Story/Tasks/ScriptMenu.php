@@ -170,8 +170,7 @@ class ScriptMenu extends AbsScriptTask
                 return $dialog->redirect->replaceTo(
                     new EpisodeTask(
                         $this->scriptName,
-                        $this->getScriptOption()
-                            ->parseEpisodeId($this->mem->playingEpisode)
+                        $this->mem->playingEpisode
                     ),
                     Redirect::THREAD_LEVEL
                 );
