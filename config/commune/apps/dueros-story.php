@@ -6,7 +6,7 @@ use Hyperf\Framework\Bootstrap;
 
 return [
 
-    'debug' => true,
+    'debug' => env('DUEROS_DEBUG', false),
 
     'chatbot' => include BASE_PATH . '/config/commune/chatbots/dueros_story.php',
 
