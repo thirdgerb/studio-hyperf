@@ -26,6 +26,7 @@ use Commune\DuerOS\Messages\RePrompt;
 use Commune\DuerOS\Templates\AbstractTemp;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Hyperf\Foundations\Requests\AbstractMessageRequest;
+use Psr\Log\LoggerInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Baidu\Duer\Botsdk\Request as DuerRequest;
@@ -118,6 +119,10 @@ class DuerOSRequest extends AbstractMessageRequest
     public $rePrompt;
 
 
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * DuerOSRequest constructor.
@@ -126,12 +131,14 @@ class DuerOSRequest extends AbstractMessageRequest
      * @param Server $server
      * @param SwooleRequest $input
      * @param SwooleResponse $response
+     * @param string $rawInput
      * @param string $privateKeyContent
      */
     public function __construct(
         HyperfBotOption $option,
         DuerOSComponent $duerOSOption,
         Server $server,
+        LoggerInterface $logger,
         SwooleRequest $request,
         SwooleResponse $response,
         string $rawInput,
@@ -140,11 +147,13 @@ class DuerOSRequest extends AbstractMessageRequest
     {
         $this->request = $request;
         $this->response = $response;
+        $this->logger = $logger;
         $this->duerOSOption = $duerOSOption;
         $this->response->header('Content-Type', 'application/json;charset=utf-8');
         parent::__construct($option, $rawInput, $request->fd, $server);
 
         $this->certificate = new DuerOSCertificate(
+            $logger,
             $privateKeyContent,
             $request->server,
             $rawInput

@@ -7,6 +7,8 @@
 
 namespace Commune\DuerOS\Servers;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * todo 未来还是要和 bot-sdk同步才行.
  *
@@ -19,6 +21,12 @@ namespace Commune\DuerOS\Servers;
  */
 class DuerOSCertificate
 {
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
     protected $verifyRequestSign = false;
 
     /**
@@ -46,15 +54,18 @@ class DuerOSCertificate
 
     /**
      * DuerOSCertificate constructor.
+     * @param LoggerInterface $logger
      * @param string $privateKeyContent
      * @param array $server
      * @param string $rawInput
      */
     public function __construct(
+        LoggerInterface $logger,
         string $privateKeyContent,
         array $server,
         string $rawInput
     ) {
+        $this->logger = $logger;
         $this->privateKeyContent = $privateKeyContent;
         $this->rawInput = $rawInput;
         $this->server = $server;
@@ -131,16 +142,27 @@ class DuerOSCertificate
      * @param null
      * @return boolean
      */
-    public function verifyRequest() {
+    public function verifyRequest()
+    {
         if(empty($this->privateKeyContent) || !$this->verifyRequestSign) {
+            $this->warning('is close');
             return true;
         }
 
         $publicKey = $this->getRequestPublicKey();
-        if(empty($publicKey) || empty($this->rawInput)) {
+        if(empty($publicKey)) {
+            $this->warning('public key missing');
+            return false;
+        }
+        if (empty($this->rawInput)) {
+            $this->warning('input is empty');
             return false;
         }
         $sig = $this->getRequestSig();
+        if (empty($sig)) {
+            $this->warning('sig is empty');
+            return false;
+        }
 
         // 公钥解密
         $verify = openssl_verify(
@@ -150,7 +172,11 @@ class DuerOSCertificate
             OPENSSL_ALGO_SHA1
         );
 
-        return $verify == 1;
+        if ($verify != 1) {
+            $this->warning("duerOSVerify openssl verify failed with value $verify");
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -176,5 +202,10 @@ class DuerOSCertificate
     public function getRequestSig() : string
     {
         return  $this->server['HTTP_SIGNATURE'] ?? '';
+    }
+
+    protected function warning(string $message) : void
+    {
+        $this->logger->warning("duerOSVerify $message");
     }
 }
