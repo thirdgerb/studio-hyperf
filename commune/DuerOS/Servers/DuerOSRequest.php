@@ -311,7 +311,9 @@ class DuerOSRequest extends AbstractMessageRequest
         $logger->info(
             'finishDuerOSRequest',
             [
-                'input' => $this->input,
+                'duerRequest' => $this->duerRequest->getData()['request'] ?? [],
+                'duerUserId' => $this->duerRequest->getUserId(),
+                'duerSession' => $this->duerRequest->getData()['session'] ?? [],
                 'output' => $output,
                 'sig' => $this->certificate->getRequestSig(),
                 'cert' => $this->certificate->getSignatureCertUrl(),
