@@ -13,7 +13,7 @@ use Commune\Chatbot\Blueprint\Conversation\ReplyTemplate;
 use Commune\Chatbot\Blueprint\Message\QA\Question;
 use Commune\Chatbot\Blueprint\Message\ReplyMsg;
 use Commune\Chatbot\Framework\Exceptions\ConfigureException;
-use Commune\DuerOS\Servers\DuerOSRequest;
+use Commune\DuerOS\Servers\Request;
 
 abstract class AbstractTemp implements ReplyTemplate
 {
@@ -33,10 +33,10 @@ abstract class AbstractTemp implements ReplyTemplate
         }
     }
 
-    public function getDuerRequest(Conversation $conversation ) : DuerOSRequest
+    public function getDuerRequest(Conversation $conversation ) : Request
     {
         $request = $conversation->getRequest();
-        if (!$request instanceof DuerOSRequest) {
+        if (!$request instanceof Request) {
 
             $type = is_object($request) ? get_class($request) : gettype($request);
             throw new ConfigureException(static::class . " template could only be used with DuerOS request, $type given");

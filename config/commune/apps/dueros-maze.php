@@ -22,7 +22,7 @@ return [
                 'port' => intval(env('APP_MAZE_IP', 9502)),
                 'sock_type' => SWOOLE_SOCK_TCP,
                 'callbacks' => [
-                    SwooleEvent::ON_REQUEST => [\Commune\DuerOS\Servers\DuerOSServer::class, 'onRequest'],
+                    SwooleEvent::ON_REQUEST => [\Commune\DuerOS\Servers\Server::class, 'onRequest'],
                 ],
             ],
         ],

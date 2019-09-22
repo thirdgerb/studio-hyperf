@@ -23,6 +23,7 @@ use Commune\DuerOS\Events\DialogComplete;
 use Commune\DuerOS\Messages\AbsCard;
 use Commune\DuerOS\Messages\AbsDirective;
 use Commune\DuerOS\Messages\RePrompt;
+use Commune\DuerOS\Mod\DirectivePlaceHolder;
 use Commune\DuerOS\Templates\AbstractTemp;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Hyperf\Foundations\Requests\AbstractMessageRequest;
@@ -37,7 +38,7 @@ use Swoole\Server;
 /**
  * @method SwooleRequest getInput()
  */
-class DuerOSRequest extends AbstractMessageRequest
+class Request extends AbstractMessageRequest
 {
 
     /*--------- property ---------*/
@@ -264,8 +265,7 @@ class DuerOSRequest extends AbstractMessageRequest
 
         // 命令
         } elseif ($message instanceof AbsDirective) {
-            $directive = $message->toDirectiveArray();
-            $this->directives[] = $directive;
+            $this->directives[] = new DirectivePlaceHolder($message);
 
         // 卡片
         } elseif ($message instanceof AbsCard) {
@@ -334,7 +334,7 @@ class DuerOSRequest extends AbstractMessageRequest
 
     public function getPlatformId(): string
     {
-        return DuerOSServer::class;
+        return Server::class;
     }
 
     public function fetchUserId(): string
