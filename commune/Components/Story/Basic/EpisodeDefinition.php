@@ -478,13 +478,10 @@ class EpisodeDefinition implements Definition
             $hearing->fallback(function(Dialog $dialog) use ($keys): Navigator {
 
                 $dialog->say()->warning(
-                    $this->script->parseReplyId('choiceNotExists'),
-                    [
-                        'choices' => implode(',', $keys)
-                    ]
+                    $this->script->parseReplyId('choiceNotExists')
                 );
 
-                return $dialog->wait();
+                return $dialog->rewind();
             });
 
             return $hearing->end();
