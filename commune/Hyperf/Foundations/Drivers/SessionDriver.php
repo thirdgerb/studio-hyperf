@@ -24,7 +24,7 @@ class SessionDriver implements Contract
 {
     use RunningSpyTrait;
 
-    const SESSION_KEY = "commune:chatbot:session:%s";
+    const SESSION_KEY = "chatbot:session:%s";
     const SNAPSHOT_HASH_KEY = 'snapshot';
 
 

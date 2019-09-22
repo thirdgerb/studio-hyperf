@@ -1,4 +1,4 @@
-## 2019-09-21
+## 2019-09-22
 
--   duerRequest 增加了简单的mock策略
--   修复了duerOS sdk-response 的一个问题, directive 只允许传官方的directive 对象.
+-   duerOS certificate 增加了日志排查问题
+-   缓存名称做了略微简化, 并且默认app之间的缓存根据 chatbotName 相互隔离.
