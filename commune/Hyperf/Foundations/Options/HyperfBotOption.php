@@ -34,7 +34,7 @@ class HyperfBotOption extends Option
     {
         return [
 
-            'debug' => env('DUEROS_DEBUG', true),
+            'debug' => false,
 
             'chatbot' => ChatbotConfig::stub(),
 

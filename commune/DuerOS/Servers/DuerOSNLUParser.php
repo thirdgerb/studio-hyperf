@@ -121,7 +121,11 @@ class DuerOSNLUParser
 
                 foreach ($slots as $slotName => $slotValue) {
 
-                    $entityName = $this->parseEntityName($slotValue['name'] ?? $slotName);
+                    $entityName = $this->parseEntityName(
+                        $duerOSIntentName,
+                        $slotValue['name'] ?? $slotName
+                    );
+
                     $entities[$entityName] = $slotValue['values']
                         ?? $slotValue['name']
                         ?? null;

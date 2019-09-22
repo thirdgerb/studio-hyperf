@@ -470,7 +470,7 @@ class DuerOSRequest extends AbstractMessageRequest
     }
 
 
-    public static function isMockingRequest(SwooleRequest $request) : string
+    public static function getMockingQuery(SwooleRequest $request) : string
     {
         return $request->get['mocking'] ?? '';
     }

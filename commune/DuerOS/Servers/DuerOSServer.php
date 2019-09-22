@@ -117,7 +117,7 @@ class DuerOSServer implements OnRequestInterface
 
     protected function generateRequest(SwooleRequest $request, SwooleResponse $response) : DuerOSRequest
     {
-        $mock = DuerOSRequest::isMockingRequest($request);
+        $mock = DuerOSRequest::getMockingQuery($request);
         if ($this->botOption->debug && !empty($mock)) {
             return $this->makeMockDuerOSRequest($request, $response, $mock);
         }
