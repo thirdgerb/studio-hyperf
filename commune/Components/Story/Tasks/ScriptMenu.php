@@ -6,16 +6,21 @@ namespace Commune\Components\Story\Tasks;
 
 use Closure;
 use Commune\Chatbot\App\Callables\Actions\Redirector;
+use Commune\Chatbot\App\Messages\QA\Choose;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\OOHost\Context\Depending;
 use Commune\Chatbot\OOHost\Context\Exiting;
 use Commune\Chatbot\OOHost\Context\Stage;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
-use Commune\Chatbot\OOHost\Dialogue\Redirect;
+use Commune\Chatbot\OOHost\Dialogue\Hearing;
 use Commune\Chatbot\OOHost\Directing\Navigator;
 use Commune\Components\Story\Basic\AbsScriptTask;
+use Commune\Components\Story\Intents\MenuInt;
 use Commune\Components\Story\Options\ScriptOption;
 
+/**
+ * Class ScriptMenu
+ */
 class ScriptMenu extends AbsScriptTask
 {
     public function __construct(string $scriptName)
@@ -38,13 +43,24 @@ class ScriptMenu extends AbsScriptTask
         };
     }
 
-    public function goFallback(): Closure
-    {
-        return function(Dialog $dialog) : Navigator {
-            return $dialog->fulfill();
-        };
-    }
 
+    public function __hearing(Hearing $hearing): void
+    {
+        $commands = $this->getScriptOption()->commands;
+        $hearing = $hearing
+            // 菜单
+            ->todo($this->goMenu())
+                ->is($commands->menu)
+                ->isIntent(MenuInt::class)
+
+            // 返回
+            ->todo(Redirector::goFulfill())
+                ->is($commands->quit)
+
+            ->otherwise();
+
+        parent::__hearing($hearing);
+    }
 
     /**
      * 跳转走.
@@ -53,13 +69,6 @@ class ScriptMenu extends AbsScriptTask
      */
     public function __onStart(Stage $stage): Navigator
     {
-        if ($stage->dialog->isDepended()) {
-            return $stage->dialog->goStage('menu');
-        }
-
-        $playing = $this->mem->playingEpisode;
-        $target = !empty($playing) ? 'confirmPlay' : 'menu';
-
         return $stage->buildTalk()
             ->info(
                 $this->getScriptOption()->parseReplyId('welcomeToScript'),
@@ -67,51 +76,93 @@ class ScriptMenu extends AbsScriptTask
                     'title' => $this->getScriptOption()->title
                 ]
             )
-            ->goStage($target);
+            ->goStage('menu');
 
     }
 
     /**
      * 跳转到菜单.
+     *
      * @param Stage $stage
      * @return Navigator
      */
     public function __onMenu(Stage $stage) : Navigator
     {
         $script = $this->getScriptOption();
-        $commands = $script->commands;
 
         return $stage->buildTalk()
             ->askChoose(
                 $script->parseReplyId('menu'),
-                [
-                    $commands->selectEpisode,
-                    $commands->hearDescription,
-                    $commands->unlockEndings,
-                    $commands->fallback,
-                ]
+                $this->getOperationMenu()
             )
             ->hearing()
-
-            // 选择章节
-            ->isChoice(0, function(Dialog $dialog){
-
-                return $dialog->goStage('chooseEpisode');
-            })
-
-            // 听取介绍
-            ->isChoice(1, Redirector::goStage('description'))
-
-            // 查看结局
-            ->isChoice(2, Redirector::goStage('unlockEndings'))
-
-            // 返回
-            ->isChoice(3, Redirector::goFulfill())
-
-
-            // 如果直接说出了章节名称.
+            ->component([$this, 'runOperationFromMenu'])
             ->fallback($this->matchByEpisodeTitle($this->unlockEpisodes))
             ->end();
+    }
+
+    public function runOperationFromMenu(Hearing $hearing) : void
+    {
+        // 选择章节
+        $hearing
+        ->todo($this->todoChooseEpisode())
+            ->isChoice('1')
+
+        // 听取介绍
+        ->todo($this->todoDescription())
+            ->isChoice('2')
+
+        // 查看结局
+        ->todo($this->todoUnlockEndings())
+            ->isChoice('3')
+
+        // 返回
+        ->todo($this->todoReturnGame())
+            ->isChoice('4')
+
+        ->todo($this->todoFulfill())
+            ->isChoice('5')
+
+        // 如果直接说出了章节名称.
+        ->otherwise();
+    }
+
+    protected function getOperationMenu() : array
+    {
+        $commands = $this->getScriptOption()->commands;
+        return [
+            '1' => $commands->selectEpisode,
+            '2' => $commands->hearDescription,
+            '3' => $commands->unlockEndings,
+            '4' => $commands->returnGame,
+            '5' => $commands->quit
+        ];
+    }
+
+    protected function todoChooseEpisode() : callable
+    {
+        return Redirector::goStage('chooseEpisode');
+    }
+
+    protected function todoDescription() : callable
+    {
+        return Redirector::goStage('description');
+    }
+
+    protected function todoUnlockEndings() : callable
+    {
+        return Redirector::goStage('unlockEndings');
+    }
+
+
+    protected function todoReturnGame() : callable
+    {
+        return Redirector::goStage('playEpisode');
+    }
+
+    protected function todoFulfill() : callable
+    {
+        return Redirector::goFulfill();
     }
 
     /**
@@ -126,7 +177,7 @@ class ScriptMenu extends AbsScriptTask
 
         // 与用户问答.
         return $stage->talk(
-        // 告知用户已解锁的章节有, 请选择.
+            // 告知用户已解锁的章节有哪些, 请选择.
             $this->askToChooseUnlockEpisode($scriptOption, $episodes),
 
             // 用户做出选择.
@@ -142,8 +193,16 @@ class ScriptMenu extends AbsScriptTask
      */
     public function __onDescription(Stage $stage) : Navigator
     {
+        $commands = $this->getScriptOption()->commands;
         return $stage->buildTalk()
-            ->info($this->getScriptOption()->parseReplyId('description'))
+            ->info(
+                $this->getScriptOption()->parseReplyId('description'),
+                [
+                    'menu' => $commands->menu,
+                    'quit' => $commands->quit,
+                ]
+
+            )
             ->goStage('menu');
     }
 
@@ -165,25 +224,61 @@ class ScriptMenu extends AbsScriptTask
                 $this->getScriptOption()->parseReplyId('confirmPlay')
             )
             ->hearing()
-            ->isPositive(function(Dialog $dialog){
-
-                return $dialog->redirect->replaceTo(
-                    new EpisodeTask(
-                        $this->scriptName,
-                        $this->mem->playingEpisode
-                    ),
-                    Redirect::THREAD_LEVEL
-                );
-
-            })
+            ->isPositive(Redirector::goStage('playEpisode'))
             ->isNegative(Redirector::goStage('chooseEpisode'))
             ->end();
 
     }
 
+    public function __onPlayEpisode(Stage $stage) : Navigator
+    {
+        $episode = $this->mem->playingEpisode;
+
+        if (empty($episode)) {
+            return $stage->dialog->goStage('chooseEpisode');
+        }
+
+        return $stage->onSubDialog(
+                    $this->getId(),
+                    function() use ($episode){
+                        return new EpisodeTask(
+                            $this->scriptName,
+                            $episode
+                        );
+                    }
+                )
+                ->onQuit(Redirector::goStage('menu'))
+                ->onBefore(function(Dialog $dialog) {
+                    return $dialog->hear()
+                        ->heardOrMiss();
+                })
+                ->end();
+    }
+
 
     public function __onUnlockEndings(Stage $stage) : Navigator
     {
+        $endings = $this->mem->unlockEndings;
+        $scriptOption = $this->getScriptOption();
+        $stages = $scriptOption->getStages($endings);
+        if (empty($stages)) {
+            return $stage->buildTalk()
+                ->info($scriptOption->parseReplyId('noUnlockEndings'))
+                ->goStage('menu');
+        }
+
+        $titles = array_map(function($stage){
+            return $stage->title;
+        }, $stages);
+
+        return $stage->buildTalk()
+            ->info(
+                $scriptOption->parseReplyId('showUnlockEndings'),
+                [
+                    'titles' => implode(', ', $titles )
+                ]
+            )
+            ->goStage('menu');
     }
 
 
@@ -200,7 +295,10 @@ class ScriptMenu extends AbsScriptTask
 
             // choice 机制.
             foreach ($episodes as $index => $id) {
-                $builder->isChoice($index, $this->isChoiceToPlayEpisode($id));
+                $episodeOption = $scriptOption->getEpisodeOption($id);
+                $builder->isChoice(
+                    $episodeOption->option,
+                    $this->isChoiceToPlayEpisode($id));
             }
 
             // fallback 机制.
@@ -237,7 +335,7 @@ class ScriptMenu extends AbsScriptTask
     {
         return function(Dialog $dialog) use ($episodeId){
             $this->mem->playingEpisode = $episodeId;
-            return $dialog->redirect->replaceTo(new EpisodeTask($this->scriptName, $episodeId));
+            return $dialog->goStage('playEpisode');
         };
     }
 
@@ -246,9 +344,9 @@ class ScriptMenu extends AbsScriptTask
         return function(Dialog $dialog) use ($scriptOption, $episodes){
 
             $titles = [];
-            $idToTitles = $scriptOption->getEpisodeIdToTitles();
             foreach ($episodes as $index => $episode) {
-                $titles[] = $idToTitles[$episode];
+                $episodeOption = $scriptOption->getEpisodeOption($episode);
+                $titles[$episodeOption->option] = $episodeOption->title;
             }
 
             $dialog->say()

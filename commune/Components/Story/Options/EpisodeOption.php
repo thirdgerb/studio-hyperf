@@ -11,6 +11,7 @@ use Commune\Support\Option;
  * 每一章的定义.
  *
  * @property-read string $id 章节的唯一ID
+ * @property-read string $option 章节的选项.
  * @property-read string $title 章节的标题
  * @property-read array $defaultSlots 默认的参数.
  * @property-read string[] $middleware 每一 stage 都要执行的 middleware

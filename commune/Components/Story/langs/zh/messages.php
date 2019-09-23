@@ -1,9 +1,15 @@
 <?php
 
 $changbanpo = [
-    'welcomeToScript' => '欢迎来到情景游戏血战长坂坡.',
+    'welcomeToScript' => '欢迎来到情景游戏 {title}.',
 
-    'menu' => '请您选择 菜单功能, 可以选择: 章节; 简介; 结局; 返回; ',
+    'description' => '本游戏是情景互动游戏, 分为若干章节, 做出正确的选择可以抵达最终好结局. 有时前面章节的决定, 会影响后面章节的结果. 游戏中可以随时说 {menu} 打开菜单, 说 {quit} 退出游戏',
+
+    'startEpisode' => '开始 {option}, {title};',
+
+    'showUnlockEndings' => '您已解锁的结局有: {titles}',
+
+    'menu' => '请您选择 菜单功能: {suggestionStr}',
 
     'chooseEpisode' => '您可以说出章节名称选择要开始的章节. 已解锁章节有: {suggestionStr}',
 
@@ -21,6 +27,8 @@ $changbanpo = [
     'endDieRegrat' => '您认为还是刘备性命要紧, 血战杀出重围, 在长板桥后二十里的大树下, 找到了众人保护下的刘备将军. 然而甘夫人, 糜夫人和阿斗都命丧乱军之中. 之后许多年, 刘将军对待您一如既往, 从未提起过您的失职. 不过内心的悔恨始终盘旋在您心头, 最终在一场大病中含恨离开了人世. ',
 
     'unlockEnding' => '获得结局, "{ending}". ',
+
+    'noUnlockEndings' => '还没有获得任何结局. ',
 
     'endEpisode' => '本章结束. ',
 
@@ -50,7 +58,7 @@ $changbanpo = [
 
     'shouldHelpJianYong' => '您扶起简雍, 决定将他送离战场. 然而一方面简雍伤势不轻; 另一方面局势紧迫, 人力和马匹都很紧缺. 该怎么办呢? 请选择 {suggestionStr}',
 
-    'helpNotice' => '没有明白您的意思. 您可以说"{repeat}"重复问题, 说"{menu}"打开菜单, 说"{fallback}"以退出.',
+    'helpNotice' => '没有明白您的意思. 您可以说"{menu}"打开菜单, 说"{quit}"以退出.',
 
     'sendSoldierWithJian' => '您在随从中借了一匹马, 又命令二人护送简雍南走. 要简雍为您带去口信, "我赵云上天入地, 好歹要找到二位夫人与少主, 若找不到, 战死沙场而已!" ',
 

@@ -14,7 +14,6 @@ use Commune\Chatbot\OOHost\Dialogue\Hearing;
 use Commune\Chatbot\OOHost\Dialogue\Redirect;
 use Commune\Chatbot\OOHost\Session\Session;
 use Commune\Chatbot\OOHost\Session\SessionInstance;
-use Commune\Components\Story\Contexts\Intents\MenuInt;
 use Commune\Components\Story\Options\ScriptOption;
 use Commune\Support\Uuid\HasIdGenerator;
 use Commune\Support\Uuid\IdGeneratorHelper;
@@ -61,27 +60,10 @@ abstract class AbsScriptTask extends AbsContext implements HasIdGenerator
         parent::__construct([]);
     }
 
-    /*----------- stages -----------*/
-
     public function __hearing(Hearing $hearing) : void
     {
         $commands = $this->getScriptOption()->commands;
         $hearing
-            // 菜单
-            ->todo($this->goMenu())
-                ->is($commands->menu)
-                ->is(MenuInt::class)
-
-            // 返回
-            ->todo($this->goFallback())
-                ->is($commands->fallback)
-
-            // 重复
-            ->todo(Redirector::goRepeat())
-                ->is($commands->repeat)
-
-            ->otherwise()
-
             // 默认回复.
             ->fallback(function(Dialog $dialog) use ($commands){
 
@@ -89,21 +71,18 @@ abstract class AbsScriptTask extends AbsContext implements HasIdGenerator
                 $dialog->say()
                     ->info(
                         $this->getScriptOption()
-                        ->parseReplyId('helpNotice'),
+                            ->parseReplyId('helpNotice'),
                         [
-                            'repeat' => $commands->repeat,
                             'menu' => $commands->menu,
-                            'fallback' => $commands->fallback,
+                            'quit' => $commands->quit,
                         ]
                     );
+
                 return $dialog->rewind();
             });
     }
 
-
-    abstract public function goMenu() : Closure;
-
-    abstract public function goFallback() : Closure;
+    /*----------- stages -----------*/
 
     public function goEpisode(string $episode) : Closure
     {
@@ -202,6 +181,7 @@ abstract class AbsScriptTask extends AbsContext implements HasIdGenerator
             ?? $this->_scriptOption = $this->getRegistrar()
                 ->getScriptOption($this->_scriptName);
     }
+
 
     public function __getScriptName() : string
     {

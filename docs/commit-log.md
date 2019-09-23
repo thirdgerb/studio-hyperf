@@ -1,6 +1,5 @@
-## 2019-09-22
+## 2019-09-23
 
--   duerOS certificate 增加了日志排查问题
--   缓存名称做了略微简化, 并且默认app之间的缓存根据 chatbotName 相互隔离.
--   兼容了 duerOS sdk 的 directive 传递
--   修改类名区别了 chatbot 的 request 和 duerOS 官方的.
+-   story component 相关改动
+    -   episode 添加 option, 方便菜单选取.
+    -   choice 添加 option, 方便选取. 跟 NLU 的实现有关.

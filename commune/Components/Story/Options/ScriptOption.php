@@ -3,8 +3,6 @@
 namespace Commune\Components\Story\Options;
 
 
-use Commune\Chatbot\Framework\Component\ComponentOption;
-use Commune\Components\Story\Basic\ScriptTask;
 use Commune\Components\Story\Tasks\ScriptMenu;
 use Commune\Support\Option;
 
@@ -93,6 +91,25 @@ class ScriptOption extends Option
         $result = null;
         foreach ($this->episodes as $episode) {
             $result = $episode;
+        }
+        return $result;
+    }
+
+    /**
+     * @param string[] $stageNames
+     * @return StageOption[]
+     */
+    public function getStages(array $stageNames) : array
+    {
+        $result = [];
+        foreach ($this->episodes as $episode) {
+            foreach ($episode->stages as $stage) {
+
+                if (in_array($stage->id, $stageNames)) {
+                    $result[] = $stage;
+                }
+
+            }
         }
         return $result;
     }

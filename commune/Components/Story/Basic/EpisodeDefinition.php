@@ -434,27 +434,29 @@ class EpisodeDefinition implements Definition
                 continue;
             }
 
-            /**
-             * @var ChoiceOption[] $choices
-             */
+
+            // 给用户的选项
             $choices = [];
-            $keys = [];
+            // 给系统的选项.
+            $options = [];
+            $i = 0;
             foreach ($chooseOption->choices as $choice) {
-                $choices[] = $choice;
-                $keys[] = $choice->id;
+                $i ++;
+                $option = empty($choice->option) ? $i : $choice->option;
+                $choices[$option] = $choice->id;
+                $options[$option] = $choice;
             }
 
             $hearing = $stage->buildTalk()
                 ->askChoose(
                     $this->script->parseReplyId($chooseOption->query),
-                    $keys
+                    $choices
                 )
                 ->hearing();
 
-            foreach ($keys as $index => $key) {
-                $choice = $choices[$index];
+            foreach ($options as $option => $choice) {
                 $hearing->isChoice(
-                    $index,
+                    $option,
                     function(Context $self, Dialog $dialog) use ($choice) : ? Navigator{
                         $ifItem = $choice->ifItem;
                         $mem = ScriptMem::from($self);

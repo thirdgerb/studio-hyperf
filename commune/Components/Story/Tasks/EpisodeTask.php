@@ -10,7 +10,6 @@ use Commune\Chatbot\OOHost\Context\Depending;
 use Commune\Chatbot\OOHost\Context\Exiting;
 use Commune\Chatbot\OOHost\Context\Stage;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
-use Commune\Chatbot\OOHost\Dialogue\Redirect;
 use Commune\Chatbot\OOHost\Directing\Navigator;
 use Commune\Components\Story\Basic\AbsScriptTask;
 use Commune\Components\Story\Basic\EpisodeDefinition;
@@ -57,26 +56,6 @@ class EpisodeTask extends AbsScriptTask
     }
 
 
-    public function goMenu(): Closure
-    {
-        return function(Dialog $dialog) {
-            return $dialog->goStage('toMenu');
-        };
-    }
-
-    public function goFallback(): Closure
-    {
-        return function(Dialog $dialog) : Navigator {
-
-            $dialog->say()->info($this->getScriptOption()->parseReplyId('quitEpisode'));
-
-            return $dialog->redirect->replaceTo(
-                new ScriptMenu($this->scriptName),
-                Redirect::THREAD_LEVEL
-            );
-        };
-    }
-
     public function __staging(Stage $stage) : void
     {
         $name = $stage->name;
@@ -94,7 +73,15 @@ class EpisodeTask extends AbsScriptTask
         $first = $stages[0];
         $to = $first->id;
 
-        return $stage->dialog->goStage($to);
+        return $stage->buildTalk()
+            ->info(
+                $this->getScriptOption()->parseReplyId('startEpisode'),
+                [
+                    'option' => $option->option,
+                    'title' => $option->title,
+                ]
+            )
+            ->goStage($to);
     }
 
     /**
@@ -114,6 +101,8 @@ class EpisodeTask extends AbsScriptTask
     }
 
     /**
+     * 坏结局, 要不要重启本章.
+     *
      * @param Stage $stage
      * @return Navigator
      */
@@ -122,12 +111,15 @@ class EpisodeTask extends AbsScriptTask
         return $stage->buildTalk()
             ->askConfirm($this->getScriptOption()->parseReplyId('badEnding'))
             ->hearing()
+            // 重新开始.
             ->isPositive(Redirector::goRestart())
-            ->isNegative($this->goMenu())
+            // 退出子会话
+            ->isNegative(Redirector::goQuit())
             ->end();
     }
 
     /**
+     * 好结局, 游戏结束.
      * @param Stage $stage
      * @return Navigator
      */
@@ -137,10 +129,16 @@ class EpisodeTask extends AbsScriptTask
             ->info(
                 $this->getScriptOption()->parseReplyId('goodEnding')
             )
-            ->action(Redirector::goFulfill());
+            ->action(Redirector::goQuit());
 
     }
 
+    /**
+     * 前往解锁的章节.
+     *
+     * @param Stage $stage
+     * @return Navigator
+     */
     public function __onUnlockEpisode(Stage $stage) : Navigator
     {
         $unlockingEpisode = $this->mem->unlockingEpisode;
@@ -151,7 +149,7 @@ class EpisodeTask extends AbsScriptTask
             )
             ->hearing()
             ->isPositive($this->goEpisode($unlockingEpisode))
-            ->isNegative($this->goMenu())
+            ->isNegative(Redirector::goQuit())
             ->end();
     }
 
