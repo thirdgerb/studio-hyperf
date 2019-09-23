@@ -4,7 +4,7 @@
 namespace Commune\Components\Story\Options;
 
 
-use Commune\Components\Story\Basic\EpisodeTask;
+use Commune\Components\Story\Tasks\EpisodeTask;
 use Commune\Support\Option;
 
 /**
@@ -32,11 +32,33 @@ class EpisodeOption extends Option
         return [
             'id' => '',
             'title' => '',
+            'option' => '',
             'middleware' => [],
             'defaultSlots' => [],
             'stages' => [],
             'class' => EpisodeTask::class,
         ];
+    }
+
+    public static function validate(array $data): ? string
+    {
+        $id = $data['id'] ?? '';
+        $option = $data['option'] ?? '';
+        $title = $data['title'] ?? '';
+
+        if (empty($id)) {
+            return 'id is empty';
+        }
+
+        if (empty($option)) {
+            return 'option is empty';
+        }
+
+        if (empty($title)) {
+            return 'title is empty';
+        }
+
+        return null;
     }
 
     public function getStageOption(string $stageName) : ? StageOption

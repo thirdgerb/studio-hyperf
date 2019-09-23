@@ -332,7 +332,7 @@ episodes :
                 to : endDieHalfWay
               - id : 步行
                 to : endDieRunning
-              - id : 投井
+              - id : 跳下枯井
                 to : jumpWell
 
       - id : jumpWell
@@ -359,6 +359,7 @@ episodes :
 
 
   - id: saveDou
+    option : 第四章
     title : 杀出重围
     stages :
       - id : faceZhangHe
