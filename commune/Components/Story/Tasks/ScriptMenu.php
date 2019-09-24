@@ -281,7 +281,7 @@ class ScriptMenu extends AbsScriptTask
         }
 
         return $stage->onSubDialog(
-                    $this->getId(),
+                    $this->mem->getId(),
                     function() use ($episode){
                         return new EpisodeTask(
                             $this->scriptName,
