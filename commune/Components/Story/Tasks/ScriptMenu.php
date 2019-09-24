@@ -63,22 +63,22 @@ class ScriptMenu extends AbsScriptTask
             // 退出
             ->todo(Redirector::goFulfill())
                 ->is($commands->quit)
-                ->is(QuitGameInt::class)
+                ->isIntent(QuitGameInt::class)
 
             // 选择章节
             ->todo($this->todoChooseEpisode())
                 ->is($commands->chooseEpisode)
-                ->is(ChooseEpisodeInt::class)
+                ->isIntent(ChooseEpisodeInt::class)
 
             // 返回游戏
             ->todo($this->todoReturnGame())
                 ->is($commands->returnGame)
-                ->is(ReturnGameInt::class)
+                ->isIntent(ReturnGameInt::class)
 
             // 帮助
             ->todo($this->todoDescription())
                 ->is($commands->help)
-                ->is(HelpInt::class)
+                ->isIntent(HelpInt::class)
 
             ->otherwise();
 
@@ -221,8 +221,7 @@ class ScriptMenu extends AbsScriptTask
             ->info(
                 $this->getScriptOption()->parseReplyId('description'),
                 [
-                    'menu' => $commands->menu,
-                    'quit' => $commands->quit,
+                    'suggestionStr' => implode(',', [$commands->menu, $commands->quit)
                 ]
 
             )

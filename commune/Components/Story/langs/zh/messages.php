@@ -3,7 +3,7 @@
 $changbanpo = [
     'welcomeToScript' => '欢迎来到情景游戏 {title}.',
 
-    'description' => '本游戏是情景互动游戏, 分为若干章节, 做出正确的选择可以抵达最终好结局. 有时前面章节的决定, 会影响后面章节的结果. 游戏中可以随时说 {menu} 打开菜单, 说 {quit} 退出游戏',
+    'description' => '本游戏是情景互动游戏, 分为若干章节, 做出正确的选择可以抵达最终好结局. 有时前面章节的决定, 会影响后面章节的结果. 游戏中可以随时说 {suggestionStr} ',
 
     'startEpisode' => '开始 {option}, {title};',
 
@@ -11,7 +11,7 @@ $changbanpo = [
 
     'showUnlockEndings' => '您已解锁的结局有: {titles}',
 
-    'menu' => '请您选择 菜单功能: {suggestionStr}',
+    'menu' => '请您选择"菜单"功能: {suggestionStr}',
 
     'chooseEpisode' => '您可以说出章节名称选择要开始的章节. 已解锁章节有: {suggestionStr}',
 
