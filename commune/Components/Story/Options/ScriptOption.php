@@ -115,6 +115,25 @@ class ScriptOption extends Option
         return $result;
     }
 
+    public function getEndings(array $endings) : array
+    {
+        $result = [];
+        foreach ($this->episodes as $episode) {
+            foreach ($episode->stages as $stage) {
+                $ending = static::makeEndingName($episode, $stage);
+                if (in_array($ending, $endings)) {
+                    $result[] = $stage;
+                }
+            }
+        }
+        return $result;
+    }
+
+    public static function makeEndingName(EpisodeOption $episode, StageOption $stage) : string
+    {
+        return $episode->id .'::' . $stage->id;
+    }
+
 
     public function parseReplyId(string $replyId) : string
     {

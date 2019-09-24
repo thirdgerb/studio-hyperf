@@ -308,7 +308,8 @@ class ScriptMenu extends AbsScriptTask
     {
         $endings = $this->mem->unlockEndings;
         $scriptOption = $this->getScriptOption();
-        $stages = $scriptOption->getStages($endings);
+        $stages = $scriptOption->getEndings($endings);
+
         if (empty($stages)) {
             return $stage->buildTalk()
                 ->info($scriptOption->parseReplyId('noUnlockEndings'))

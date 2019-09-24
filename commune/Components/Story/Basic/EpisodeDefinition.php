@@ -532,7 +532,7 @@ class EpisodeDefinition implements Definition
 
         $scriptMem = ScriptMem::from($stage->self);
         $endings = $scriptMem->unlockEndings;
-        $endingName = $this->episode->id . '::' . $stage->name;
+        $endingName = ScriptOption::makeEndingName($this->episode, $stage);
 
         $endings[] = $endingName;
         $scriptMem->unlockEndings = array_unique($endings);
