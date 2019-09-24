@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class DuerOSRequest
+ * Class DuerChatRequest
  * @package Commune\DuerOS\Servers
  */
 
@@ -126,7 +126,7 @@ class DuerChatRequest extends AbstractMessageRequest
     protected $logger;
 
     /**
-     * DuerOSRequest constructor.
+     * DuerChatRequest constructor.
      * @param HyperfBotOption $option
      * @param DuerOSComponent $duerOSOption
      * @param DuerChatServer $server
@@ -165,7 +165,7 @@ class DuerChatRequest extends AbstractMessageRequest
 
         // 记录请求日志
         $logger->info(
-            'DuerOSRequest getRequest',
+            'DuerChatRequest getRequest',
             [
                 'logId' => $this->duerRequest->getLogId(),
                 'duerRequest' => $this->duerRequest->getData()['request'] ?? [],
@@ -317,13 +317,13 @@ class DuerChatRequest extends AbstractMessageRequest
 
         // 记录有效request的日志
         $logger = $this->conversation->getLogger();
-        $logger->info('DuerOSRequest queryAndReply', [
+        $logger->info('DuerChatRequest queryAndReply', [
             'logId' => $this->duerRequest->getLogId(),
             'query' => $this->duerRequest->getQuery(),
             'outSpeech' => $data['outputSpeech'] ?? '',
         ]);
         $logger->info(
-            'DuerOSRequest finishResponse',
+            'DuerChatRequest finishResponse',
             [
                 'logId' => $this->duerRequest->getLogId(),
                 'output' => $output,
@@ -455,7 +455,7 @@ class DuerChatRequest extends AbstractMessageRequest
         $this->conversation
             ->getLogger()
             ->warning(
-                "DuerOSRequest warning, $message",
+                "DuerChatRequest warning, $message",
                 $this->wrapContext($context)
             );
     }
@@ -465,7 +465,7 @@ class DuerChatRequest extends AbstractMessageRequest
         $this->conversation
             ->getLogger()
             ->error(
-                "DuerOSRequest error, $message",
+                "DuerChatRequest error, $message",
                 $this->wrapContext($context)
             );
 
