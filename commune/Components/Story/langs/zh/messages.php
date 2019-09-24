@@ -11,7 +11,7 @@ $changbanpo = [
 
     'showUnlockEndings' => '您已解锁的结局有: {titles}',
 
-    'menu' => '请您选择"菜单"功能: {suggestionStr}',
+    'menu' => '请您选择以下的 "菜单"功能: {suggestionStr}',
 
     'chooseEpisode' => '您可以说出章节名称选择要开始的章节. 已解锁章节有: {suggestionStr}',
 

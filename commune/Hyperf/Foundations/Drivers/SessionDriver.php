@@ -51,7 +51,7 @@ class SessionDriver implements Contract
 
     public function saveSnapshot(Snapshot $snapshot, int $expireSeconds = 0): void
     {
-        $belongsTo = $snapshot->belongsTo;
+        $belongsTo = $snapshot->sessionId;
         $key = $this->sessionKey($belongsTo);
         $caching = serialize($snapshot);
 
@@ -124,7 +124,7 @@ class SessionDriver implements Contract
     {
         // only cache
         $this->setSessionDataCache(
-            $session->belongsTo,
+            $session->sessionId,
             'bp-'.$breakpoint->getSessionDataId(),
             $breakpoint
         );
@@ -133,7 +133,7 @@ class SessionDriver implements Contract
     public function findBreakpoint(Session $session, string $id): ? Breakpoint
     {
         $data = $this->getSessionDataCache(
-            $session->belongsTo,
+            $session->sessionId,
             'bp-'. $id
         );
         return $data instanceof Breakpoint ? $data : null;
@@ -143,7 +143,7 @@ class SessionDriver implements Contract
     public function saveContext(Session $session, Context $context): void
     {
         $this->setSessionDataCache(
-            $session->belongsTo,
+            $session->sessionId,
             'ct-'. $context->getSessionDataId(),
             $context
         );
@@ -157,7 +157,7 @@ class SessionDriver implements Contract
     public function findContext(Session $session, string $contextId): ? Context
     {
         $data = $this->getSessionDataCache(
-            $belongsTo = $session->belongsTo,
+            $belongsTo = $session->sessionId,
             $cacheId = 'ct-' . $contextId
         );
 
@@ -193,12 +193,12 @@ class SessionDriver implements Contract
     }
 
     protected function getSessionDataCache(
-        string $belongsTo,
+        string $sessionId,
         string $id
     ) : ? SessionData
     {
         $redis = $this->driver->getRedis();
-        $key = $this->sessionKey($belongsTo);
+        $key = $this->sessionKey($sessionId);
 
         $serialized = $redis->hGet($key, $id);
 
