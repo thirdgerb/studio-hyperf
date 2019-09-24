@@ -8,9 +8,11 @@ use Commune\Chatbot\App\Callables\Actions\Redirector;
 use Commune\Chatbot\OOHost\Context\Depending;
 use Commune\Chatbot\OOHost\Context\Exiting;
 use Commune\Chatbot\OOHost\Context\Stage;
+use Commune\Chatbot\OOHost\Dialogue\Hearing;
 use Commune\Chatbot\OOHost\Directing\Navigator;
 use Commune\Components\Story\Basic\AbsScriptTask;
 use Commune\Components\Story\Basic\EpisodeDefinition;
+use Commune\Components\Story\Intents\SkipInt;
 use Commune\Components\Story\Options\ScriptOption;
 
 /**
@@ -51,6 +53,16 @@ class EpisodeTask extends AbsScriptTask
     {
     }
 
+    public function __hearing(Hearing $hearing): void
+    {
+        $commands = $this->getScriptOption()->commands;
+        $hearing = $hearing->todo(Redirector::goRewind())
+            ->is($commands->skip)
+            ->isIntent(SkipInt::class)
+        ->otherwise();
+
+        parent::__hearing($hearing);
+    }
 
     public function __staging(Stage $stage) : void
     {

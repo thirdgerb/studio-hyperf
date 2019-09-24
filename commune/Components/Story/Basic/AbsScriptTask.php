@@ -4,7 +4,6 @@
 namespace Commune\Components\Story\Basic;
 
 use Closure;
-use Commune\Chatbot\App\Callables\Actions\Redirector;
 use Commune\Chatbot\Framework\Exceptions\ConfigureException;
 use Commune\Chatbot\Framework\Exceptions\RuntimeException;
 use Commune\Chatbot\OOHost\Context\AbsContext;
@@ -14,7 +13,6 @@ use Commune\Chatbot\OOHost\Dialogue\Hearing;
 use Commune\Chatbot\OOHost\Dialogue\Redirect;
 use Commune\Chatbot\OOHost\Session\Session;
 use Commune\Chatbot\OOHost\Session\SessionInstance;
-use Commune\Components\Story\Intents\SkipInt;
 use Commune\Components\Story\Options\ScriptOption;
 use Commune\Support\Uuid\HasIdGenerator;
 use Commune\Support\Uuid\IdGeneratorHelper;
@@ -64,13 +62,9 @@ abstract class AbsScriptTask extends AbsContext implements HasIdGenerator
     public function __hearing(Hearing $hearing) : void
     {
         $commands = $this->getScriptOption()->commands;
-        $hearing->todo(Redirector::goRewind())
-            ->is($commands->skip)
-            ->isIntent(SkipInt::class)
-            ->otherwise()
 
-            // 默认回复.
-            ->fallback(function(Dialog $dialog) use ($commands){
+        // 默认回复.
+        $hearing->fallback(function(Dialog $dialog) use ($commands){
 
                 // 提示指令.
                 $dialog->say()
