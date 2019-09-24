@@ -20,13 +20,11 @@ use Commune\Components\Story\Options\ScriptOption;
  */
 class EpisodeTask extends AbsScriptTask
 {
-    const STAGE_TO_MENU = 'toMenu';
     const STAGE_GOOD_ENDING = 'goodEnding';
     const STAGE_BAD_ENDING = 'badEnding';
     const STAGE_UNLOCK_EPISODE = 'unlockEpisode';
 
     const STAGES = [
-        self::STAGE_TO_MENU,
         self::STAGE_GOOD_ENDING,
         self::STAGE_BAD_ENDING,
         self::STAGE_UNLOCK_EPISODE,
@@ -57,10 +55,8 @@ class EpisodeTask extends AbsScriptTask
 
     public function __staging(Stage $stage) : void
     {
-        $name = $stage->name;
-        if ($name != 'toMenu') {
-            $this->currentStage = $name;
-        }
+        // 在 episodeDefinition 里再赋值.
+        $this->mem->playingStage = null;
     }
 
     /*--------- stages ----------*/
@@ -81,22 +77,6 @@ class EpisodeTask extends AbsScriptTask
                 ]
             )
             ->goStage($to);
-    }
-
-    /**
-     * Episode 跳转到菜单, 可以跳转回来.
-     *
-     * @param Stage $stage
-     * @return Navigator
-     */
-    public function __onToMenu(Stage $stage) : Navigator
-    {
-        return $stage->dependOn(
-            new ScriptMenu($this->scriptName),
-            function(Dialog $dialog){
-                return $dialog->goStage($this->currentStage);
-            }
-        );
     }
 
     /**

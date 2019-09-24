@@ -13,6 +13,7 @@ use Commune\Chatbot\OOHost\Session\SessionInstance;
 /**
  * @property array $items
  * @property string $playingEpisode 正在玩的章节.
+ * @property string|null $playingStage 正在玩的stage
  * @property string[] $unlockEpisodes 解锁的章节
  * @property string $unlockingEpisode 新解锁的章节.
  * @property string[] $unlockEndings 解锁的结局.

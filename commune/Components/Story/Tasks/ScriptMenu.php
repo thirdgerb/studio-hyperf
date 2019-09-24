@@ -280,18 +280,25 @@ class ScriptMenu extends AbsScriptTask
             return $stage->dialog->goStage('chooseEpisode');
         }
 
-        return $stage->onSubDialog(
-                    $this->mem->getId(),
-                    function() use ($episode){
-                        return new EpisodeTask(
-                            $this->scriptName,
-                            $episode
-                        );
-                    },
-                    null,
-                    $keepAlive
-                )
-                ->onQuit(Redirector::goStage('menu'))
+        $builder = $stage->onSubDialog(
+            $this->mem->getId(),
+            function() use ($episode){
+                return new EpisodeTask(
+                    $this->scriptName,
+                    $episode
+                );
+            },
+            null,
+            $keepAlive
+        );
+
+        // 还可以指定返回到哪一个小节.
+        $stageName = $this->mem->playingStage;
+        if (isset($stageName)) {
+            $builder = $builder->onInit(Redirector::goStage($stageName));
+        }
+
+        return $builder->onQuit(Redirector::goStage('menu'))
                 ->onBefore(function(Dialog $dialog) {
                     return $dialog->hear()
                         ->heardOrMiss();

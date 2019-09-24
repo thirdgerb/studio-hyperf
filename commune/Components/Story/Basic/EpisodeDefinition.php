@@ -187,6 +187,11 @@ class EpisodeDefinition implements Definition
 
         return function(Stage $stage) use ($option) : Navigator {
 
+            /**
+             * @var EpisodeTask $episodeTask
+             */
+            $episodeTask = $stage->self;
+            $episodeTask->mem->playingStage = $stage->name;
 
             return
                 // 优先中间件
@@ -532,7 +537,7 @@ class EpisodeDefinition implements Definition
 
         $scriptMem = ScriptMem::from($stage->self);
         $endings = $scriptMem->unlockEndings;
-        $endingName = ScriptOption::makeEndingName($this->episode, $stage);
+        $endingName = ScriptOption::makeEndingName($this->episode, $stageOption);
 
         $endings[] = $endingName;
         $scriptMem->unlockEndings = array_unique($endings);
