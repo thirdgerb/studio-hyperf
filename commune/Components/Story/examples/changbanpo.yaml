@@ -365,7 +365,6 @@ episodes :
       - id : faceZhangHe
         title : 遭遇张郃
         stories :
-          - saveDou
           - playZhao
           - coverMi
           - carryDou
