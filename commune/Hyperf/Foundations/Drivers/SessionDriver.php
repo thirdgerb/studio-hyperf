@@ -24,7 +24,7 @@ class SessionDriver implements Contract
 {
     use RunningSpyTrait;
 
-    const SNAPSHOT_KEY = 'chatbot:snapshot:%s';
+    const SNAPSHOT_KEY = 'snapshot:%s';
     const SESSION_KEY = "chatbot:session:%s";
 
     /**
@@ -54,21 +54,22 @@ class SessionDriver implements Contract
 
     public function saveSnapshot(Snapshot $snapshot, int $expireSeconds = 0): void
     {
-        $belongsTo = $snapshot->sessionId;
-        $key = $this->snapshotKey($snapshot->belongsTo);
+        $sessionId = $snapshot->sessionId;
+        $belongsToId = $snapshot->belongsTo;
+        $key =  $this->sessionKey($sessionId);
+        $snapshotKey = $this->snapshotKey($belongsToId);
         $caching = serialize($snapshot);
 
         $redis = $this->driver->getRedis();
-        $result = $redis->set($key, $caching, $expireSeconds);
+        $result = $redis->hSet($key, $snapshotKey, $caching);
 
         if ( $result === false) {
             $this->logger->error(__METHOD__ . ' failed', [
-                'belongsTo' => $belongsTo,
-                'sessionId' => $snapshot->sessionId,
+                'belongsTo' => $belongsToId,
+                'sessionId' => $sessionId,
             ]);
         } else {
             $redis->expire($key, $expireSeconds);
-
         }
     }
     
@@ -77,13 +78,14 @@ class SessionDriver implements Contract
         return sprintf(self::SESSION_KEY, $belongsTo);
     }
 
-    public function findSnapshot(string $belongsTo): ? Snapshot
+    public function findSnapshot(string $sessionId, string $belongsTo): ? Snapshot
     {
-        $key = $this->snapshotKey($belongsTo);
+        $key = $this->sessionKey($sessionId);
+        $snapshotKey = $this->snapshotKey($belongsTo);
         $serialized = $this
             ->driver
             ->getRedis()
-            ->get($key);
+            ->hGet($key, $snapshotKey);
 
         if (empty($serialized)) {
             return null;
@@ -103,11 +105,12 @@ class SessionDriver implements Contract
         return null;
     }
 
-    public function clearSnapshot(string $belongsTo): void
+    public function clearSnapshot(string $sessionId, string $belongsTo): void
     {
-        $key = $this->snapshotKey($belongsTo);
+        $key = $this->sessionKey($sessionId);
+        $snapshotKey = $this->snapshotKey($belongsTo);
         // 同时删除了所有相关缓存
-        $this->driver->getRedis()->del($key);
+        $this->driver->getRedis()->hDel($key, $snapshotKey);
     }
 
     public function saveYielding(Session $session, Yielding $yielding): void
