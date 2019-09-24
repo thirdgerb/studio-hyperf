@@ -24,9 +24,8 @@ class SessionDriver implements Contract
 {
     use RunningSpyTrait;
 
+    const SNAPSHOT_KEY = 'chatbot:snapshot:%s';
     const SESSION_KEY = "chatbot:session:%s";
-    const SNAPSHOT_HASH_KEY = 'snapshot';
-
 
     /**
      * @var ClientDriver
@@ -48,15 +47,19 @@ class SessionDriver implements Contract
         $this->logger = $driver->getLogger();
     }
 
+    protected function snapshotKey(string $belongsTo) : string
+    {
+        return sprintf(self::SNAPSHOT_KEY, $belongsTo);
+    }
 
     public function saveSnapshot(Snapshot $snapshot, int $expireSeconds = 0): void
     {
         $belongsTo = $snapshot->sessionId;
-        $key = $this->sessionKey($belongsTo);
+        $key = $this->snapshotKey($snapshot->belongsTo);
         $caching = serialize($snapshot);
 
         $redis = $this->driver->getRedis();
-        $result = $redis->hSet($key, self::SNAPSHOT_HASH_KEY, $caching);
+        $result = $redis->set($key, $caching, $expireSeconds);
 
         if ( $result === false) {
             $this->logger->error(__METHOD__ . ' failed', [
@@ -76,11 +79,11 @@ class SessionDriver implements Contract
 
     public function findSnapshot(string $belongsTo): ? Snapshot
     {
-        $key = $this->sessionKey($belongsTo);
+        $key = $this->snapshotKey($belongsTo);
         $serialized = $this
             ->driver
             ->getRedis()
-            ->hGet($key, self::SNAPSHOT_HASH_KEY);
+            ->get($key);
 
         if (empty($serialized)) {
             return null;
@@ -102,8 +105,7 @@ class SessionDriver implements Contract
 
     public function clearSnapshot(string $belongsTo): void
     {
-        $key = $this->sessionKey($belongsTo);
-
+        $key = $this->snapshotKey($belongsTo);
         // 同时删除了所有相关缓存
         $this->driver->getRedis()->del($key);
     }
@@ -181,13 +183,13 @@ class SessionDriver implements Contract
     }
 
     protected function setSessionDataCache(
-        string $belongsTo,
+        string $sessionId,
         string $id,
         SessionData $sessionData
     ) : void
     {
         $redis = $this->driver->getRedis();
-        $key = $this->sessionKey($belongsTo);
+        $key = $this->sessionKey($sessionId);
         $caching = serialize($sessionData);
         $redis->hSet($key, $id, $caching);
     }
