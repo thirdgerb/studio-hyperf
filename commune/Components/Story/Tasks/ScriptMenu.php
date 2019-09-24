@@ -221,7 +221,7 @@ class ScriptMenu extends AbsScriptTask
             ->info(
                 $this->getScriptOption()->parseReplyId('description'),
                 [
-                    'suggestionStr' => implode(',', [$commands->menu, $commands->quit)
+                    'suggestionStr' => implode(',', [$commands->menu, $commands->quit])
                 ]
 
             )
