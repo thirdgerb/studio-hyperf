@@ -332,7 +332,7 @@ episodes :
                 to : endDieHalfWay
               - id : 步行
                 to : endDieRunning
-              - id : 跳下枯井
+              - id : 枯井
                 to : jumpWell
 
       - id : jumpWell
