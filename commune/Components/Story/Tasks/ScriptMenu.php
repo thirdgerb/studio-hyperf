@@ -23,6 +23,8 @@ use Commune\Components\Story\Options\ScriptOption;
 
 /**
  * Class ScriptMenu
+ *
+ * @property bool|null $restartEpisode
  */
 class ScriptMenu extends AbsScriptTask
 {
@@ -133,21 +135,24 @@ class ScriptMenu extends AbsScriptTask
     {
         // 选择章节
         $hearing
-        ->todo($this->todoChooseEpisode())
-            ->isChoice('1')
-
-        // 听取介绍
-        ->todo($this->todoDescription())
-            ->isChoice('2')
-
-        // 查看结局
-        ->todo($this->todoUnlockEndings())
-            ->isChoice('3')
 
         // 返回
         ->todo($this->todoReturnGame())
+            ->isChoice('1')
+
+        // 选择章节
+        ->todo($this->todoChooseEpisode())
+            ->isChoice('2')
+
+        // 听取介绍
+        ->todo($this->todoDescription())
+            ->isChoice('3')
+
+        // 查看结局
+        ->todo($this->todoUnlockEndings())
             ->isChoice('4')
 
+        // 退出醋
         ->todo($this->todoFulfill())
             ->isChoice('5')
 
@@ -159,10 +164,10 @@ class ScriptMenu extends AbsScriptTask
     {
         $commands = $this->getScriptOption()->commands;
         return [
-            '1' => $commands->chooseEpisode,
-            '2' => $commands->help,
-            '3' => $commands->unlockEndings,
-            '4' => $commands->returnGame,
+            '1' => $commands->returnGame,
+            '2' => $commands->chooseEpisode,
+            '3' => $commands->help,
+            '4' => $commands->unlockEndings,
             '5' => $commands->quit
         ];
     }
@@ -251,15 +256,25 @@ class ScriptMenu extends AbsScriptTask
                 $this->getScriptOption()->parseReplyId('confirmPlay')
             )
             ->hearing()
-            ->isPositive(Redirector::goStage('playEpisode'))
+            ->isPositive(function(Dialog $dialog){
+                $this->restartEpisode = true;
+                return $dialog->goStage('playEpisode');
+            })
             ->isNegative(Redirector::goStage('chooseEpisode'))
             ->end();
 
     }
 
+    /**
+     * 进行游戏
+     * @param Stage $stage
+     * @return Navigator
+     */
     public function __onPlayEpisode(Stage $stage) : Navigator
     {
         $episode = $this->mem->playingEpisode;
+        $keepAlive = $this->restartEpisode === true;
+        $this->restartEpisode = null;
 
         if (empty($episode)) {
             return $stage->dialog->goStage('chooseEpisode');
@@ -272,7 +287,9 @@ class ScriptMenu extends AbsScriptTask
                             $this->scriptName,
                             $episode
                         );
-                    }
+                    },
+                    null,
+                    $keepAlive
                 )
                 ->onQuit(Redirector::goStage('menu'))
                 ->onBefore(function(Dialog $dialog) {
@@ -283,6 +300,10 @@ class ScriptMenu extends AbsScriptTask
     }
 
 
+    /**
+     * @param Stage $stage
+     * @return Navigator
+     */
     public function __onUnlockEndings(Stage $stage) : Navigator
     {
         $endings = $this->mem->unlockEndings;

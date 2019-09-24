@@ -23,7 +23,7 @@ class CommandsOption extends Option
     {
         return [
             'menu' => '打开菜单',
-            'returnGame' => '返回游戏',
+            'returnGame' => '继续游戏',
             'chooseEpisode' => '选择章节',
             'help' => '操作简介',
             'unlockEndings' => '解锁结局',

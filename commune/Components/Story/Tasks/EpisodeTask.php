@@ -145,7 +145,7 @@ class EpisodeTask extends AbsScriptTask
         $title = $this->getScriptOption()->getEpisodeIdToTitles()[$unlockingEpisode] ?? '';
         return $stage->buildTalk(['episode' => $title])
             ->askConfirm(
-                $this->getScriptOption()->parseReplyId('startNewEpisode')
+                $this->getScriptOption()->parseReplyId('askStartNewEpisode')
             )
             ->hearing()
             ->isPositive($this->goEpisode($unlockingEpisode))
