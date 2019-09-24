@@ -1,5 +1,5 @@
 id : story.examples.sanguo.changbanpo
-title : 赵云传-大战长坂坡
+title : 大战长坂坡
 messagePrefix : storyComponent.sanguo.changbanpo
 defaultSlots :
   test: 长坂坡
