@@ -207,6 +207,11 @@ class DuerChatRequest extends AbstractMessageRequest
 
     public function verify() : bool
     {
+        $userId = $this->duerRequest->getUserId();
+        if (empty($userId)) {
+            return false;
+        }
+
         // todo 埋点做记录
         return $this->certificate->verifyRequest();
     }

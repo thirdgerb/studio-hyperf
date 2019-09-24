@@ -50,11 +50,7 @@ class DuerOSNLUParser
     {
         $nlu = new NatureLanguageUnit();
 
-        $userId = $this->duerRequest->getUserId();
-        if (empty($userId)) {
-            $nlu->setMatchedIntent(QuitInt::getContextName());
-
-        } elseif ($this->duerRequest->isLaunchRequest()) {
+        if ($this->duerRequest->isLaunchRequest()) {
             $nlu->setMatchedIntent(HomeInt::class);
 
         } elseif ($this->duerRequest->isSessionEndedRequest()) {
