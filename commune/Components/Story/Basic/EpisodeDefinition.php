@@ -13,7 +13,6 @@ use Commune\Chatbot\OOHost\Context\Helpers\ContextCaller;
 use Commune\Chatbot\OOHost\Context\Stage;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
 use Commune\Chatbot\OOHost\Directing\Navigator;
-use Commune\Components\Story\Options\ChoiceOption;
 use Commune\Components\Story\Options\EpisodeOption;
 use Commune\Components\Story\Options\ScriptOption;
 use Commune\Components\Story\Options\StageOption;

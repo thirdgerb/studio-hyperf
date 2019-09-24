@@ -58,26 +58,31 @@ class ScriptMenu extends AbsScriptTask
             // 菜单
             ->todo($this->goMenu())
                 ->is($commands->menu)
+                ->soundLike($commands->menu)
                 ->isIntent(MenuInt::class)
 
             // 退出
             ->todo(Redirector::goFulfill())
                 ->is($commands->quit)
+                ->soundLike($commands->quit)
                 ->isIntent(QuitGameInt::class)
 
             // 选择章节
             ->todo($this->todoChooseEpisode())
                 ->is($commands->chooseEpisode)
+                ->soundLike($commands->chooseEpisode)
                 ->isIntent(ChooseEpisodeInt::class)
 
             // 返回游戏
             ->todo($this->todoReturnGame())
                 ->is($commands->returnGame)
+                ->soundLike($commands->returnGame)
                 ->isIntent(ReturnGameInt::class)
 
             // 帮助
             ->todo($this->todoDescription())
                 ->is($commands->help)
+                ->soundLike($commands->help)
                 ->isIntent(HelpInt::class)
 
             ->otherwise();
