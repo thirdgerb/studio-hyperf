@@ -360,6 +360,7 @@ class ScriptMenu extends AbsScriptTask
     {
         return function(Dialog $dialog) use ($episodeId){
             $this->mem->playingEpisode = $episodeId;
+            $this->restartEpisode = true;
             return $dialog->goStage('playEpisode');
         };
     }
