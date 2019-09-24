@@ -273,7 +273,7 @@ class ScriptMenu extends AbsScriptTask
     public function __onPlayEpisode(Stage $stage) : Navigator
     {
         $episode = $this->mem->playingEpisode;
-        $keepAlive = $this->restartEpisode === true;
+        $keepAlive = !($this->restartEpisode === true);
         $this->restartEpisode = null;
 
         if (empty($episode)) {
