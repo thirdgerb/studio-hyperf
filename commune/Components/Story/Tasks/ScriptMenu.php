@@ -88,10 +88,6 @@ class ScriptMenu extends AbsScriptTask
                 ->soundLike($commands->help)
                 ->isIntent(HelpInt::class)
 
-            ->todo($this->todoSkip())
-                ->is($commands->skip)
-                ->isIntent(SkipInt::class)
-
             ->otherwise();
 
         parent::__hearing($hearing);
@@ -201,11 +197,6 @@ class ScriptMenu extends AbsScriptTask
     protected function todoFulfill() : callable
     {
         return Redirector::goFulfill();
-    }
-
-    protected function todoSkip() : callable
-    {
-        return Redirector::goRewind();
     }
 
     /**

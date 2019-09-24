@@ -24,7 +24,7 @@ class CommandsOption extends Option
     {
         return [
             'menu' => '打开菜单',
-            'skip' => '跳过内容',
+            'skip' => '跳过',
             'returnGame' => '继续游戏',
             'chooseEpisode' => '选择章节',
             'help' => '操作简介',
