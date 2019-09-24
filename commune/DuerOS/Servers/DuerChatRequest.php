@@ -38,7 +38,7 @@ use Swoole\Server;
 /**
  * @method SwooleRequest getInput()
  */
-class Request extends AbstractMessageRequest
+class DuerChatRequest extends AbstractMessageRequest
 {
 
     /*--------- property ---------*/
@@ -129,7 +129,7 @@ class Request extends AbstractMessageRequest
      * DuerOSRequest constructor.
      * @param HyperfBotOption $option
      * @param DuerOSComponent $duerOSOption
-     * @param Server $server
+     * @param DuerChatServer $server
      * @param SwooleRequest $input
      * @param SwooleResponse $response
      * @param string $rawInput
@@ -162,6 +162,19 @@ class Request extends AbstractMessageRequest
 
         $this->duerRequest = static::wrapBotRequest($rawInput);
         $this->duerResponse = static::wrapBotResponse($this->duerRequest);
+
+        // 记录请求日志
+        $logger->info(
+            'DuerOSRequest getRequest',
+            [
+                'logId' => $this->duerRequest->getLogId(),
+                'duerRequest' => $this->duerRequest->getData()['request'] ?? [],
+                'duerUserId' => $this->duerRequest->getUserId(),
+                'duerSession' => $this->duerRequest->getData()['session'] ?? [],
+                'sig' => $this->certificate->getRequestSig(),
+                'cert' => $this->certificate->getSignatureCertUrl(),
+            ]
+        );
 
         $this->duerResponsePolicy();
         $this->nluParser = new DuerOSNLUParser($this->duerRequest, $this->duerOSOption);
@@ -304,19 +317,16 @@ class Request extends AbstractMessageRequest
 
         // 记录有效request的日志
         $logger = $this->conversation->getLogger();
-        $logger->info('replyDuerOSQuery', [
+        $logger->info('DuerOSRequest queryAndReply', [
+            'logId' => $this->duerRequest->getLogId(),
             'query' => $this->duerRequest->getQuery(),
             'outSpeech' => $data['outputSpeech'] ?? '',
         ]);
         $logger->info(
-            'finishDuerOSRequest',
+            'DuerOSRequest finishResponse',
             [
-                'duerRequest' => $this->duerRequest->getData()['request'] ?? [],
-                'duerUserId' => $this->duerRequest->getUserId(),
-                'duerSession' => $this->duerRequest->getData()['session'] ?? [],
+                'logId' => $this->duerRequest->getLogId(),
                 'output' => $output,
-                'sig' => $this->certificate->getRequestSig(),
-                'cert' => $this->certificate->getSignatureCertUrl(),
             ]
         );
 
@@ -445,7 +455,7 @@ class Request extends AbstractMessageRequest
         $this->conversation
             ->getLogger()
             ->warning(
-                "DuerOS warning, $message",
+                "DuerOSRequest warning, $message",
                 $this->wrapContext($context)
             );
     }
@@ -455,7 +465,7 @@ class Request extends AbstractMessageRequest
         $this->conversation
             ->getLogger()
             ->error(
-                "DuerOS error, $message",
+                "DuerOSRequest error, $message",
                 $this->wrapContext($context)
             );
 

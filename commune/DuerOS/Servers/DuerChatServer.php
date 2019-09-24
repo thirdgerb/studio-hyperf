@@ -19,7 +19,7 @@ use Psr\Log\LoggerInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 
-class Server implements OnRequestInterface
+class DuerChatServer implements OnRequestInterface
 {
     /**
      * @var ContainerInterface
@@ -115,30 +115,30 @@ class Server implements OnRequestInterface
         }
     }
 
-    protected function generateRequest(SwooleRequest $request, SwooleResponse $response) : Request
+    protected function generateRequest(SwooleRequest $request, SwooleResponse $response) : DuerOSRequest
     {
-        $mock = Request::getMockingQuery($request);
+        $mock = DuerOSRequest::getMockingQuery($request);
         if ($this->botOption->debug && !empty($mock)) {
             return $this->makeMockDuerOSRequest($request, $response, $mock);
         }
 
         $privateKeyContent = $this->getPrivateKeyContent();
-        return new Request(
+        return new DuerOSRequest(
             $this->botOption,
             $this->duerOSOption,
             $this->server,
             $this->chatApp->getProcessContainer()[LoggerInterface::class],
             $request,
             $response,
-            Request::fetchRawInputOfRequest($request),
+            DuerOSRequest::fetchRawInputOfRequest($request),
             $privateKeyContent
         );
     }
 
 
-    protected function makeMockDuerOSRequest(SwooleRequest $request, SwooleResponse $response, string $mock) : Request
+    protected function makeMockDuerOSRequest(SwooleRequest $request, SwooleResponse $response, string $mock) : DuerOSRequest
     {
-        $rawInput = Request::fetchRawInputOfRequest($request);
+        $rawInput = DuerOSRequest::fetchRawInputOfRequest($request);
 
         $requestData = [];
         if (!empty($rawInput)) {
@@ -154,10 +154,10 @@ class Server implements OnRequestInterface
         $requestData['context']['System']['user']['userId'] = 'test-user-id';
         $requestData['context']['System']['user']['userInfo'] = [];
         $requestData['request']['query']['original'] = $mock;
-        $requestData['request']['requestId'] = Request::generateUuid();
+        $requestData['request']['requestId'] = DuerOSRequest::generateUuid();
         $requestData['request']['timestamp'] = strval(time());
 
-        return new Request(
+        return new DuerOSRequest(
             $this->botOption,
             $this->duerOSOption,
             $this->server,
@@ -170,7 +170,7 @@ class Server implements OnRequestInterface
 
     }
 
-    protected function handleRequest(Request $request) : void
+    protected function handleRequest(DuerOSRequest $request) : void
     {
         $this->chatApp->getKernel()->onUserMessage($request);
     }
