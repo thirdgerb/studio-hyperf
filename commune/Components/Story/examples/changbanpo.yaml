@@ -1,5 +1,6 @@
 id : story.examples.sanguo.changbanpo
 title : 大战长坂坡
+version : 1.0
 messagePrefix : storyComponent.sanguo.changbanpo
 defaultSlots :
   test: 长坂坡
@@ -447,7 +448,7 @@ episodes :
 
 
       - id : findBei
-        title : 逃出生天
+        title : 长坂无双
         stories :
           - feiHoldBridge
           - findBei

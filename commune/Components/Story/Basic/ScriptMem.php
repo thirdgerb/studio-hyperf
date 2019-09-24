@@ -57,7 +57,8 @@ class ScriptMem extends MemoryDef
     public static function from(SessionInstance $instance): AbsMemory
     {
         if ($instance instanceof AbsScriptTask) {
-            $scriptName = $instance->scriptName;
+            $option = $instance->getScriptOption();
+            $scriptName = $option->title . ':' . $option->version;
 
         } else {
             throw new ConfigureException(

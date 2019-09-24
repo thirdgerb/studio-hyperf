@@ -8,6 +8,7 @@ use Commune\Support\Option;
 
 /**
  * @property-read string $id 脚本的唯一ID
+ * @property-read string $version 脚本的版本. 版本更新后可以重置记忆.
  * @property-read string $title 脚本的名称.
  * @property-read string[] $defaultEpisodes 默认可选的章节
  * @property-read string $messagePrefix replyID的公共前缀.
