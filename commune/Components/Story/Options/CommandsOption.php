@@ -10,6 +10,7 @@ use Commune\Support\Option;
  * 脚本中可用的命令形式.
  *
  * @property-read string $menu
+ * @property-read string $skip
  * @property-read string $returnGame
  * @property-read string $chooseEpisode
  * @property-read string $help
@@ -23,6 +24,7 @@ class CommandsOption extends Option
     {
         return [
             'menu' => '打开菜单',
+            'skip' => '跳过内容',
             'returnGame' => '继续游戏',
             'chooseEpisode' => '选择章节',
             'help' => '操作简介',

@@ -19,6 +19,7 @@ use Commune\Components\Story\Intents\ChooseEpisodeInt;
 use Commune\Components\Story\Intents\MenuInt;
 use Commune\Components\Story\Intents\QuitGameInt;
 use Commune\Components\Story\Intents\ReturnGameInt;
+use Commune\Components\Story\Intents\SkipInt;
 use Commune\Components\Story\Options\ScriptOption;
 
 /**
@@ -86,6 +87,10 @@ class ScriptMenu extends AbsScriptTask
                 ->is($commands->help)
                 ->soundLike($commands->help)
                 ->isIntent(HelpInt::class)
+
+            ->todo($this->todoSkip())
+                ->is($commands->skip)
+                ->isIntent(SkipInt::class)
 
             ->otherwise();
 
@@ -198,6 +203,11 @@ class ScriptMenu extends AbsScriptTask
         return Redirector::goFulfill();
     }
 
+    protected function todoSkip() : callable
+    {
+        return Redirector::goRewind();
+    }
+
     /**
      * 选择章节.
      * @param Stage $stage
@@ -231,7 +241,7 @@ class ScriptMenu extends AbsScriptTask
             ->info(
                 $this->getScriptOption()->parseReplyId('description'),
                 [
-                    'suggestionStr' => implode(',', [$commands->menu, $commands->quit])
+                    'suggestionStr' => implode(',', [$commands->skip, $commands->menu, $commands->quit])
                 ]
 
             )
