@@ -472,7 +472,9 @@ class EpisodeDefinition implements Definition
                     $to = $choice->to;
                     return $dialog->goStage($to);
                 })
-                    ->isChoice($option);
+                    ->isChoice($option)
+                    ->soundLike($option)
+                    ->soundLikePart($choice->title);
 
                 $intent = $choice->intent;
                 if (!empty($intent)) {

@@ -308,29 +308,6 @@ class ScriptMenu extends AbsScriptTask
 
     /*----------- actions -----------*/
 
-
-
-    protected function userChooseUnlockEpisode(ScriptOption $scriptOption, array $episodes) : Closure
-    {
-        return function(Dialog $dialog, Message $message) use ($scriptOption, $episodes) {
-            $builder = $dialog->hear($message);
-
-            // choice 机制.
-            foreach ($episodes as $index => $id) {
-                $episodeOption = $scriptOption->getEpisodeOption($id);
-                $builder->isChoice(
-                    $episodeOption->option,
-                    $this->isChoiceToPlayEpisode($id));
-            }
-
-            // fallback 机制.
-            return $builder
-                ->fallback($this->matchByEpisodeTitle($episodes))
-                ->end();
-
-        };
-    }
-
     protected function matchByEpisodeTitle(array $episodeIds) : Closure
     {
         return function(Message $message, Dialog $dialog) use ($episodeIds): ? Navigator {
@@ -381,6 +358,31 @@ class ScriptMenu extends AbsScriptTask
 
         };
     }
+
+    protected function userChooseUnlockEpisode(ScriptOption $scriptOption, array $episodes) : Closure
+    {
+        return function(Dialog $dialog, Message $message) use ($scriptOption, $episodes) {
+            $builder = $dialog->hear($message);
+
+            // choice 机制.
+            foreach ($episodes as $index => $id) {
+                $episodeOption = $scriptOption->getEpisodeOption($id);
+                $builder = $builder
+                    ->todo($this->isChoiceToPlayEpisode($id))
+                        ->isChoice($episodeOption->option)
+                        ->soundLike($episodeOption->option)
+                        ->soundLikePart($episodeOption->title)
+                    ->otherwise();
+            }
+
+            // fallback 机制.
+            return $builder
+                ->fallback($this->matchByEpisodeTitle($episodes))
+                ->end();
+
+        };
+    }
+
 
 
 
