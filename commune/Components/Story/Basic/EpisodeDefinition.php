@@ -455,29 +455,35 @@ class EpisodeDefinition implements Definition
                 ->hearing();
 
             foreach ($options as $option => $choice) {
-                $hearing->isChoice(
-                    $option,
-                    function(Context $self, Dialog $dialog) use ($choice) : ? Navigator{
-                        $ifItem = $choice->ifItem;
-                        $mem = ScriptMem::from($self);
-                        $items = $mem->items;
+                $hearing = $hearing->todo(function(Context $self, Dialog $dialog) use ($choice) : ? Navigator{
+                    $ifItem = $choice->ifItem;
+                    $mem = ScriptMem::from($self);
+                    $items = $mem->items;
 
-                        if (!$this->checkCondition($items, $ifItem)) {
-                            return null;
-                        }
-
-                        $getItem = $choice->getItem;
-                        if (!empty($getItem)) {
-                            $this->recordItems($mem, $getItem, $dialog->logger);
-                        }
-
-                        $to = $choice->to;
-                        return $dialog->goStage($to);
+                    if (!$this->checkCondition($items, $ifItem)) {
+                        return null;
                     }
-                );
+
+                    $getItem = $choice->getItem;
+                    if (!empty($getItem)) {
+                        $this->recordItems($mem, $getItem, $dialog->logger);
+                    }
+
+                    $to = $choice->to;
+                    return $dialog->goStage($to);
+                })
+                    ->isChoice($option);
+
+                $intent = $choice->intent;
+                if (!empty($intent)) {
+                    $hearing = $hearing->isIntent($intent);
+                }
+
+                $hearing = $hearing->otherwise();
             }
 
-            $hearing->fallback(function(Dialog $dialog) use ($keys): Navigator {
+            // 选项不存在
+            $hearing->fallback(function(Dialog $dialog) : Navigator {
 
                 $dialog->say()->warning(
                     $this->script->parseReplyId('choiceNotExists')

@@ -4,7 +4,6 @@
 namespace Commune\Components\Story\Basic;
 
 use Closure;
-use Commune\Chatbot\App\Callables\Actions\Redirector;
 use Commune\Chatbot\Framework\Exceptions\ConfigureException;
 use Commune\Chatbot\Framework\Exceptions\RuntimeException;
 use Commune\Chatbot\OOHost\Context\AbsContext;

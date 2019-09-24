@@ -7,6 +7,8 @@ $changbanpo = [
 
     'startEpisode' => '开始 {option}, {title};',
 
+    'quitGame' => '游戏退出, 进度已保存.',
+
     'showUnlockEndings' => '您已解锁的结局有: {titles}',
 
     'menu' => '请您选择 菜单功能: {suggestionStr}',

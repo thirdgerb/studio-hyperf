@@ -6,7 +6,7 @@ namespace Commune\Components\Story\Tasks;
 
 use Closure;
 use Commune\Chatbot\App\Callables\Actions\Redirector;
-use Commune\Chatbot\App\Messages\QA\Choose;
+use Commune\Chatbot\App\Components\Predefined\Dialogue\HelpInt;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\OOHost\Context\Depending;
 use Commune\Chatbot\OOHost\Context\Exiting;
@@ -15,7 +15,10 @@ use Commune\Chatbot\OOHost\Dialogue\Dialog;
 use Commune\Chatbot\OOHost\Dialogue\Hearing;
 use Commune\Chatbot\OOHost\Directing\Navigator;
 use Commune\Components\Story\Basic\AbsScriptTask;
+use Commune\Components\Story\Intents\ChooseEpisodeInt;
 use Commune\Components\Story\Intents\MenuInt;
+use Commune\Components\Story\Intents\QuitGameInt;
+use Commune\Components\Story\Intents\ReturnGameInt;
 use Commune\Components\Story\Options\ScriptOption;
 
 /**
@@ -34,6 +37,10 @@ class ScriptMenu extends AbsScriptTask
 
     public function __exiting(Exiting $listener): void
     {
+        $listener->onFulfill(function(Dialog $dialog){
+            $dialog->say()->info($this->getScriptOption()->parseReplyId('quitGame'));
+
+        });
     }
 
     public function goMenu(): Closure
@@ -53,9 +60,25 @@ class ScriptMenu extends AbsScriptTask
                 ->is($commands->menu)
                 ->isIntent(MenuInt::class)
 
-            // 返回
+            // 退出
             ->todo(Redirector::goFulfill())
                 ->is($commands->quit)
+                ->is(QuitGameInt::class)
+
+            // 选择章节
+            ->todo($this->todoChooseEpisode())
+                ->is($commands->chooseEpisode)
+                ->is(ChooseEpisodeInt::class)
+
+            // 返回游戏
+            ->todo($this->todoReturnGame())
+                ->is($commands->returnGame)
+                ->is(ReturnGameInt::class)
+
+            // 帮助
+            ->todo($this->todoDescription())
+                ->is($commands->help)
+                ->is(HelpInt::class)
 
             ->otherwise();
 
@@ -131,8 +154,8 @@ class ScriptMenu extends AbsScriptTask
     {
         $commands = $this->getScriptOption()->commands;
         return [
-            '1' => $commands->selectEpisode,
-            '2' => $commands->hearDescription,
+            '1' => $commands->chooseEpisode,
+            '2' => $commands->help,
             '3' => $commands->unlockEndings,
             '4' => $commands->returnGame,
             '5' => $commands->quit

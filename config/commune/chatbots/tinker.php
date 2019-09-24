@@ -12,7 +12,7 @@ return [
 
     'chatbotName' => 'tinker',
 
-    'debug' => false,
+    'debug' => true,
 
     // 在这里可以预先绑定一些用 Option 类封装的配置.
     // 会将该配置预绑定到worker容器上, 作为单例.

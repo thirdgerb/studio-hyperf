@@ -39,6 +39,11 @@ class StoryComponent extends ComponentOption
             )
         );
 
+        $this->loadSelfRegisterByPsr4(
+            "Commune\\Components\\Story\\Intents\\",
+            __DIR__ . '/Story/Intents/'
+        );
+
         $this->loadTranslationResource($this->translationPath);
 
     }
