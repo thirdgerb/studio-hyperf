@@ -17,12 +17,8 @@ class NavigationIntentsPipe extends Example
 {
 
     protected $navigationIntents = [
-        Navigation\HomeInt::class,
-        Navigation\BackwardInt::class,
         Navigation\QuitInt::class,
         Navigation\CancelInt::class,
-        Navigation\RepeatInt::class,
-        Navigation\RestartInt::class,
     ];
 
 }

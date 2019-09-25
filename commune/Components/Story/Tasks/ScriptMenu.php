@@ -232,7 +232,13 @@ class ScriptMenu extends AbsScriptTask
             ->info(
                 $this->getScriptOption()->parseReplyId('description'),
                 [
-                    'suggestionStr' => implode(',', [$commands->skip, $commands->menu, $commands->quit])
+                    'suggestionStr' => implode(',', [
+                        $commands->menu,
+                        $commands->skip,
+                        $commands->repeat,
+                        $commands->backward,
+                        $commands->restart,
+                        $commands->quit])
                 ]
 
             )
@@ -295,7 +301,9 @@ class ScriptMenu extends AbsScriptTask
 
         // 还可以指定返回到哪一个小节.
         $stageName = $this->mem->playingStage;
-        if (isset($stageName)) {
+        $stageOption = $this->getScriptOption()->getStageOption($episode, $stageName);
+        // 避免特殊情况下小节不属于章, 导致游戏无法再继续.
+        if (isset($stageOption)) {
             $builder = $builder->onInit(Redirector::goStage($stageName));
         }
 

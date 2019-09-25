@@ -5,11 +5,14 @@ namespace Commune\Components\Story\Tasks;
 
 
 use Commune\Chatbot\App\Callables\Actions\Redirector;
+use Commune\Chatbot\App\Components\Predefined\Navigation\BackwardInt;
+use Commune\Chatbot\App\Components\Predefined\Navigation\RestartInt;
 use Commune\Chatbot\OOHost\Context\Depending;
 use Commune\Chatbot\OOHost\Context\Exiting;
 use Commune\Chatbot\OOHost\Context\Stage;
 use Commune\Chatbot\OOHost\Dialogue\Hearing;
 use Commune\Chatbot\OOHost\Directing\Navigator;
+use Commune\Chatbot\OOHost\Directing\Reset\Repeat;
 use Commune\Components\Story\Basic\AbsScriptTask;
 use Commune\Components\Story\Basic\EpisodeDefinition;
 use Commune\Components\Story\Intents\SkipInt;
@@ -56,10 +59,14 @@ class EpisodeTask extends AbsScriptTask
     public function __hearing(Hearing $hearing): void
     {
         $commands = $this->getScriptOption()->commands;
-        $hearing = $hearing->todo(Redirector::goRewind())
-            ->is($commands->skip)
-            ->isIntent(SkipInt::class)
-        ->otherwise();
+        $hearing = $hearing
+            ->runIntent(BackwardInt::class)
+            ->runIntent(Repeat::class)
+            ->runIntent(RestartInt::class)
+            ->todo(Redirector::goRewind())
+                ->is($commands->skip)
+                ->isIntent(SkipInt::class)
+            ->otherwise();
 
         parent::__hearing($hearing);
     }
@@ -115,6 +122,7 @@ class EpisodeTask extends AbsScriptTask
      */
     public function __onGoodEnding(Stage $stage) : Navigator
     {
+        $this->mem->playingEpisode = null;
         return $stage->buildTalk()
             ->info(
                 $this->getScriptOption()->parseReplyId('goodEnding')

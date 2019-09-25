@@ -72,8 +72,11 @@ abstract class AbsScriptTask extends AbsContext implements HasIdGenerator
                         $this->getScriptOption()
                             ->parseReplyId('helpNotice'),
                         [
-                            'menu' => $commands->menu,
-                            'quit' => $commands->quit,
+                            $commands->menu,
+                            $commands->skip,
+                            $commands->repeat,
+                            $commands->backward,
+                            $commands->restart,
                         ]
                     );
 
@@ -86,7 +89,7 @@ abstract class AbsScriptTask extends AbsContext implements HasIdGenerator
     public function goEpisode(string $episode) : Closure
     {
         return function(Dialog $dialog) use ($episode){
-
+            $this->mem->playingEpisode = $episode;
             return $dialog->redirect->replaceTo(
                 new EpisodeTask(
                     $this->scriptName,
