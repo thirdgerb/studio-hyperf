@@ -134,8 +134,11 @@ class ScriptOption extends Option
         return $episode->id .'::' . $stage->id;
     }
 
-    public function getStageOption(string $episodeId, string $stageId) : ? StageOption
+    public function getStageOption(?string $episodeId, ?string $stageId) : ? StageOption
     {
+        if (empty($episodeId) || empty($stageId)) {
+            return null;
+        }
         foreach ($this->episodes as $episode) {
             if ($episode->id !== $episodeId) {
                 continue;
