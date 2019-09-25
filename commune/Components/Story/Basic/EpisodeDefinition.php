@@ -5,6 +5,9 @@ namespace Commune\Components\Story\Basic;
 
 
 use Commune\Chatbot\App\Callables\Actions\Redirector;
+use Commune\Chatbot\App\Components\Predefined\Navigation\BackwardInt;
+use Commune\Chatbot\App\Components\Predefined\Navigation\RepeatInt;
+use Commune\Chatbot\App\Components\Predefined\Navigation\RestartInt;
 use Commune\Chatbot\Framework\Exceptions\ConfigureException;
 use Commune\Chatbot\OOHost\Context\Context;
 use Commune\Chatbot\OOHost\Context\Definition;
@@ -13,6 +16,7 @@ use Commune\Chatbot\OOHost\Context\Helpers\ContextCaller;
 use Commune\Chatbot\OOHost\Context\Stage;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
 use Commune\Chatbot\OOHost\Directing\Navigator;
+use Commune\Components\Story\Intents\SkipInt;
 use Commune\Components\Story\Options\ChoiceOption;
 use Commune\Components\Story\Options\EpisodeOption;
 use Commune\Components\Story\Options\ScriptOption;
@@ -196,6 +200,8 @@ class EpisodeDefinition implements Definition
             return
                 // 优先中间件
                 $this->runStageMiddleware($stage, $option)
+                // 优先走一下hearing
+                ?? $this->runStageHearing($stage, $option)
                 // 获取道具环节.
                 ?? $this->runStagegetItem($stage, $option)
                 // 读故事文本.
@@ -209,6 +215,24 @@ class EpisodeDefinition implements Definition
         };
     }
 
+    protected function runStageHearing(Stage $stage, StageOption $option) : ? Navigator
+    {
+        if ($stage->isCallback()) {
+            $hearing = $stage->dialog->hear();
+            $commands = $this->getScriptOption()->commands;
+            $hearing = $hearing
+                ->runIntent(BackwardInt::class)
+                ->runIntent(RepeatInt::class)
+                ->runIntent(RestartInt::class)
+                    ->todo(Redirector::goRewind())
+                    ->is($commands->skip)
+                    ->isIntent(SkipInt::class)
+                ->otherwise();
+
+            return $hearing->navigator;
+        }
+        return null;
+    }
 
     protected function runStageMiddleware(Stage $stage, StageOption $option) : ? Navigator
     {

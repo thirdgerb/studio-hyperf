@@ -56,21 +56,6 @@ class EpisodeTask extends AbsScriptTask
     {
     }
 
-    public function __hearing(Hearing $hearing): void
-    {
-        $commands = $this->getScriptOption()->commands;
-        $hearing = $hearing
-            ->runIntent(BackwardInt::class)
-            ->runIntent(Repeat::class)
-            ->runIntent(RestartInt::class)
-            ->todo(Redirector::goRewind())
-                ->is($commands->skip)
-                ->isIntent(SkipInt::class)
-            ->otherwise();
-
-        parent::__hearing($hearing);
-    }
-
     public function __staging(Stage $stage) : void
     {
         // 在 episodeDefinition 里再赋值.

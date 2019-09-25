@@ -72,11 +72,13 @@ abstract class AbsScriptTask extends AbsContext implements HasIdGenerator
                         $this->getScriptOption()
                             ->parseReplyId('helpNotice'),
                         [
-                            $commands->menu,
-                            $commands->skip,
-                            $commands->repeat,
-                            $commands->backward,
-                            $commands->restart,
+                            'suggestionStr' => implode(',', [
+                                $commands->menu,
+                                $commands->skip,
+                                $commands->repeat,
+                                $commands->backward,
+                                $commands->restart,
+                            ])
                         ]
                     );
 
