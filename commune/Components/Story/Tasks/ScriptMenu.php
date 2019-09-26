@@ -19,7 +19,6 @@ use Commune\Components\Story\Intents\ChooseEpisodeInt;
 use Commune\Components\Story\Intents\MenuInt;
 use Commune\Components\Story\Intents\QuitGameInt;
 use Commune\Components\Story\Intents\ReturnGameInt;
-use Commune\Components\Story\Intents\SkipInt;
 use Commune\Components\Story\Options\ScriptOption;
 
 /**
