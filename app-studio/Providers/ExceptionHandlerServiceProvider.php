@@ -7,21 +7,15 @@
 
 namespace Commune\Studio\Providers;
 
-
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
-use Commune\Hyperf\Foundations\ProcessContainer;
-use Commune\Studio\Exceptions\Handler;
+use Commune\Studio\Exceptions\StudioExceptionHandler;
 use Commune\Chatbot\Contracts\ExceptionHandler;
 use Commune\Chatbot\Framework\Providers\BaseServiceProvider;
 use Commune\Container\ContainerContract;
-use Hyperf\Logger\LoggerFactory;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * register exception handler
  */
-class StudioServiceProvider extends BaseServiceProvider
+class ExceptionHandlerServiceProvider extends BaseServiceProvider
 {
     const IS_PROCESS_SERVICE_PROVIDER = true;
 
@@ -36,7 +30,7 @@ class StudioServiceProvider extends BaseServiceProvider
     {
         $this->app->singleton(
             ExceptionHandler::class,
-            Handler::class
+            StudioExceptionHandler::class
         );
     }
 

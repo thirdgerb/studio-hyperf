@@ -7,26 +7,32 @@ use Hyperf\Framework\Bootstrap;
 $chatbot = include BASE_PATH . '/config/commune/chatbots/tcp.php';
 
 return [
+    'debug' => true,
+
     'chatbot' => $chatbot,
 
-    'redisDriver' => 'default',
+    'redisPool' => 'default',
+
+    'dbPool' => 'default',
+
+    'bufferMessage' => true,
 
     'server' => [
         'mode' => SWOOLE_PROCESS,
         'servers' => [
             [
-                'name' => 'http',
+                'name' => 'tcp',
                 'type' => Server::SERVER_TCP,
                 'host' => 'localhost',
-                'port' => intval(env('APP_TCP_IP', 9501)),
+                'port' => intval(env('CHAT_TCP_PORT', '9501')),
                 'sock_type' => SWOOLE_SOCK_TCP,
                 'callbacks' => [
                     SwooleEvent::ON_RECEIVE
-                        => [\Commune\Hyperf\Servers\Tcp\TcpServer::class, 'onReceive'],
+                    => [\Commune\Hyperf\Servers\Tcp\TcpServer::class, 'onReceive'],
                     SwooleEvent::ON_CONNECT
-                        => [\Commune\Hyperf\Servers\Tcp\TcpServer::class, 'onConnect'],
+                    => [\Commune\Hyperf\Servers\Tcp\TcpServer::class, 'onConnect'],
                     SwooleEvent::ON_CLOSE
-                        => [\Commune\Hyperf\Servers\Tcp\TcpServer::class, 'onClose']
+                    => [\Commune\Hyperf\Servers\Tcp\TcpServer::class, 'onClose']
                 ],
             ],
         ],

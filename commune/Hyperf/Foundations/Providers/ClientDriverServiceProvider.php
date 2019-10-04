@@ -8,14 +8,16 @@
 namespace Commune\Hyperf\Foundations\Providers;
 
 
-use Commune\Chatbot\Framework\Providers\BaseServiceProvider;
+use Commune\Chatbot\Contracts\ClientFactory;
 use Commune\Hyperf\Foundations\Contracts\ClientDriver;
 use Commune\Hyperf\Foundations\Drivers\HyperfClientDriver;
-use Commune\Hyperf\Foundations\ProcessContainer;
-use Hyperf\Database\ConnectionResolverInterface;
-use Hyperf\Redis\RedisFactory;
-use Psr\Container\ContainerInterface;
+use Commune\Chatbot\Framework\Providers\BaseServiceProvider;
+use Commune\Hyperf\Foundations\Factories\ClientFactoryBridge;
 
+/**
+ * hyperf 的协程客户端, 传递到 commune chatbot 的请求级容器内.
+ *
+ */
 class ClientDriverServiceProvider extends BaseServiceProvider
 {
     const IS_PROCESS_SERVICE_PROVIDER = false;
@@ -26,29 +28,11 @@ class ClientDriverServiceProvider extends BaseServiceProvider
 
     public function register()
     {
-        /**
-         * @var ContainerInterface $hyperfDI
-         */
-        $hyperfDI = $this->app[ProcessContainer::HYPERF_CONTAINER_ID];
-        // db bind
-        if (! $this->app->bound(ConnectionResolverInterface::class)) {
-            $this->app->instance(
-                ConnectionResolverInterface::class,
-                $hyperfDI->get(ConnectionResolverInterface::class)
-            );
-        }
-
-
-        // redis bind
-        if (! $this->app->bound(RedisFactory::class)) {
-            $this->app->instance(
-                RedisFactory::class,
-                $hyperfDI->get(RedisFactory::class)
-            );
-        }
-
+        // db, redis 等协程客户端打包.
         $this->app->singleton(ClientDriver::class, HyperfClientDriver::class);
 
+        // guzzle 的协程客户端.
+        $this->app->singleton(ClientFactory::class, ClientFactoryBridge::class);
     }
 
 

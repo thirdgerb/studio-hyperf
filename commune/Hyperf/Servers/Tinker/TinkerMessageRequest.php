@@ -36,6 +36,10 @@ class TinkerMessageRequest implements MessageRequest, HasIdGenerator
      */
     protected $line;
 
+    /**
+     * @var string
+     */
+    protected $scene;
 
     /*---- cache ----*/
 
@@ -44,14 +48,22 @@ class TinkerMessageRequest implements MessageRequest, HasIdGenerator
      */
     protected $buffer = [];
 
+
     /**
-     * Request constructor.
+     * TinkerMessageRequest constructor.
+     * @param string $scene
      * @param TinkerOption $option
      * @param SymfonyStyle $output
-     * @param Message|string $line
+     * @param $line
      */
-    public function __construct(TinkerOption $option, SymfonyStyle $output, $line)
+    public function __construct(
+        string $scene,
+        TinkerOption $option,
+        SymfonyStyle $output,
+        $line
+    )
     {
+        $this->scene = $scene;
         $this->option = $option;
         $this->output = $output;
         $this->line = $line;
@@ -97,12 +109,12 @@ class TinkerMessageRequest implements MessageRequest, HasIdGenerator
         return [];
     }
 
-    public function bufferConversationMessage(ConversationMessage $message): void
+    public function bufferMessage(ConversationMessage $message): void
     {
         $this->buffer[] = $message;
     }
 
-    public function flushChatMessages(): void
+    public function sendResponse(): void
     {
         foreach ($this->buffer as $message) {
 
@@ -128,6 +140,32 @@ class TinkerMessageRequest implements MessageRequest, HasIdGenerator
         }
 
         $this->buffer = [];
+    }
+
+    protected function onBindConversation()
+    {
+    }
+
+    public function validate(): bool
+    {
+        return true;
+    }
+
+    public function getScene(): ? string
+    {
+        return empty($this->scene) ? null : $this->scene;
+    }
+
+    public function sendRejectResponse(): void
+    {
+        $method = __METHOD__;
+        $this->output->writeln("<error>$method</error>");
+    }
+
+    public function sendFailureResponse(): void
+    {
+        $method = __METHOD__;
+        $this->output->writeln("<error>$method</error>");
     }
 
 

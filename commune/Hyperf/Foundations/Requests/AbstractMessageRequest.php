@@ -12,14 +12,24 @@ use Commune\Chatbot\Blueprint\Conversation\MessageRequest;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\Framework\Conversation\MessageRequestHelper;
 use Commune\Hyperf\Foundations\Contracts\MessageQueue;
-use Commune\Hyperf\Foundations\Contracts\SwooleRequest;
+use Commune\Hyperf\Foundations\Contracts\SwooleMsgReq;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Support\Uuid\HasIdGenerator;
 use Swoole\Server;
 
-abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator, SwooleRequest
+/**
+ * 在 studio-hyperf 里实现的 message request
+ * 除了提供各种默认的方法之外, 还提供了 message queue 机制
+ * 会把需要发送的消息先 buffer 到一个队列里, 然后从队列里读取要渲染的数据.
+ *
+ * 这个队列相当于一个用户的发件箱. 因此也允许别的请求给该用户的发件箱发内容.
+ *
+ */
+abstract class AbstractMessageRequest implements MessageRequest, SwooleMsgReq, HasIdGenerator
 {
-    use MessageRequestHelper;
+    use MessageRequestHelper {
+        getLogContext as protected getHelperLogContext;
+    }
 
 
     /*------- params -------*/
@@ -64,6 +74,11 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
     protected $queue;
 
     /**
+     * @var bool
+     */
+    protected $isValid;
+
+    /**
      * AbstractMessageRequest constructor.
      * @param Message|mixed $input
      * @param HyperfBotOption $botOption
@@ -83,7 +98,6 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
         $this->server = $server;
     }
 
-
     /*-------- methods --------*/
 
     public function getInput()
@@ -92,30 +106,61 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
     }
 
     /**
-     * 渲染消息, 但未输出.
+     * 渲染消息, 但不要输出. 留到 flushResponse 进行真输出.
      * @param ConversationMessage[] $messages
      */
     abstract protected function renderChatMessages(array $messages) : void;
 
     /**
-     * 输出消息.
+     * 真正输出消息.
      */
     abstract protected function flushResponse() : void;
 
+    /**
+     * 校验请求.
+     * @return bool
+     */
+    abstract protected function doValidate() : bool;
 
-    public function bufferConversationMessage(ConversationMessage $message): void
+    /**
+     * @return bool
+     */
+    public function validate(): bool
+    {
+        return $this->isValid
+            ?? $this->isValid = $this->doValidate();
+    }
+
+    /**
+     * 从 conversation 获取要发送的消息.
+     * 由于一般不是双通的平台, 所以不直接入队, 而是先 buffer 到内存中.
+     *
+     * @param ConversationMessage $message
+     */
+    public function bufferMessage(ConversationMessage $message): void
     {
         $id = $message->getUserId();
         $key = $this->userMessageBufferKey($id);
+
+        // 按发送用户不同, 将消息分散到多个收件箱缓冲里.
         $this->buffer[$key][] = $message;
     }
 
+    /**
+     * 用户收件箱在 message queue 中使用的 key
+     * @param string $userId
+     * @return string
+     */
     protected function userMessageBufferKey(string $userId) : string
     {
         $botName = $this->getChatbotName();
         return "$botName:$userId";
     }
 
+    /**
+     * 获取 message queue
+     * @return MessageQueue
+     */
     protected function queue() : MessageQueue
     {
         return $this->queue
@@ -124,52 +169,63 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
     }
 
 
-    public function flushChatMessages(): void
+    /**
+     * 发送所有的消息给用户.
+     */
+    public function sendResponse(): void
     {
-        // 使用一个queue 做buffer, 在分布式系统中 有一定必要性. 可选.
+        // 按配置决定是否 buffer 消息到 message queue 中
         if ($this->botOption->bufferMessage) {
-            $cached = $this->sendMessagesThroughBuffer();
+            $this->sendMessagesToBuffer();
+        }
+
+        // 如果请求不合法.
+        if (!$this->validate()) {
+            return;
+        }
+
+        // 读取buffer
+        if ($this->botOption->bufferMessage) {
+            $buffered = $this->flushed ? $this->fetchCachedMessages() : [];
 
         } else {
-
             $key = $this->userMessageBufferKey($this->fetchUserId());
-            $cached = $this->buffer[$key] ?? [];
+            $buffered = $this->buffer[$key] ?? [];
         }
 
-        if (!empty($cached)) {
-            $this->renderChatMessages($cached);
+        // 渲染 buffer
+        if (!empty($buffered)) {
+            $this->renderChatMessages($buffered);
         }
 
+        // 输出 response
         if (!$this->flushed) {
             $this->flushResponse();
             $this->flushed = true;
         }
     }
 
-    public function sendMessagesThroughBuffer() : array
+    /**
+     * 将已缓冲的消息, buffer 到 message queue
+     */
+    public function sendMessagesToBuffer() : void
     {
-        // 入队
         if (!empty($this->buffer)) {
+            // 按收件箱分为多组.
             foreach ($this->buffer as $key => $messages) {
-                $this->bufferToCache($key, $messages);
+                $this->sendMessageToUserMsgBox($key, $messages);
             }
+            // 清空内存缓存.
             $this->buffer = [];
         }
-
-        // 只渲染一次.
-        if ($this->flushed) {
-            return [];
-        }
-
-        // 出队
-        return $this->fetchCachedMessages();
     }
 
     /**
+     * 发送消息给用户的收件箱.
      * @param string $bufferKey
-     * @param array $messages
+     * @param ConversationMessage[] $messages
      */
-    protected function bufferToCache(string $bufferKey, array $messages) : void
+    protected function sendMessageToUserMsgBox(string $bufferKey, array $messages) : void
     {
         if (empty($messages)) {
             return;
@@ -178,9 +234,10 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
     }
 
     /**
+     * 从缓存中读取消息.
      * @return ConversationMessage[]
      */
-    protected function fetchCachedMessages() : array
+    public function fetchCachedMessages() : array
     {
         $key = $this->userMessageBufferKey($this->fetchUserId());
         $list = $this->queue()->dump($key);
@@ -208,7 +265,7 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
         }
 
         if (!empty($delay)) {
-            $this->bufferToCache($key, $delay);
+            $this->sendMessageToUserMsgBox($key, $delay);
         }
         return $rendering;
     }
@@ -229,6 +286,16 @@ abstract class AbstractMessageRequest implements MessageRequest, HasIdGenerator,
         return $this->server;
     }
 
+    public function getLogContext(): array
+    {
+        $context = $this->getHelperLogContext();
+        $context['req']['swlFd'] = $this->getFd();
+        $server = $this->getServer();
+        $context['req']['swlPort'] = $server->port;
+        $context['req']['swlWorker'] = $server->worker_id;
+
+        return $context;
+    }
 
 
 }

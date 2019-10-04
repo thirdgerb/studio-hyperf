@@ -26,32 +26,22 @@ use Commune\DuerOS\Messages\RePrompt;
 use Commune\DuerOS\Mod\DirectivePlaceHolder;
 use Commune\DuerOS\Templates\AbstractTemp;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
-use Commune\Hyperf\Foundations\Requests\AbstractMessageRequest;
+use Commune\Hyperf\Foundations\Requests\SwooleHttpMessageRequest;
+use Commune\Hyperf\Support\HttpBabel;
 use Psr\Log\LoggerInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Baidu\Duer\Botsdk\Request as DuerRequest;
 use Baidu\Duer\Botsdk\Response as DuerResponse;
-use Hyperf\HttpMessage\Server\Request as Psr7Request;
 use Swoole\Server;
 
 /**
  * @method SwooleRequest getInput()
  */
-class DuerChatRequest extends AbstractMessageRequest
+class DuerChatRequest extends SwooleHttpMessageRequest
 {
 
     /*--------- property ---------*/
-
-    /**
-     * @var SwooleRequest
-     */
-    protected $request;
-
-    /**
-     * @var SwooleResponse
-     */
-    protected $response;
 
     /**
      * @var DuerOSComponent
@@ -96,6 +86,11 @@ class DuerChatRequest extends AbstractMessageRequest
      */
     protected $nluParser;
 
+    /**
+     * @var bool
+     */
+    protected $valid;
+
     /*--------- output --------*/
 
     /**
@@ -118,12 +113,6 @@ class DuerChatRequest extends AbstractMessageRequest
      * @var string
      */
     public $rePrompt;
-
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * DuerChatRequest constructor.
@@ -148,23 +137,56 @@ class DuerChatRequest extends AbstractMessageRequest
     {
         $this->request = $request;
         $this->response = $response;
-        $this->logger = $logger;
         $this->duerOSOption = $duerOSOption;
         $this->response->header('Content-Type', 'application/json;charset=utf-8');
-        parent::__construct($option, $rawInput, $request->fd, $server);
 
+        parent::__construct(
+            $option,
+            $rawInput,
+            $server,
+            $request,
+            $response
+        );
+
+        // 校验环节
+        $symfonyRequest = HttpBabel::requestFromSwooleToSymfony($request);
         $this->certificate = new DuerOSCertificate(
             $logger,
             $privateKeyContent,
-            $request->server,
+            $symfonyRequest->server->all(),
             $rawInput
         );
 
         $this->duerRequest = static::wrapBotRequest($rawInput);
         $this->duerResponse = static::wrapBotResponse($this->duerRequest);
 
+
+        $this->duerResponsePolicy();
+        $this->nluParser = new DuerOSNLUParser($this->duerRequest, $this->duerOSOption);
+
+        // 默认回复
+        $this->rePrompt = $this->duerOSOption->rePrompt;
+    }
+
+    /**
+     * 默认绑定.
+     */
+    protected function onBindConversation() : void
+    {
+        parent::onBindConversation();
+
+        $this->conversation->share(DuerRequest::class, $this->duerRequest);
+        $this->conversation->share(DuerResponse::class, $this->duerResponse);
+    }
+
+    /**
+     * 校验请求是否正确.
+     * @return bool
+     */
+    protected function doValidate(): bool
+    {
         // 记录请求日志
-        $logger->info(
+        $this->logger->info(
             'DuerChatRequest getRequest',
             [
                 'logId' => $this->duerRequest->getLogId(),
@@ -176,12 +198,25 @@ class DuerChatRequest extends AbstractMessageRequest
             ]
         );
 
-        $this->duerResponsePolicy();
-        $this->nluParser = new DuerOSNLUParser($this->duerRequest, $this->duerOSOption);
+        if (!$this->botOption->debug) {
+            $this->getCertificate()->enableVerifyRequestSign();
+        }
 
-        // 默认回复
-        $this->rePrompt = $this->duerOSOption->rePrompt;
+        $verified = $this->verify();
+
+        if (!$verified) {
+            $this->logger->warning(
+                static::class . ' request failed certificate',
+                [
+                    'debug' => $this->botOption->debug,
+                    'servers' => $this->getSwooleRequest()->server,
+                ]
+            );
+        }
+
+        return $verified;
     }
+
 
     /**
      * duer os 响应的默认策略.
@@ -205,6 +240,10 @@ class DuerChatRequest extends AbstractMessageRequest
         return $this->certificate;
     }
 
+    /**
+     * 执行 duerOS 的校验.
+     * @return bool
+     */
     public function verify() : bool
     {
         $userId = $this->duerRequest->getUserId();
@@ -216,14 +255,17 @@ class DuerChatRequest extends AbstractMessageRequest
         return $this->certificate->verifyRequest();
     }
 
-    public function illegalResponse() :void
+    /**
+     * 请求不正确, 返回失败信息.
+     */
+    public function sendRejectResponse() :void
     {
-        $this->response->end($this->duerResponse->illegalRequest());
+        $this->response->write($this->duerResponse->illegalRequest());
     }
 
     public static function fetchRawInputOfRequest(SwooleRequest $request) : string
     {
-        $psr7Request = Psr7Request::loadFromSwooleRequest($request);
+        $psr7Request = HttpBabel::requestFromSwooleToPSR($request);
         // prepare duer os bot request
         $rawInput = $psr7Request->getBody()->getContents();
         return $rawInput;
@@ -270,7 +312,7 @@ class DuerChatRequest extends AbstractMessageRequest
 
         // audio
         if ($message instanceof Audio) {
-            $url = $message->getSource();
+            $url = $message->getUrl();
             $this->outSpeech .= '<audio src ="'.$url.'"></audio>';
 
         // ssml
@@ -349,7 +391,7 @@ class DuerChatRequest extends AbstractMessageRequest
 
     public function getPlatformId(): string
     {
-        return Server::class;
+        return DuerChatServer::class;
     }
 
     public function fetchUserId(): string
@@ -491,4 +533,11 @@ class DuerChatRequest extends AbstractMessageRequest
     {
         return $request->get['mocking'] ?? '';
     }
+
+
+    public function getScene(): ? string
+    {
+        return $this->getSwooleRequest()->get['scene'] ?? null;
+    }
+
 }

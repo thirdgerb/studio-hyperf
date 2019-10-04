@@ -12,31 +12,29 @@ use Commune\DuerOS\Constants\CommonIntents as DuerIntents;
 use Commune\Chatbot\App\Components\Predefined\Attitudes;
 use Commune\Chatbot\App\Components\Predefined\Loop;
 use Commune\DuerOS\Constants\Dictionary;
+use Commune\DuerOS\Providers\RenderServiceProvider;
 
 
 /**
- * @property-read string $name 技能的名字
  * @property-read string $privateKey 私钥的文件路径.
  * @property-read array $intentMapping duerOS 的intent 变成本地的Intent
  * @property-read array[] $entityMapping duerOs 的entity 变成本地的entity
  * @property-read string $rePrompt 用户没有及时响应多轮对话时的回复.
  * @property-read array $requestStub 模拟请求的数据.
+ * @property-read string $renderServiceProvider 默认的rendering服务注册
  */
 class DuerOSComponent extends ComponentOption
 {
     const IDENTITY = 'name';
 
-    protected function doBootstrap(): void
-    {
-    }
 
     public static function stub(): array
     {
         return [
-            // 技能名字.
-            'name' => 'commune_test',
 
-            'privateKey' => env('DUEROS_PRIVATE_KEY', ''),
+            'renderServiceProvider' => RenderServiceProvider::class,
+
+            'privateKey' => '',
 
             // 系统
             'rePrompt' => '没听清, 请再说一次?',
@@ -114,5 +112,11 @@ class DuerOSComponent extends ComponentOption
         ];
     }
 
+
+    protected function doBootstrap(): void
+    {
+        // 注册 render
+        $this->app->registerProcessService($this->renderServiceProvider);
+    }
 
 }

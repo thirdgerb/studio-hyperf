@@ -10,9 +10,7 @@ namespace Commune\Hyperf\Foundations;
 use Commune\Chatbot\Blueprint\Application;
 use Commune\Chatbot\Blueprint\Conversation\Conversation;
 use Commune\Chatbot\Contracts\ChatServer;
-use Commune\Chatbot\Framework\ChatApp;
-use Commune\Hyperf\Foundations\Contracts\SwooleRequest;
-use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
+use Commune\Hyperf\Foundations\Contracts\SwooleMsgReq;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Hyperf\Server\ServerInterface as HyperfServer;
 use Psr\Container\ContainerInterface;
@@ -23,6 +21,12 @@ use Swoole\Coroutine;
 
 /**
  * chatbot server
+ *
+ * 在 hyperf 里做 studio, server 的概念就比较多了:
+ *
+ * - swoole server : swoole 的服务端
+ * - hyperf server : hyperf 对 swoole server 的封装
+ * - chat server : commune chatbot 自己要求的 server 对象.
  */
 class HyperfChatServer implements ChatServer
 {
@@ -49,7 +53,9 @@ class HyperfChatServer implements ChatServer
 
     public function run(): void
     {
+        // 查看 ChatAppFactory, 已绑定工厂方法在 config/dependencies.php
         $chatApp = $this->container->get(Application::class);
+
         // 初始化chatbot
         $chatApp->getProcessContainer()->instance(ChatServer::class, $this);
         $chatApp->bootApp();
@@ -104,7 +110,7 @@ class HyperfChatServer implements ChatServer
     {
         // 关闭当前连接.
         $request = $conversation->getRequest();
-        if ($request instanceof SwooleRequest) {
+        if ($request instanceof SwooleMsgReq) {
             $fd = $request->getFd();
             $this->getHyperfServer()->getServer()->close($fd);
         }

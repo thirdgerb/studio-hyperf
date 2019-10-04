@@ -47,6 +47,20 @@ class TcpMessageRequest extends AbstractMessageRequest
         parent::__construct($option, $input, $fd, $server);
     }
 
+    protected function doValidate(): bool
+    {
+        return true;
+    }
+
+    protected function illegalResponse(): void
+    {
+    }
+
+    protected function onBindConversation()
+    {
+    }
+
+
     public function getPlatformId(): string
     {
         return TcpServer::class;
@@ -124,6 +138,21 @@ class TcpMessageRequest extends AbstractMessageRequest
             $this->server->send($this->fd, $msg->getText() . PHP_EOL);
         }
 
+    }
+
+    public function getScene(): ? string
+    {
+        return null;
+    }
+
+    public function sendRejectResponse(): void
+    {
+        $this->server->send($this->fd, __METHOD__);
+    }
+
+    public function sendFailureResponse(): void
+    {
+        $this->server->send($this->fd, __METHOD__);
     }
 
 

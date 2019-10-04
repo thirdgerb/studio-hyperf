@@ -15,6 +15,7 @@ use Commune\Hyperf\Servers\Tinker\TinkerChatServer;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Container;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -37,6 +38,7 @@ class Tinker extends SymfonyCommand
         $this->container = $container;
         parent::__construct('commune:tinker');
         $this->setDescription('run chatbot in tinker');
+        $this->addArgument('scene', InputArgument::OPTIONAL, 'scene name that determine scene root context name');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -67,9 +69,10 @@ class Tinker extends SymfonyCommand
             $this->container->get(StdConsoleLogger::class)
         );
 
+        $scene = $input->getArgument('scene');
 
         // server
-        $server = new TinkerChatServer($chatApp, $output);
+        $server = new TinkerChatServer($chatApp, $output, $scene);
         $workerContainer->instance(ChatServer::class, $server);
 
         $server->run();

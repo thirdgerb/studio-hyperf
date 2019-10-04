@@ -18,7 +18,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
-use Commune\DuerOS\Servers\DuerChatRequest;
 
 class DuerChatServer implements OnRequestInterface
 {
@@ -45,12 +44,13 @@ class DuerChatServer implements OnRequestInterface
     /**
      * @var \Swoole\Server
      */
-    protected $server;
+    protected $swooleServer;
 
     /**
      * @var string
      */
     protected $privateKeyContent;
+
 
     /**
      * DuerOSServer constructor.
@@ -61,7 +61,7 @@ class DuerChatServer implements OnRequestInterface
         $this->chatApp = $chatApp;
         $this->botOption = $botOption;
         $this->container = $container;
-        $this->server = $this->container
+        $this->swooleServer = $this->container
             ->get(ServerFactory::class)
             ->getServer()
             ->getServer();
@@ -95,26 +95,17 @@ class DuerChatServer implements OnRequestInterface
     {
         $chatbotRequest = $this->generateRequest($request, $response);
 
-        if (!$this->botOption->debug) {
-            $chatbotRequest->getCertificate()->enableVerifyRequestSign();
-        }
+        try {
+            $this->chatApp->getKernel()->onUserMessage($chatbotRequest);
+            $response->end();
 
-        if ($chatbotRequest->verify()) {
-            $this->handleRequest($chatbotRequest);
-
-        } else {
-            $this->chatApp
-                ->getProcessContainer()
-                ->get(LoggerInterface::class)
-                ->warning('request failed certificate', [
-                    'debug' => $this->botOption->debug,
-                    'servers' => $request->server,
-                    'privateKeyExists' => !empty($privateKeyContent),
-                ]);
-
-            $chatbotRequest->illegalResponse();
+        } catch (\Throwable $e) {
+            $this->chatApp->getConsoleLogger()->critical((string) $e);
+            $response->status(500);
+            $response->end('failure');
         }
     }
+
 
     protected function generateRequest(SwooleRequest $request, SwooleResponse $response) : DuerChatRequest
     {
@@ -127,7 +118,7 @@ class DuerChatServer implements OnRequestInterface
         return new DuerChatRequest(
             $this->botOption,
             $this->duerOSOption,
-            $this->server,
+            $this->swooleServer,
             $this->chatApp->getProcessContainer()[LoggerInterface::class],
             $request,
             $response,
@@ -161,7 +152,7 @@ class DuerChatServer implements OnRequestInterface
         return new DuerChatRequest(
             $this->botOption,
             $this->duerOSOption,
-            $this->server,
+            $this->swooleServer,
             $this->chatApp->getProcessContainer()[LoggerInterface::class],
             $request,
             $response,
@@ -171,8 +162,4 @@ class DuerChatServer implements OnRequestInterface
 
     }
 
-    protected function handleRequest(DuerChatRequest $request) : void
-    {
-        $this->chatApp->getKernel()->onUserMessage($request);
-    }
 }

@@ -5,6 +5,8 @@ use Commune\Studio\SessionPipes;
 
 /**
  * 机器人的默认配置.
+ * 用于 commune:tinker 命令.
+ * 可以用此命令来进行本地无数据的调试.
  *
  * @see \Commune\Chatbot\Config\ChatbotConfig
  */
@@ -38,7 +40,7 @@ return [
     // 进程级别的服务注册
     'processProviders' => [
         // 基础service
-        'studio' => Providers\StudioServiceProvider::class,
+        'exp' => Providers\ExceptionHandlerServiceProvider::class,
         // 注册 feel emotion 模块
         'feeling' => Providers\FeelingServiceProvider::class,
         // register chatbot event

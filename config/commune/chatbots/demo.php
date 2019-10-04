@@ -10,8 +10,10 @@ use Commune\Studio\SessionPipes;
  */
 return [
 
-    'chatbotName' => 'commune-demo',
+    // 系统用 chatbotName 来隔离会话. 必须要填.
+    'chatbotName' => 'commune-studio-demo',
 
+    // 会被 botOption 的 debug 覆盖.
     'debug' => true,
 
     // 在这里可以预先绑定一些用 Option 类封装的配置.
@@ -26,16 +28,15 @@ return [
 
     // 预加载的组件. 使用方法类似 configBindings
     // 但component 不仅会预加载配置, 而且还能注册各种组件, 进行初始化等.
-    'components' => [
-        \Commune\Hyperf\Demo\HyperfDemoComponent::class,
-    ],
+    'components' => [],
 
-    'baseServices' => [],
+    // 系统默认的服务注册.
+    'baseServices' => \Commune\Chatbot\Config\Children\BaseServicesConfig::stub(),
 
     // 进程级别的服务注册
     'processProviders' => [
         // 基础service
-        'studio' => Providers\StudioServiceProvider::class,
+        'exp' => Providers\ExceptionHandlerServiceProvider::class,
         // 注册 feel emotion 模块
         'feeling' => Providers\FeelingServiceProvider::class,
         // register chatbot event
@@ -79,7 +80,6 @@ return [
 
     // logger module
     'logger' => [
-        'name' => 'chatbot',
         'path' => BASE_PATH . '/runtime/commune_demo.log',
         'days' => 7,
         'level' => 'debug',
@@ -88,13 +88,7 @@ return [
         'locking' => false,
     ],
 
-    'defaultMessages' => [
-        'platformNotAvailable' => 'system.platformNotAvailable',
-        'chatIsTooBusy' => 'system.chatIsTooBusy',
-        'systemError' => 'system.systemError',
-        'farewell' => 'dialog.farewell',
-        'messageMissMatched' => 'dialog.missMatched',
-    ],
+    'defaultMessages' => \Commune\Chatbot\Config\Children\DefaultMessagesConfig::stub(),
 
     'host' => [
 
@@ -114,7 +108,11 @@ return [
             //]
         ],
 
+        // 默认的根语境名
         'rootContextName' => \Commune\Hyperf\Demo\Contexts\TestCase::class,
+
+        // 不同场景下的根语境名.
+        'sceneContextNames' => [],
 
         'sessionPipes' => [
             // event 转 message
@@ -133,6 +131,8 @@ return [
             SessionPipes\NavigationIntentsPipe::class,
         ],
 
+        // hearing 模块系统默认的 defaultFallback 方法
+        // 在 $dialog->hear()->end() 的时候调用.
         'hearingFallback' => null,
     ],
 

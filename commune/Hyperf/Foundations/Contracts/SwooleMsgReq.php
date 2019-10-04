@@ -9,7 +9,7 @@ namespace Commune\Hyperf\Foundations\Contracts;
 
 use Swoole\Server as SwooleServer;
 
-interface SwooleRequest
+interface SwooleMsgReq
 {
     public function getServer() : SwooleServer;
 

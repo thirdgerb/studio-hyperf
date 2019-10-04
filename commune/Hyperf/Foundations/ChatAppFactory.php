@@ -36,6 +36,10 @@ class ChatAppFactory
         $botOption = $this->container->get(HyperfBotOption::class);
 
         $chatbotConfig = $botOption->chatbot->toArray();
+        // 会被 botOption 的 debug 给覆盖.
+        $chatbotConfig['debug'] = $botOption->debug;
+
+
         $logger = $this->container->get(StdConsoleLogger::class);
         $chatApp = new ChatApp($chatbotConfig, $processContainer, $logger);
         return $chatApp;

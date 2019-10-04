@@ -38,7 +38,8 @@
         "hyperf/async-queue": "~1.0.0",
         "commune/chatbot": "dev-master",
         "hyperf/websocket-server": "^1.0",
-        "dueros/bot-sdk": "^2.2"
+        "dueros/bot-sdk": "^2.2",
+        "overtrue/wechat": "~4.0"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",
@@ -63,6 +64,7 @@
             "Commune\\Hyperf\\": "commune/Hyperf/",
             "Commune\\Components\\": "commune/Components/",
             "Commune\\DuerOS\\": "commune/DuerOS/",
+            "Commune\\Wechat\\": "commune/Wechat/",
             "Commune\\Studio\\": "app-studio",
             "Commune\\Apps\\": "apps"
         },

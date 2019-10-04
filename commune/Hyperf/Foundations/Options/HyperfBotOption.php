@@ -15,12 +15,26 @@ use Hyperf\Framework\Bootstrap;
 
 
 /**
- * @property-read ChatbotConfig $chatbot
- * @property-read bool $bufferMessage 是否缓存消息 whether buffer sending message to cache.
- * @property-read string $redisPool
- * @property-read string $dbPool
- * @property-read array $server
+ *
  * @property-read bool $debug
+ *
+ * @property-read ChatbotConfig $chatbot
+ *
+ * @property-read bool $bufferMessage
+ * 是否在发送消息之前, 先缓存消息到队列里. 这样避免异步消息发送失败导致的语序混乱.
+ * whether buffer sending message to cache.
+ *
+ * @property-read string $redisPool
+ * 从 Hyperf 配置中继承的 redis
+ *
+ * @property-read string $dbPool
+ * 从 Hyperf 配置中继承的 db
+ *
+ * @property-read array $server
+ * hyperf 的 server 的配置
+ *
+ * @property-read string[] $shares
+ * 定义需要从Hyperf框架传递到 chatApp 的单例.
  *
  */
 class HyperfBotOption extends Option
@@ -37,6 +51,9 @@ class HyperfBotOption extends Option
             'debug' => false,
 
             'chatbot' => ChatbotConfig::stub(),
+
+            'shares' => [
+            ],
 
             'redisPool' => 'default',
 
@@ -61,7 +78,7 @@ class HyperfBotOption extends Option
                 'settings' => [
                     'enable_coroutine' => true,
                     'worker_num' => 1,
-                    'pid_file' => BASE_PATH . '/runtime/hyperf_tcp.pid',
+                    'pid_file' => BASE_PATH . '/runtime/studio_demo.pid',
                     'open_tcp_nodelay' => true,
                     'max_coroutine' => 100000,
                     'open_http2_protocol' => true,

@@ -17,6 +17,8 @@ use Commune\DuerOS\Templates\Dialog;
 
 class RenderServiceProvider extends ReplyRendererServiceProvider
 {
+    // 默认覆盖原有的配置.
+    protected $force = true;
 
     /**
      * 会覆盖掉系统默认的 renderer

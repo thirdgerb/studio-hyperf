@@ -28,14 +28,21 @@ class TinkerChatServer implements ChatServer
     protected $output;
 
     /**
-     * Server constructor.
+     * @var string|null
+     */
+    protected $scene;
+
+    /**
+     * TinkerChatServer constructor.
      * @param ChatApp $chatApp
      * @param SymfonyStyle $output
+     * @param null|string $scene
      */
-    public function __construct(ChatApp $chatApp, SymfonyStyle $output)
+    public function __construct(ChatApp $chatApp, SymfonyStyle $output, ?string $scene)
     {
         $this->chatApp = $chatApp;
         $this->output = $output;
+        $this->scene = $scene;
     }
 
 
@@ -49,6 +56,7 @@ class TinkerChatServer implements ChatServer
             ->get(TinkerOption::class);
 
         $request = new TinkerMessageRequest(
+            $this->scene,
             $option,
             $this->output,
             new ConnectionEvt()
@@ -59,6 +67,7 @@ class TinkerChatServer implements ChatServer
             $answer = $this->output->ask('>>>');
 
             $request = new TinkerMessageRequest(
+                $this->scene,
                 $option,
                 $this->output,
                 $answer

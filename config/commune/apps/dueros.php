@@ -4,32 +4,38 @@ use Hyperf\Server\Server;
 use Hyperf\Server\SwooleEvent;
 use Hyperf\Framework\Bootstrap;
 
+$chatbot = include BASE_PATH . '/config/commune/chatbots/dueros.php';
+
 return [
 
-    'debug' => env('DUEROS_DEBUG', false),
+    'debug' => env('DUEROS_DEBUG', true),
 
-    'chatbot' => include BASE_PATH . '/config/commune/chatbots/dueros_maze.php',
+    'chatbot' => $chatbot,
 
-    'redisDriver' => 'default',
+    'redisPool' => 'dueros',
+
+    'dbPool' => 'default',
+
+    'bufferMessage' => true,
 
     'server' => [
         'mode' => SWOOLE_PROCESS,
         'servers' => [
             [
-                'name' => 'dueros-maze',
+                'name' => 'dueros_',
                 'type' => Server::SERVER_HTTP,
                 'host' => 'localhost',
-                'port' => intval(env('APP_MAZE_IP', 9502)),
+                'port' => intval(env('CHAT_DUEROS_PORT', '9502')),
                 'sock_type' => SWOOLE_SOCK_TCP,
                 'callbacks' => [
                     SwooleEvent::ON_REQUEST => [\Commune\DuerOS\Servers\DuerChatServer::class, 'onRequest'],
                 ],
-            ],
+            ]
         ],
         'settings' => [
             'enable_coroutine' => true,
             'worker_num' => 1,
-            'pid_file' => BASE_PATH . '/runtime/pid/dueros-maze.pid',
+            'pid_file' => BASE_PATH . '/runtime/pid/dueros.pid',
             'open_tcp_nodelay' => true,
             'max_coroutine' => 100000,
             'open_http2_protocol' => true,

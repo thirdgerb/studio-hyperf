@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 return [
     'dependencies' => [
+
+        // commune chatbot 所需的两个工厂方法.
         \Commune\Hyperf\Foundations\Options\HyperfBotOption::class
             => \Commune\Hyperf\Foundations\Factories\HyperfBotOptionFactory::class,
 
