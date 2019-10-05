@@ -5,9 +5,11 @@ namespace Commune\Wechat;
 
 
 use Commune\Chatbot\Framework\Component\ComponentOption;
+use Commune\Wechat\Providers\WechatAppServiceProvider;
 
 /**
  * @property-read array $wechatConfig overtrue/easywechat 的基础配置.
+ * @property-read string $serviceProvider 注册 Wechat 的 service provider.
  */
 class WechatComponent extends ComponentOption
 {
@@ -25,12 +27,15 @@ class WechatComponent extends ComponentOption
                 'aes_key' => '',                    // EncodingAESKey，兼容与安全模式下请一定要填写！！！
 
             ],
+
+            'serviceProvider' => WechatAppServiceProvider::class
         ];
     }
 
 
     protected function doBootstrap(): void
     {
+        $this->app->registerConversationService($this->serviceProvider);
     }
 
 
