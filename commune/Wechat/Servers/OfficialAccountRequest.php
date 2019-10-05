@@ -270,7 +270,7 @@ class OfficialAccountRequest extends SwooleHttpMessageRequest
 
             $openId = $this->getOpenId();
             if (empty($openId)) {
-                throw new BadRequestException('open id is miss', 400);
+                return false;
             }
 
             $this->getWechat()->server->validate();
@@ -291,9 +291,8 @@ class OfficialAccountRequest extends SwooleHttpMessageRequest
 
     public function sendRejectResponse(): void
     {
-        $response = $this->getSwooleResponse();
-        $response->status($this->errCode);
-        $response->write($this->errReason);
+        // 让 overtrue wechat 自己去处理.
+        $this->flushResponse();
     }
 
 
