@@ -270,6 +270,7 @@ class OfficialAccountRequest extends SwooleHttpMessageRequest
 
             $openId = $this->getOpenId();
             if (empty($openId)) {
+                $this->logger->warning('request validate fail, openid is missing');
                 return false;
             }
 

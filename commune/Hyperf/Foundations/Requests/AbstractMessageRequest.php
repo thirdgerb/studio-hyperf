@@ -179,14 +179,14 @@ abstract class AbstractMessageRequest implements MessageRequest, SwooleMsgReq, H
             $this->sendMessagesToBuffer();
         }
 
-        // 如果请求不合法.
+        // 如果请求不合法, 不继续渲染了.
         if (!$this->validate()) {
             return;
         }
 
         // 读取buffer
         if ($this->botOption->bufferMessage) {
-            $buffered = $this->flushed ? $this->fetchCachedMessages() : [];
+            $buffered = !$this->flushed ? $this->fetchCachedMessages() : [];
 
         } else {
             $key = $this->userMessageBufferKey($this->fetchUserId());
