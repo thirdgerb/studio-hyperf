@@ -60,7 +60,6 @@ class HttpBabel
         // headers
         foreach ($symfonyRes->headers->allPreserveCaseWithoutCookies() as $name => $values) {
             $value = implode(';', $values);
-            var_dump('value', $value);
             $swooleRes->header($name, $value);
         }
 
