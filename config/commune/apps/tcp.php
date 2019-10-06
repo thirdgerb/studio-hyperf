@@ -24,7 +24,7 @@ return [
                 'name' => 'tcp',
                 'type' => Server::SERVER_TCP,
                 'host' => 'localhost',
-                'port' => intval(env('CHAT_TCP_PORT', '9501')),
+                'port' => intval(env('CHAT_TCP_PORT', 9527)),
                 'sock_type' => SWOOLE_SOCK_TCP,
                 'callbacks' => [
                     SwooleEvent::ON_RECEIVE

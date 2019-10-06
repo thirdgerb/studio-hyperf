@@ -25,7 +25,7 @@ return [
                 'name' => 'wechat',
                 'type' => Server::SERVER_HTTP,
                 'host' => 'localhost',
-                'port' => intval(env('CHAT_WECHAT_PORT', 9503)),
+                'port' => intval(env('CHAT_WECHAT_PORT', 9528)),
                 'sock_type' => SWOOLE_SOCK_TCP,
                 'callbacks' => [
                     SwooleEvent::ON_REQUEST => [\Commune\Wechat\Servers\OfficialAccountServer::class, 'onRequest'],

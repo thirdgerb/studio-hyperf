@@ -25,7 +25,7 @@ return [
                 'name' => 'dueros_',
                 'type' => Server::SERVER_HTTP,
                 'host' => 'localhost',
-                'port' => intval(env('CHAT_DUEROS_PORT', '9502')),
+                'port' => intval(env('CHAT_DUEROS_PORT', 9529)),
                 'sock_type' => SWOOLE_SOCK_TCP,
                 'callbacks' => [
                     SwooleEvent::ON_REQUEST => [\Commune\DuerOS\Servers\DuerChatServer::class, 'onRequest'],
