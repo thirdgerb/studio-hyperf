@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class UserInfo
- * @package Commune\DuerOS\Demo\Memories
- */
-
 namespace Commune\Hyperf\Demo\Memories;
 
 

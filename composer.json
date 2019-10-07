@@ -63,9 +63,7 @@
             "App\\": "app/",
             "Commune\\Hyperf\\": "commune/Hyperf/",
             "Commune\\Components\\": "commune/Components/",
-            "Commune\\DuerOS\\": "commune/DuerOS/",
-            "Commune\\Wechat\\": "commune/Wechat/",
-            "Commune\\Studio\\": "app-studio",
+            "Commune\\Platform\\": "commune/Platform/",
             "Commune\\Apps\\": "apps"
         },
         "files": []

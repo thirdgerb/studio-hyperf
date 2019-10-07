@@ -12,7 +12,7 @@ $chatbot['logger']['path'] = BASE_PATH . '/runtime/logs/commune-dueros.log';
 
 $chatbot['components'] = array_merge($chatbot['components'], [
     \Commune\Hyperf\Demo\HyperfDemoComponent::class,
-    \Commune\DuerOS\DuerOSComponent::class => [
+    \Commune\Platform\DuerOS\DuerOSComponent::class => [
         'privateKey' => env('DUEROS_PRIVATE_KEY', ''),
     ],
     \Commune\Components\StoryComponent::class,

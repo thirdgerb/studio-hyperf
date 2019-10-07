@@ -12,7 +12,7 @@ $chatbot['logger']['path'] = BASE_PATH . '/runtime/logs/commune-wechat.log';
 
 $chatbot['components'] = array_merge($chatbot['components'], [
     // 微信公众号的配置
-    \Commune\Wechat\WechatComponent::class => [
+    \Commune\Platform\Wechat\WechatComponent::class => [
         'wechatConfig' => [
             'app_id'  => env('WECHAT_APP_ID', ''),
             'secret'  => env('WECHAT_APP_SECRET', ''),

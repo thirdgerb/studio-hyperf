@@ -28,7 +28,7 @@ return [
                 'port' => intval(env('CHAT_WECHAT_PORT', 9528)),
                 'sock_type' => SWOOLE_SOCK_TCP,
                 'callbacks' => [
-                    SwooleEvent::ON_REQUEST => [\Commune\Wechat\Servers\OfficialAccountServer::class, 'onRequest'],
+                    SwooleEvent::ON_REQUEST => [\Commune\Platform\Wechat\Servers\OfficialAccountServer::class, 'onRequest'],
                 ],
             ],
         ],

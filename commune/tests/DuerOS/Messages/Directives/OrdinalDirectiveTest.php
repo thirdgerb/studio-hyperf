@@ -8,7 +8,7 @@
 namespace Commune\Test\Studio\DuerOS\Messages\Directives;
 
 
-use Commune\DuerOS\Messages\Directives\OrdinalDirective;
+use Commune\Platform\DuerOS\Messages\Directives\OrdinalDirective;
 use PHPUnit\Framework\TestCase;
 
 class OrdinalDirectiveTest extends TestCase

@@ -1,15 +1,9 @@
 <?php
 
-/**
- * Class TestCase
- * @package Commune\DuerOS\Demo
- */
-
 namespace Commune\Hyperf\Demo\Contexts;
 
 
 use Commune\Chatbot\App\Callables\Actions\Redirector;
-use Commune\Chatbot\Blueprint\Message\QA\Answer;
 use Commune\Chatbot\OOHost\Context\Depending;
 use Commune\Chatbot\OOHost\Context\Exiting;
 use Commune\Chatbot\OOHost\Context\OOContext;
