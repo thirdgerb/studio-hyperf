@@ -99,14 +99,23 @@ class ScriptMenu extends AbsScriptTask
      */
     public function __onStart(Stage $stage): Navigator
     {
-        return $stage->buildTalk()
+        $playing = $this->mem->playingEpisode;
+        $option = $this->getScriptOption();
+
+        $stage =  $stage->buildTalk()
             ->info(
-                $this->getScriptOption()->parseReplyId('welcomeToScript'),
+                $option->parseReplyId('welcomeToScript'),
                 [
                     'title' => $this->getScriptOption()->title
                 ]
-            )
-            ->goStage('menu');
+            );
+
+        if (isset($playing)) {
+            return $stage->info($option->parseReplyId('continuePlay'))
+                ->goStage('playEpisode');
+        }
+
+        return $stage->goStage('chooseEpisode');
 
     }
 

@@ -3,11 +3,8 @@
 $chatbot = include __DIR__ . '/demo.php';
 
 
-$chatbot['logger']['path'] = BASE_PATH . '/runtime/logs/tcp.log';
+$chatbot['chatbotName'] = 'commune-tcp-demo';
+$chatbot['logger']['path'] = BASE_PATH . '/runtime/logs/commune-tcp.log';
+$chatbot['configBindings'][] = \Commune\Hyperf\Servers\Tcp\TcpOption::class;
 
-return [
-    'chatbotName' => 'commune-tcp',
-    'configBindings' => [
-        \Commune\Hyperf\Servers\Tcp\TcpOption::class,
-    ],
-] + $chatbot;
+return $chatbot;

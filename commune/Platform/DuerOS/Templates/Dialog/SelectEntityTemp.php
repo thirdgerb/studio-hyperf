@@ -25,16 +25,15 @@ class SelectEntityTemp extends QuestionTemp
             : null;
     }
 
-    protected function renderDirective(Question $question, Conversation $conversation): array
+    protected function renderDirective(Question $question, Conversation $conversation, array $suggestions): array
     {
         if (
             !$question instanceof SelectEntity
             && !$question instanceof ChooseEntity
         ) {
-            return parent::renderDirective($question, $conversation);
+            return parent::renderDirective($question, $conversation, $suggestions);
         }
 
-        $suggestions = $question->getSuggestions();
         if (empty($suggestions)) {
             return [];
         }

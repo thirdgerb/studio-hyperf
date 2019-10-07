@@ -10,7 +10,9 @@ return [
     // 配置内容请查看 Commune\Hyperf\Foundations\Options\HyperfBotOption
     'apps' => [
         // 默认的tcp端. 通常供测试用.
-        'tcp' => include BASE_PATH. '/config/commune/apps/tcp.php',
+        'tcp' => include BASE_PATH . '/config/commune/apps/tcp.php',
+
+        'web' => include BASE_PATH . '/config/commune/apps/web.php',
 
         // 系统自带的 dueros 端, 可以连接小度音箱设备.
         'dueros' => include BASE_PATH . '/config/commune/apps/dueros.php',

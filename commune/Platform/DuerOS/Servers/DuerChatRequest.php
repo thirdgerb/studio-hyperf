@@ -333,7 +333,7 @@ class DuerChatRequest extends SwooleHttpMessageRequest
 
         // verbose
         } elseif ($message instanceof VerboseMsg) {
-            $this->outSpeech .= '. ' . $message->getText();
+            $this->outSpeech .= $message->getText();
         }
 
 

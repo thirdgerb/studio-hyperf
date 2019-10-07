@@ -43,10 +43,18 @@ class QuestionTemp extends AbstractTemp
             );
         }
 
-        $this->expectResponse($reply, $conversation);
-        $messages = $this->renderDirective($reply, $conversation);
+        $suggestions = $this->parseSuggestions($reply);
+        $this->expectResponse($reply, $conversation, $suggestions);
+        $messages = $this->renderDirective($reply, $conversation, $suggestions);
         return array_merge($messages, $this->renderQuestion($reply, $conversation));
 
+    }
+
+    protected function parseSuggestions(Question $question) : array
+    {
+        return array_map(function($suggestion) use ($question){
+            return $this->translator->trans((string) $suggestion, $question->getSlots()->all());
+        }, $question->getSuggestions());
     }
 
     /**
@@ -54,10 +62,10 @@ class QuestionTemp extends AbstractTemp
      *
      * @param Question $question
      * @param Conversation $conversation
+     * @param array $suggestions
      */
-    protected function expectResponse(Question $question, Conversation $conversation) : void
+    protected function expectResponse(Question $question, Conversation $conversation, array $suggestions) : void
     {
-        $suggestions = $question->getSuggestions();
         if (empty($suggestions)) {
             return;
         }
@@ -96,11 +104,11 @@ class QuestionTemp extends AbstractTemp
      *
      * @param Question $question
      * @param Conversation $conversation
+     * @param string[] $suggestions
      * @return Message[]
      */
-    protected function renderDirective(Question $question, Conversation $conversation) : array
+    protected function renderDirective(Question $question, Conversation $conversation, array $suggestions) : array
     {
-        $suggestions = $question->getSuggestions();
         if (empty($suggestions)) {
             return [];
         }

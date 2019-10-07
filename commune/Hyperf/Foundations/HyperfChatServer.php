@@ -10,6 +10,7 @@ namespace Commune\Hyperf\Foundations;
 use Commune\Chatbot\Blueprint\Application;
 use Commune\Chatbot\Blueprint\Conversation\Conversation;
 use Commune\Chatbot\Contracts\ChatServer;
+use Commune\Hyperf\Foundations\Contracts\SwooleHttpMsgReq;
 use Commune\Hyperf\Foundations\Contracts\SwooleMsgReq;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Hyperf\Server\ServerInterface as HyperfServer;
@@ -110,7 +111,10 @@ class HyperfChatServer implements ChatServer
     {
         // 关闭当前连接.
         $request = $conversation->getRequest();
-        if ($request instanceof SwooleMsgReq) {
+        if ($request instanceof SwooleHttpMsgReq) {
+            return;
+
+        } elseif ($request instanceof SwooleMsgReq) {
             $fd = $request->getFd();
             $this->getHyperfServer()->getServer()->close($fd);
         }

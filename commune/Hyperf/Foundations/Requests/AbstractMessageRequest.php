@@ -9,8 +9,10 @@ namespace Commune\Hyperf\Foundations\Requests;
 
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Conversation\MessageRequest;
+use Commune\Chatbot\Blueprint\Conversation\RunningSpy;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\Framework\Conversation\MessageRequestHelper;
+use Commune\Chatbot\Framework\Conversation\RunningSpyTrait;
 use Commune\Hyperf\Foundations\Contracts\MessageQueue;
 use Commune\Hyperf\Foundations\Contracts\SwooleMsgReq;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
@@ -25,9 +27,9 @@ use Swoole\Server;
  * 这个队列相当于一个用户的发件箱. 因此也允许别的请求给该用户的发件箱发内容.
  *
  */
-abstract class AbstractMessageRequest implements MessageRequest, SwooleMsgReq, HasIdGenerator
+abstract class AbstractMessageRequest implements MessageRequest, SwooleMsgReq, HasIdGenerator, RunningSpy
 {
-    use MessageRequestHelper {
+    use RunningSpyTrait, MessageRequestHelper {
         getLogContext as protected getHelperLogContext;
     }
 
@@ -96,6 +98,9 @@ abstract class AbstractMessageRequest implements MessageRequest, SwooleMsgReq, H
         $this->botOption = $botOption;
         $this->fd = $fd;
         $this->server = $server;
+
+        $msgId = $this->fetchMessageId();
+        static::addRunningTrace($msgId, $msgId);
     }
 
     /*-------- methods --------*/
@@ -297,5 +302,9 @@ abstract class AbstractMessageRequest implements MessageRequest, SwooleMsgReq, H
         return $context;
     }
 
+    public function __destruct()
+    {
+        static::removeRunningTrace($this->fetchMessageId());
+    }
 
 }

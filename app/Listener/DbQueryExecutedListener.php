@@ -22,7 +22,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * @Listener
+ * @  Listener  默认关闭了这个监听
  */
 class DbQueryExecutedListener implements ListenerInterface
 {

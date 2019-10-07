@@ -4,9 +4,11 @@ use Hyperf\Server\Server;
 use Hyperf\Server\SwooleEvent;
 use Hyperf\Framework\Bootstrap;
 
-$chatbot = include BASE_PATH . '/config/commune/chatbots/tcp.php';
+$chatbot = include BASE_PATH . '/config/commune/chatbots/web.php';
+
 
 return [
+
     'debug' => true,
 
     'chatbot' => $chatbot,
@@ -21,31 +23,27 @@ return [
         'mode' => SWOOLE_PROCESS,
         'servers' => [
             [
-                'name' => 'tcp',
-                'type' => Server::SERVER_TCP,
+                'name' => 'wechat',
+                'type' => Server::SERVER_HTTP,
                 'host' => 'localhost',
-                'port' => intval(env('CHAT_TCP_PORT', 9527)),
+                'port' => intval(env('CHAT_WEB_PORT', 9530)),
                 'sock_type' => SWOOLE_SOCK_TCP,
                 'callbacks' => [
-                    SwooleEvent::ON_RECEIVE
-                    => [\Commune\Hyperf\Servers\Tcp\TcpServer::class, 'onReceive'],
-                    SwooleEvent::ON_CONNECT
-                    => [\Commune\Hyperf\Servers\Tcp\TcpServer::class, 'onConnect'],
-                    SwooleEvent::ON_CLOSE
-                    => [\Commune\Hyperf\Servers\Tcp\TcpServer::class, 'onClose']
+                    SwooleEvent::ON_REQUEST => [\Commune\Platform\Web\Servers\WebServer::class, 'onRequest'],
                 ],
             ],
         ],
         'settings' => [
             'enable_coroutine' => true,
             'worker_num' => 1,
-            'pid_file' => BASE_PATH . '/runtime/pid/tcp.pid',
+            'pid_file' => BASE_PATH . '/runtime/pid/web.pid',
             'open_tcp_nodelay' => true,
             'max_coroutine' => 100000,
             'open_http2_protocol' => true,
             'max_request' => 100000,
             'socket_buffer_size' => 2 * 1024 * 1024,
         ],
+
         'callbacks' => [
 //            SwooleEvent::ON_BEFORE_START => [Bootstrap\ServerStartCallback::class, 'beforeStart'],
 //            SwooleEvent::ON_WORKER_START => [Bootstrap\WorkerStartCallback::class, 'onWorkerStart'],

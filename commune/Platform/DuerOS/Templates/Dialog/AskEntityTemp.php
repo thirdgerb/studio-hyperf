@@ -24,10 +24,10 @@ class AskEntityTemp extends QuestionTemp
             : null;
     }
 
-    protected function renderDirective(Question $reply, Conversation $conversation): array
+    protected function renderDirective(Question $reply, Conversation $conversation, array $suggestions): array
     {
         if (!$reply instanceof AskEntity) {
-            return parent::renderDirective($reply, $conversation);
+            return parent::renderDirective($reply, $conversation, $suggestions);
         }
 
         $request = $this->getDuerRequest($conversation);
@@ -42,7 +42,7 @@ class AskEntityTemp extends QuestionTemp
             return [];
         }
 
-        return parent::renderDirective($reply, $conversation);
+        return parent::renderDirective($reply, $conversation, $suggestions);
     }
 
 }

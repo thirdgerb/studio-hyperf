@@ -28,7 +28,10 @@ return [
 
     // 预加载的组件. 使用方法类似 configBindings
     // 但component 不仅会预加载配置, 而且还能注册各种组件, 进行初始化等.
-    'components' => [],
+    'components' => [
+        \Commune\Hyperf\Demo\HyperfDemoComponent::class,
+        \Commune\Components\StoryComponent::class,
+    ],
 
     // 系统默认的服务注册.
     'baseServices' => \Commune\Chatbot\Config\Children\BaseServicesConfig::stub(),
@@ -41,14 +44,14 @@ return [
         'feeling' => Providers\FeelingServiceProvider::class,
         // register chatbot event
         'event' => Providers\EventServiceProvider::class,
+        // 公共的rendering
+        'render' =>  Providers\RenderServiceProvider::class,
     ],
 
     // 在worker中注册的服务, 多个请求共享
     'conversationProviders' => [
         // 权限识别
         'ability' => Providers\AbilityServiceProvider::class,
-        // 公共的rendering
-        'render' =>  Providers\RenderServiceProvider::class,
         // hyperf client driver . redis, db
         // hyperf 的协程客户端
         'client' => \Commune\Hyperf\Foundations\Providers\ClientDriverServiceProvider::class,
@@ -112,7 +115,10 @@ return [
         'rootContextName' => \Commune\Hyperf\Demo\Contexts\TestCase::class,
 
         // 不同场景下的根语境名.
-        'sceneContextNames' => [],
+        'sceneContextNames' => [
+            'maze' => \Commune\Demo\App\Cases\Maze\MazeInt::getContextName(),
+            'story' => 'story.examples.sanguo.changbanpo',
+        ],
 
         'sessionPipes' => [
             // event 转 message

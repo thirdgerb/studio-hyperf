@@ -7,6 +7,8 @@
 
 namespace Commune\Platform\DuerOS\Providers;
 
+use Commune\Chatbot\App\Messages\Templates\TranslateTemp;
+use Commune\Chatbot\Blueprint\Conversation\Renderer;
 use Commune\Chatbot\Framework\Providers\ReplyRendererServiceProvider;
 use Commune\Chatbot\App\Messages\System\QuitSessionReply;
 use Commune\Platform\DuerOS\Templates\QuitTemp;
@@ -25,6 +27,10 @@ class RenderServiceProvider extends ReplyRendererServiceProvider
      * @var array
      */
     protected $templates =[
+
+        // default
+        Renderer::DEFAULT_ID => TranslateTemp::class,
+
         // event
         QuitSessionReply::REPLY_ID => QuitTemp::class,
 

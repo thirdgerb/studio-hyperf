@@ -23,7 +23,7 @@ use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Logger\LoggerFactory;
 
 /**
- * @Listener
+ * @   Listener 默认关闭了这个监听.
  */
 class QueueHandleListener implements ListenerInterface
 {

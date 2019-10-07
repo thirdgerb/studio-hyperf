@@ -91,7 +91,6 @@ class RedisCacheAdapter implements CacheAdapter
 
     public function unlock(string $key): bool
     {
-        $key = $this->parseKey($key);
         return $this->forget($key);
     }
 

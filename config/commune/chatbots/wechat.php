@@ -20,17 +20,7 @@ $chatbot['components'] = array_merge($chatbot['components'], [
             'aes_key' => env('WECHAT_AES_KEY', ''),
         ],
     ],
-
-    // 默认加载 hyperf 的 demo
-    \Commune\Hyperf\Demo\HyperfDemoComponent::class,
 ]);
-
-// 根路径
-$chatbot['host']['rootContextName'] = \Commune\Hyperf\Demo\Contexts\TestCase::getContextName();
-
-// 场景路径
-$chatbot['host']['sceneContextNames'] = [
-];
 
 return $chatbot;
 

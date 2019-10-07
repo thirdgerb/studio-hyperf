@@ -17,15 +17,13 @@ use Commune\Platform\DuerOS\Templates\QuestionTemp;
 class SelectIntentTemp extends QuestionTemp
 {
 
-    protected function renderDirective(Question $question, Conversation $conversation): array
+    protected function renderDirective(Question $question, Conversation $conversation, array $suggestions): array
     {
         if (!$question instanceof ChooseIntent) {
-            return parent::renderDirective($question, $conversation);
+            return parent::renderDirective($question, $conversation, $suggestions);
         }
 
-        $suggestions =  $question->getSuggestions();
         $intents = $question->getIntents();
-
         if (empty($intents) || empty($suggestions)) {
             return [];
         }

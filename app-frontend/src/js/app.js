@@ -2,24 +2,35 @@ require('./bootstrap');
 
 import { Bubbles } from "../Bubble/Bubbles.js";
 
-let convo = // pass your JSON/JavaScript object to `.talk()` function where
-    // you define how the conversation between the bot and user will go
-    {
-        // "says" defines an array of sequential bubbles
-        // that the bot will produce
-        "says": [ "#repeat"],
+const URL = '/web';
 
-    };
 
 const chatWindow = new Bubbles(
     document.getElementById("chat"), // ...passing HTML container element...
     "window.chatWindow", // ...and name of the function as a parameter
     {
-        animationTime: 100,
-        recallInteractions : 20,
+        animationTime: 200,
+        typeSpeed : 5,
+        recallInteractions : 2,
+        placeholder : "请输入...",
         inputCallbackFn: function(o){
-            console.log(o);
-            chatWindow.reply(convo);
+            let text = o.content ? o.content : '';
+            if (window._.isString(text) && text.length < 1) {
+                return;
+            }
+            window.axios.post(URL + location.search, {text}, {
+                timeout : 500,
+                maxRedirects : 2
+            }).then(response => {
+                if (200 === response.status) {
+                    window.chatWindow.reply(response.data);
+                } else {
+                    alert(response);
+                }
+            }).catch(error => {
+                console.log(error);
+                alert(error);
+            });
         }
     }
 );
@@ -28,5 +39,5 @@ window.chatWindow = chatWindow;
 
 // `.talk()` will get your bot to begin the conversation
 chatWindow.answer(
-    '', '#repeat'
+    '', '#restart'
 );
