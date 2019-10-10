@@ -51,13 +51,13 @@ class TinkerMessageRequest implements MessageRequest, HasIdGenerator
 
     /**
      * TinkerMessageRequest constructor.
-     * @param string $scene
+     * @param null|string $scene
      * @param TinkerOption $option
      * @param SymfonyStyle $output
      * @param $line
      */
     public function __construct(
-        string $scene,
+        ? string $scene,
         TinkerOption $option,
         SymfonyStyle $output,
         $line

@@ -24,6 +24,7 @@ use Commune\Support\Option;
  */
 class StageOption extends Option
 {
+    const IDENTITY = 'id';
 
     protected static $associations = [
         'redirects[]' => RedirectOption::class,

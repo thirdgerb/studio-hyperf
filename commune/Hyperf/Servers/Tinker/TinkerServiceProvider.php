@@ -10,8 +10,6 @@ namespace Commune\Hyperf\Servers\Tinker;
 
 use Commune\Chatbot\App\Abilities\Supervise;
 use Commune\Chatbot\Blueprint\Conversation\Conversation;
-use Commune\Chatbot\Contracts\ExceptionHandler;
-use Commune\Chatbot\App\Drivers\Demo\SimpleExpHandler;
 use Commune\Chatbot\Framework\Providers\BaseServiceProvider;
 use Commune\Container\ContainerContract;
 
@@ -35,19 +33,11 @@ class TinkerServiceProvider extends BaseServiceProvider
 
                 public function isAllowing(Conversation $conversation): bool
                 {
-                    /**
-                     * @var TinkerOption $config
-                     */
-                    $config = $conversation[TinkerOption::class];
-                    return $conversation->getUser()->getId() === $config->userId;
+                    return true;
                 }
             };
         });
 
-        $this->app->singleton(
-            ExceptionHandler::class,
-            SimpleExpHandler::class
-        );
     }
 
 

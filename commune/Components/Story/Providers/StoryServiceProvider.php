@@ -4,16 +4,15 @@
 namespace Commune\Components\Story\Providers;
 
 
-use Commune\Chatbot\Blueprint\Application;
-use Commune\Chatbot\Framework\Exceptions\ConfigureException;
-use Commune\Chatbot\Framework\Providers\BaseServiceProvider;
-use Commune\Chatbot\OOHost\Context\ContextRegistrar;
-use Commune\Components\Story\Basic\StoryRegistrar;
-use Commune\Components\Story\Basic\StoryRegistrarImpl;
-use Commune\Components\Story\Options\ScriptOption;
-use Commune\Components\StoryComponent;
 use Commune\Container\ContainerContract;
-use Symfony\Component\Yaml\Yaml;
+use Commune\Chatbot\Blueprint\Application;
+use Commune\Components\Story\StoryComponent;
+use Commune\Components\Story\Basic\StoryRegistrar;
+use Commune\Components\Story\Options\ScriptOption;
+use Commune\Chatbot\OOHost\Context\ContextRegistrar;
+use Commune\Components\Story\Basic\StoryRegistrarImpl;
+use Commune\Support\OptionRepo\Contracts\OptionRepository;
+use Commune\Chatbot\Framework\Providers\BaseServiceProvider;
 
 class StoryServiceProvider extends BaseServiceProvider
 {
@@ -40,27 +39,18 @@ class StoryServiceProvider extends BaseServiceProvider
     {
         /**
          * @var StoryRegistrar $registrar
+         * @var OptionRepository $repo
          */
         $registrar = $app[StoryRegistrar::class];
+        $repo = $app[OptionRepository::class];
 
-        foreach ($this->storyOption->resources as $resource) {
-
-            if (!file_exists($resource)) {
-                throw new ConfigureException(
-                    static::class
-                    . " story resource $resource not found"
-                );
-            }
-            $content = file_get_contents($resource);
-            $config = Yaml::parse($content);
-            $scriptOption = new ScriptOption($config);
-            $registrar->registerScriptOption($scriptOption);
+        foreach ($repo->eachOption($app, ScriptOption::class) as $script) {
+            $registrar->registerScriptOption($script);
         }
     }
 
     public function register()
     {
-
         // 注册 story 服务.
         $this->app->singleton(StoryRegistrar::class, function($app){
             $parent = $app[ContextRegistrar::class];

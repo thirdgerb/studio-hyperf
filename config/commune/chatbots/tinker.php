@@ -32,7 +32,7 @@ return [
     'components' => [
         \Commune\Hyperf\Demo\HyperfDemoComponent::class,
 
-        \Commune\Components\StoryComponent::class,
+        \Commune\Components\Story\StoryComponent::class,
     ],
 
     'baseServices' => [],

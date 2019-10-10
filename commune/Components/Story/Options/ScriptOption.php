@@ -49,6 +49,11 @@ class ScriptOption extends Option
         ];
     }
 
+    public function getBrief() : string
+    {
+        return $this->title;
+    }
+
     public function getEpisodeOption(string $episodeName) : ? EpisodeOption
     {
         foreach ($this->episodes as $episode) {
