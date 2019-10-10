@@ -61,8 +61,8 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "Commune\\Studio\\": "app-studio/",
             "Commune\\Hyperf\\": "commune/Hyperf/",
-            "Commune\\Components\\": "commune/Components/",
             "Commune\\Platform\\": "commune/Platform/",
             "Commune\\Apps\\": "apps"
         },
