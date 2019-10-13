@@ -7,7 +7,7 @@
 
 namespace Commune\Studio\SessionPipes;
 
-use Commune\Chatbot\App\Components\Predefined\Navigation;
+use Commune\Components\Predefined\Intents\Navigation;
 use Commune\Chatbot\OOHost\Command\HelpCmd;
 use Commune\Chatbot\OOHost\Command\SessionCommandPipe;
 use Commune\Studio\Commands\WhosYourDaddyCmd;

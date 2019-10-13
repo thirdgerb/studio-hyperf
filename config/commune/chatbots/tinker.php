@@ -45,6 +45,8 @@ return [
         'feeling' => Providers\FeelingServiceProvider::class,
         // register chatbot event
         'event' => Providers\EventServiceProvider::class,
+        // 公共d的rendering
+        'render' =>  Providers\RenderServiceProvider::class,
     ],
 
     // 在worker中注册的服务, 多个请求共享
@@ -53,8 +55,6 @@ return [
         // 权限识别
         'ability' => Providers\AbilityServiceProvider::class,
 
-        // 公共d的rendering
-        'render' =>  Providers\RenderServiceProvider::class,
 
         // cache adapter driver
         // 实现 chatbot 需要的 cache adapter

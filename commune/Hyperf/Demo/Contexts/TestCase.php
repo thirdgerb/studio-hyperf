@@ -11,7 +11,7 @@ use Commune\Chatbot\OOHost\Context\Stage;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
 use Commune\Chatbot\OOHost\Directing\Navigator;
 use Commune\Demo\App\Cases\Maze\MazeInt;
-use Commune\Hyperf\Demo\Memories\UserInfoMem;
+use Commune\Components\Predefined\Memories\UserInfoMem;
 
 /**
  * @property-read string $name;

@@ -52,9 +52,7 @@ class QuestionTemp extends AbstractTemp
 
     protected function parseSuggestions(Question $question) : array
     {
-        return array_map(function($suggestion) use ($question){
-            return $this->translator->trans((string) $suggestion, $question->getSlots()->all());
-        }, $question->getSuggestions());
+        return $question->getSuggestions();
     }
 
     /**
@@ -124,13 +122,7 @@ class QuestionTemp extends AbstractTemp
      */
     protected function renderQuestion(Question $reply, Conversation $conversation) : array
     {
-        $query = $reply->getQuery();
-        $slots = $reply->getSlots();
-
-        // 语音和文字不一样的地方. 不会主动渲染 default 和 suggestions
-        // 最好是手写进描述里.
-        $question = $this->translator->trans($query, $slots->all());
-        return [ new Text($question)];
+        return [ new Text($reply->getQuery())];
     }
 
 }

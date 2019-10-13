@@ -39,5 +39,5 @@ window.chatWindow = chatWindow;
 
 // `.talk()` will get your bot to begin the conversation
 chatWindow.answer(
-    '', '#restart'
+    '', '#repeat'
 );

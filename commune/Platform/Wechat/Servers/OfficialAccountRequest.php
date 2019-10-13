@@ -22,7 +22,7 @@ use Commune\Chatbot\Contracts\CacheAdapter;
 use Commune\Platform\Wechat\Messages as WechatMessages;
 use EasyWeChat\Kernel\Messages as EasyWechatMessages;
 use Commune\Chatbot\Blueprint\Message\Message;
-use Commune\Chatbot\Framework\Messages\Unsupported;
+use Commune\Chatbot\App\Messages\Unsupported;
 use EasyWeChat\OfficialAccount\Application as Wechat;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Chatbot\Framework\Exceptions\RequestException;

@@ -9,8 +9,8 @@ namespace Commune\Platform\DuerOS\Servers;
 
 use Baidu\Duer\Botsdk\Request as DuerRequest;
 use Commune\Chatbot\Blueprint\Conversation\NLU;
-use Commune\Chatbot\App\Components\Predefined\Navigation\HomeInt;
-use Commune\Chatbot\App\Components\Predefined\Navigation\QuitInt;
+use Commune\Components\Predefined\Intents\Navigation\HomeInt;
+use Commune\Components\Predefined\Intents\Navigation\QuitInt;
 use Commune\Chatbot\Framework\Conversation\NatureLanguageUnit;
 use Commune\Chatbot\OOHost\Context\Intent\IntentMessage;
 use Commune\Platform\DuerOS\Constants\CommonIntents;
@@ -86,6 +86,8 @@ class DuerOSNLUParser
             return $nlu;
         }
 
+        // 以上都是没有匹配到任何意图.
+
         $nlu->setMatchedIntent($communeMatchedIntent);
         $intentData = $this->duerRequest->getData()['request']['intents'];
 
@@ -144,7 +146,7 @@ class DuerOSNLUParser
         }
 
         // 标记 NLU 已经处理过.
-        $nlu->done();
+        $nlu->done(static::class);
         return $nlu;
     }
 

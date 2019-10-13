@@ -9,8 +9,8 @@ namespace Commune\Platform\DuerOS;
 
 use Commune\Chatbot\Framework\Component\ComponentOption;
 use Commune\Platform\DuerOS\Constants\CommonIntents as DuerIntents;
-use Commune\Chatbot\App\Components\Predefined\Attitudes;
-use Commune\Chatbot\App\Components\Predefined\Loop;
+use Commune\Components\Predefined\Intents\Attitudes;
+use Commune\Components\Predefined\Intents\Loop;
 use Commune\Platform\DuerOS\Constants\Dictionary;
 use Commune\Platform\DuerOS\Providers\RenderServiceProvider;
 

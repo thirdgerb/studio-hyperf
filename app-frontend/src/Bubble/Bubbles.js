@@ -8,6 +8,7 @@ function Bubbles(container, self, options) {
   sidePadding = options.sidePadding || 6 // padding on both sides of chat bubbles
   recallInteractions = options.recallInteractions || 0 // number of interactions to be remembered and brought back upon restart
   this.inputCallbackFn = options.inputCallbackFn || false // should we display an input field?
+  maxTypingWait = options.maxTypingWait || 500;
 
   // 增加功能.
   placeholder = options.placeholder || 'write something'
@@ -224,8 +225,11 @@ function Bubbles(container, self, options) {
       bubble.addEventListener("click", function() {
         for (var i = 0; i < bubbleButtons.length; i++) {
           ;(function(el) {
-            el.style.width = 0 + "px"
-            el.classList.contains("bubble-pick") ? (el.style.width = "") : false
+            if (el.classList.contains("bubble-pick")){
+                el.style.width = "";
+            } else {
+                el.style.display = "none";
+            }
             el.removeAttribute("onclick")
           })(bubbleButtons[i])
         }
@@ -238,6 +242,7 @@ function Bubbles(container, self, options) {
     if (say.length * typeSpeed > animationTime && reply == "") {
       wait += typeSpeed * say.length
       wait < minTypingWait ? (wait = minTypingWait) : false
+      wait > maxTypingWait ? (wait = maxTypingWait) : false
       setTimeout(function() {
         bubbleTyping.classList.remove("imagine")
       }, animationTime)

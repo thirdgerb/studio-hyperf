@@ -8,7 +8,7 @@
 namespace Commune\Studio\SessionPipes;
 
 use Commune\Chatbot\App\SessionPipe\NavigationPipe as Example;
-use Commune\Chatbot\App\Components\Predefined\Navigation;
+use Commune\Components\Predefined\Intents\Navigation;
 
 /**
  * highest level intent

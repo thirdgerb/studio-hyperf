@@ -8,7 +8,7 @@
 namespace Commune\Platform\DuerOS\Messages\Directives;
 
 
-use Commune\Chatbot\App\Components\Predefined\Dialogue\OrdinalInt;
+use Commune\Components\Predefined\Intents\Dialogue\OrdinalInt;
 use Commune\Platform\DuerOS\Constants\Directives;
 use Commune\Platform\DuerOS\Constants\DuerOSIntent;
 use Commune\Platform\DuerOS\Messages\AbsDirective;

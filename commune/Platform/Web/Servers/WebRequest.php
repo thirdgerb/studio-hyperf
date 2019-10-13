@@ -9,15 +9,17 @@ use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Conversation\Speech;
 use Commune\Chatbot\Blueprint\Message\Media\ImageMsg;
 use Commune\Chatbot\Blueprint\Message\Message;
-use Commune\Chatbot\Blueprint\Message\Tags\Conversational;
+use Commune\Chatbot\Blueprint\Message\Replies\LinkMsg;
 use Commune\Chatbot\Blueprint\Message\VerboseMsg;
+use Commune\Chatbot\OOHost\Dialogue\Dialog;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Hyperf\Foundations\Requests\SwooleHttpMessageRequest;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Swoole\Server;
+use Commune\Chatbot\OOHost\Dialogue\NeedDialogStatus;
 
-class WebRequest extends SwooleHttpMessageRequest
+class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
 {
     const SCENE_GETTER = 'scene';
 
@@ -51,28 +53,26 @@ class WebRequest extends SwooleHttpMessageRequest
         foreach ($messages as $message) {
             $msg = $message->getMessage();
 
-            if ($msg instanceof Conversational) {
-                $this->suggestions = $msg->getSuggestions();
-            }
+            // 文本渲染
+            if ($msg instanceof LinkMsg) {
+                $text = $msg->getText();
+                $url = $msg->getUrl();
+                $text = '<a href="'.$url.'">'.$text. '</a>';
 
-            if ($msg instanceof VerboseMsg) {
+            } elseif ($msg instanceof ImageMsg) {
+                $text = "<img src=\"{$msg->getUrl()}\" />";
+
+            } else {
                 $text = str_replace(
                     "\n",
                     '<br>',
                     htmlentities($msg->getText())
                 );
-                $this->messages[] = $this->wrapLevel($msg->getLevel(), $text);
-
-            } elseif ($msg instanceof ImageMsg) {
-                $this->messages[] = "<img src=\"{$msg->getUrl()}\" />";
-
-            } else {
-                $this->messages[] = str_replace(
-                    "\n",
-                    '<br>',
-                    htmlentities($msg->toPrettyJson())
-                );
+                $text = str_replace(" ", "&nbsp", $text);
             }
+
+            // 级别渲染.
+            $this->messages[] = $msg instanceof VerboseMsg ? $this->wrapLevel($msg->getLevel(), $text) : $text;
         }
     }
 
@@ -188,6 +188,22 @@ class WebRequest extends SwooleHttpMessageRequest
     protected function makeInputMessage($input): Message
     {
         return new Text($input);
+    }
+
+    public function logDialogStatus(Dialog $dialog): void
+    {
+        $question = $dialog->currentQuestion();
+        if (isset($question)) {
+            $this->suggestions = $question->getSuggestions();
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getDialogStatus()
+    {
+        return $this->suggestions;
     }
 
 

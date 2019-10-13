@@ -13,6 +13,7 @@ use Commune\Chatbot\App\Commands\Analysis\ContextRepoCmd;
 use Commune\Chatbot\App\Commands\Analysis\RedirectCmd;
 use Commune\Chatbot\App\Commands\Analysis\RunningSpyCmd;
 use Commune\Chatbot\App\Commands\Analysis\WhereCmd;
+use Commune\Chatbot\App\Commands\Analysis\WhoAmICmd;
 use Commune\Chatbot\OOHost\Command\HelpCmd;
 
 class AnalyseCommandsPipe extends AnalyserPipe
@@ -20,6 +21,7 @@ class AnalyseCommandsPipe extends AnalyserPipe
     // 命令的名称.
     protected $commands = [
         HelpCmd::class,
+        WhoAmICmd::class,
         WhereCmd::class,
         RedirectCmd::class,
         ContextRepoCmd::class,

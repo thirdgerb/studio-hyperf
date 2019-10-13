@@ -91,6 +91,10 @@ return [
         'locking' => false,
     ],
 
+    'defaultSlots' => [
+
+    ],
+
     'defaultMessages' => \Commune\Chatbot\Config\Children\DefaultMessagesConfig::stub(),
 
     'host' => [
@@ -112,7 +116,7 @@ return [
         ],
 
         // 默认的根语境名
-        'rootContextName' => \Commune\Hyperf\Demo\Contexts\TestCase::class,
+        'rootContextName' => \Commune\Demo\App\Contexts\DemoHome::class,
 
         // 不同场景下的根语境名.
         'sceneContextNames' => [
