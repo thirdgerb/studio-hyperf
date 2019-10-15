@@ -1,9 +1,7 @@
 /* setup container styles */
 .bubble-container {
-	background: #dcdde0;
-	height: 520px;
-	max-width: 750px;
 	width: 100%;
+    height: 100%;
 	margin: 0 auto;
 	overflow: hidden;
 	position: relative;

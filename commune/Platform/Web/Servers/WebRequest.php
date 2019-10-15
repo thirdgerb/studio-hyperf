@@ -100,7 +100,7 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
         $replies = [];
         if (!empty($this->suggestions)) {
             foreach ($this->suggestions as $index => $suggestion) {
-                if (is_numeric($index)) {
+                if (is_int($index)) {
                     $replies[] = ['question' => $suggestion, 'answer' => $suggestion];
                 } else {
                     $replies[] = ['question'=> $index, 'answer' => $suggestion];
