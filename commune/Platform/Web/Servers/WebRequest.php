@@ -4,19 +4,17 @@
 namespace Commune\Platform\Web\Servers;
 
 
+use Swoole\Server;
 use Commune\Chatbot\App\Messages\Text;
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
-use Commune\Chatbot\Blueprint\Conversation\Speech;
-use Commune\Chatbot\Blueprint\Message\Media\ImageMsg;
 use Commune\Chatbot\Blueprint\Message\Message;
-use Commune\Chatbot\Blueprint\Message\Replies\LinkMsg;
-use Commune\Chatbot\Blueprint\Message\VerboseMsg;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Hyperf\Foundations\Requests\SwooleHttpMessageRequest;
+use Commune\Platform\Web\Contracts\ResponseRender;
+use Commune\Platform\Web\WebComponent;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
-use Swoole\Server;
 use Commune\Chatbot\OOHost\Dialogue\NeedDialogStatus;
 
 class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
@@ -27,16 +25,45 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
 
     const CONTENT_KEY = 'text';
 
+    const TOKEN_HEADER = 'Authorization';
+
+    /**
+     * @var WebComponent
+     */
+    protected $config;
+
     /**
      * @var string
      */
     protected $userId;
 
-    protected $messages = [];
 
-    protected $suggestions = [];
+    /**
+     * @var string
+     */
+    protected $userName = '';
 
-    public function __construct(HyperfBotOption $botOption, Server $server, SwooleRequest $request, SwooleResponse $response)
+    /**
+     * @var array
+     */
+    protected $userData = [];
+
+    /**
+     * @var ResponseRender|null
+     */
+    protected $apiRender;
+
+    /**
+     * @var int
+     */
+    protected $errCode = 400;
+
+    /**
+     * @var string
+     */
+    protected $errMsg = 'invalid request';
+
+    public function __construct(HyperfBotOption $botOption, WebComponent $config, Server $server, SwooleRequest $request, SwooleResponse $response)
     {
         $input = $this->parseInput($request);
         parent::__construct($botOption, $input, $server, $request, $response);
@@ -49,73 +76,31 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
      */
     protected function renderChatMessages(array $messages): void
     {
-
-        foreach ($messages as $message) {
-            $msg = $message->getMessage();
-
-            // 文本渲染
-            if ($msg instanceof LinkMsg) {
-                $text = $msg->getText();
-                $url = $msg->getUrl();
-                $text = '<a href="'.$url.'">'.$text. '</a>';
-
-            } elseif ($msg instanceof ImageMsg) {
-                $text = "<img src=\"{$msg->getUrl()}\" />";
-
-            } else {
-                $text = str_replace(
-                    "\n",
-                    '<br>',
-                    htmlentities($msg->getText())
-                );
-                $text = str_replace(" ", "&nbsp", $text);
-            }
-
-            // 级别渲染.
-            $this->messages[] = $msg instanceof VerboseMsg ? $this->wrapLevel($msg->getLevel(), $text) : $text;
-        }
+        $this->getApiRender()->receiveMessages($messages);
     }
 
-    protected function wrapLevel(string $level, string $text) : string
+
+    public function getApiRender() : ResponseRender
     {
-        switch ($level) {
-            case Speech::WARNING :
-                return "<color style='color: yellow'>$text</color>";
-            case Speech::ERROR :
-                return "<color style='color: red'>$text</color>";
-            default:
-                return $text;
-        }
+        return $this->apiRender
+            ?? $this->apiRender = $this->conversation->make(ResponseRender::class);
     }
+
 
     protected function flushResponse(): void
     {
         $response = $this->getSwooleResponse();
         $response->status(200);
         $response->header('Content-Type', 'application/json');
-        $result = [
-            'says' => $this->messages
-        ];
-
-        $replies = [];
-        if (!empty($this->suggestions)) {
-            foreach ($this->suggestions as $index => $suggestion) {
-                if (is_int($index)) {
-                    $replies[] = ['question' => $suggestion, 'answer' => $suggestion];
-                } else {
-                    $replies[] = ['question'=> $index, 'answer' => $suggestion];
-                }
-            }
-        }
-        $result['reply'] = $replies;
-        $response->write(json_encode($result));
+        $output = $this->getApiRender()->renderOutput();
+        $response->write(json_encode($output));
     }
 
     public function sendRejectResponse(): void
     {
         $response = $this->getSwooleResponse();
-        $response->status(400);
-        $response->write('invalid request');
+        $response->status($this->errCode);
+        $response->write($this->errMsg);
     }
 
     public function parseInput(SwooleRequest $request) : string
@@ -134,13 +119,41 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
 
     protected function doValidate(): bool
     {
-        $request = $this->getSwooleRequest();
-        // 没有入参
-        return strlen($this->input)
-            // 非 post 方法
+        return $this->validateUserId()
+            ?? $this->validateMethod()
+            ?? false;
+    }
+
+    protected function validateUserId() : ? bool
+    {
+
+        $userId = $this->getSwooleRequest()->cookie[static::USER_ID_KEY] ?? '';
+        if (!empty($userId)) {
+            return $this->userId = $userId;
+        }
+
+        $this->userId = $this->createUuId();
+        $this->getSwooleResponse()->cookie(static::USER_ID_KEY, $this->userId);
+        return null;
+    }
+
+
+    protected function validateMethod() : ? bool
+    {
+        if (
+            // 入参存在
+            strlen($this->input)
+            // post 方法
             && (
                 ($request->server['request_method'] ?? '' ) === 'POST'
-            );
+            )
+        ) {
+            return null;
+        }
+
+        $this->errCode = 405;
+        $this->errMsg = 'bad method';
+        return false;
     }
 
     public function getScene(): ? string
@@ -156,28 +169,17 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
 
     public function fetchUserId(): string
     {
-        if (isset($this->userId)) {
-            return $this->userId;
-        }
-
-        $userId = $this->getSwooleRequest()->cookie[static::USER_ID_KEY] ?? '';
-        if (!empty($userId)) {
-            return $this->userId = $userId;
-        }
-
-        $this->userId = $this->createUuId();
-        $this->getSwooleResponse()->cookie(static::USER_ID_KEY, $this->userId);
-        return $this->userId;
+        return $this->userId ?? $this->userId = $this->createUuId();
     }
 
     public function fetchUserName(): string
     {
-        return '';
+        return $this->userName;
     }
 
     public function fetchUserData(): array
     {
-        return [];
+        return $this->userData;
     }
 
 
@@ -192,19 +194,7 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
 
     public function logDialogStatus(Dialog $dialog): void
     {
-        $question = $dialog->currentQuestion();
-        if (isset($question)) {
-            $this->suggestions = $question->getSuggestions();
-        }
+        $this->getApiRender()->receiveDialog($dialog);
     }
-
-    /**
-     * @return array
-     */
-    public function getDialogStatus()
-    {
-        return $this->suggestions;
-    }
-
 
 }

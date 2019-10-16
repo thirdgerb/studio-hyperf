@@ -12,6 +12,7 @@ return [
         // 默认的tcp端. 通常供测试用.
         'tcp' => include BASE_PATH . '/config/commune/apps/tcp.php',
 
+        // 系统自带的 web 端, 示范如何开发 web 端的对话机器人.
         'web' => include BASE_PATH . '/config/commune/apps/web.php',
 
         // 系统自带的 dueros 端, 可以连接小度音箱设备.
@@ -19,5 +20,8 @@ return [
 
         // 系统自带的 微信公众号服务端. 可作为微信公众号的服务.
         'wechat' => include BASE_PATH . '/config/commune/apps/wechat.php',
+
+        'api' => include BASE_PATH . '/config/commune/apps/api.php',
+
     ],
 ];

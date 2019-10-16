@@ -25,6 +25,7 @@
         "vuex": "^3.1.1"
     },
     "dependencies": {
-        "highlight.js": "^9.15.10"
+        "highlight.js": "^9.15.10",
+        "vue-axios": "^2.1.5"
     }
 }

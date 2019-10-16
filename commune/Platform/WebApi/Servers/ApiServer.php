@@ -1,19 +1,19 @@
 <?php
 
 
-namespace Commune\Platform\Web\Servers;
+namespace Commune\Platform\WebApi\Servers;
 
 
 use Commune\Chatbot\Blueprint\Application;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
-use Commune\Platform\Web\WebComponent;
+use Commune\Platform\WebApi\WebApiComponent;
 use Hyperf\Contract\OnRequestInterface;
 use Hyperf\Server\ServerFactory;
 use Psr\Container\ContainerInterface;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 
-class WebServer implements OnRequestInterface
+class ApiServer implements OnRequestInterface
 {
     /**
      * @var ContainerInterface
@@ -37,7 +37,7 @@ class WebServer implements OnRequestInterface
 
 
     /**
-     * @var WebComponent
+     * @var WebApiComponent
      */
     protected $config;
 
@@ -51,22 +51,21 @@ class WebServer implements OnRequestInterface
             ->getServer()
             ->getServer();
 
-        $this->config = $this->chatApp->getProcessContainer()->make(WebComponent::class);
+        $this->config = $this->chatApp->getProcessContainer()->make(WebApiComponent::class);
     }
 
     public function onRequest(SwooleRequest $request, SwooleResponse $response): void
     {
         try {
-            $webRequest = new WebRequest(
-                $this->botOption,
-                $this->config,
-                $this->swooleServer,
+            $apiRequest = new ApiRequest(
                 $request,
-                $response
+                $response,
+                $this->config
             );
 
-            $this->chatApp->getKernel()->onUserMessage($webRequest);
+            $this->chatApp->getKernel()->onUserMessage($apiRequest);
             $response->end();
+
         } catch (\Throwable $e) {
             $response->status(500);
             $response->end($e->getMessage());

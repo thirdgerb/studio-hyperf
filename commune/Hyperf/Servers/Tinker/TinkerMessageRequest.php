@@ -142,7 +142,7 @@ class TinkerMessageRequest implements MessageRequest, HasIdGenerator
         $this->buffer = [];
     }
 
-    protected function onBindConversation()
+    protected function onBindConversation() : void
     {
     }
 
