@@ -115,11 +115,11 @@ return [
 
 
         // 默认的根语境名
-        'rootContextName' => \Commune\Demo\App\Contexts\DemoHome::class,
+        'rootContextName' => \Commune\Components\Demo\Contexts\DemoHome::getContextName(),
 
         // 不同场景下的根语境名.
         'sceneContextNames' => [
-            'maze' => \Commune\Demo\App\Cases\Maze\MazeInt::getContextName(),
+            'maze' => \Commune\Components\Demo\Cases\Maze\MazeInt::getContextName(),
             'story' => 'story.examples.sanguo.changbanpo',
         ],
 

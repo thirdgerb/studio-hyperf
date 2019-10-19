@@ -9,7 +9,7 @@ namespace Commune\Hyperf\Demo;
 
 
 use Commune\Chatbot\Framework\Component\ComponentOption;
-use Commune\Demo\App\DemoComponent;
+use Commune\Components\Demo\DemoComponent;
 
 class HyperfDemoComponent extends ComponentOption
 {

@@ -30,8 +30,7 @@ return [
     // 预加载的组件. 使用方法类似 configBindings
     // 但component 不仅会预加载配置, 而且还能注册各种组件, 进行初始化等.
     'components' => [
-        \Commune\Hyperf\Demo\HyperfDemoComponent::class,
-
+        \Commune\Components\Demo\DemoComponent::class,
         \Commune\Components\Story\StoryComponent::class,
     ],
 
@@ -55,6 +54,9 @@ return [
         // 权限识别
         'ability' => Providers\AbilityServiceProvider::class,
 
+        // hyperf client driver . redis, db
+        // hyperf 的协程客户端
+        'client' => \Commune\Hyperf\Foundations\Providers\ClientDriverServiceProvider::class,
 
         // cache adapter driver
         // 实现 chatbot 需要的 cache adapter
@@ -119,7 +121,7 @@ return [
             //]
         ],
 
-        'rootContextName' => 'story.examples.sanguo.changbanpo',
+        'rootContextName' => \Commune\Components\Demo\Contexts\DemoHome::class,
 
         'sessionPipes' => [
             // event 转 message
@@ -138,7 +140,7 @@ return [
             SessionPipes\NavigationIntentsPipe::class,
         ],
 
-        'hearingFallback' => null,
+        'hearingFallback' => \Commune\Components\SimpleChat\Callables\SimpleChatAction::class,
     ],
 
 ];
