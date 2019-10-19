@@ -65,9 +65,9 @@ class DemoResponseRender implements ResponseRender
     {
         switch ($level) {
             case Speech::WARNING :
-                return "<color style='color: yellow'>$text</color>";
+                return "<color style='color: orange;'>$text</color>";
             case Speech::ERROR :
-                return "<color style='color: red'>$text</color>";
+                return "<color style='color: red;'>$text</color>";
             default:
                 return $text;
         }

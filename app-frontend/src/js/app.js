@@ -24,7 +24,7 @@ const app = new Vue({
 
     <v-app-bar
       app
-      color="blue"
+      color="indigo"
       dark
       clipped-left
       abusolute
@@ -44,12 +44,12 @@ const app = new Vue({
     >
       <v-list>
         <v-list-item>
-          <v-list-item-avatar>
-            <v-img src="/avatar.jpg"></v-img>
-          </v-list-item-avatar>
+          <v-list-item-icon>
+            <v-icon large>mdi-robot</v-icon>
+          </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>对话AppDemo</v-list-item-title>
-            <v-list-item-subtitle>微信公众号与项目同名</v-list-item-subtitle>
+            <v-list-item-title>空妙对话机器人</v-list-item-title>
+            <v-list-item-subtitle>多轮对话机器人开发框架</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -58,29 +58,48 @@ const app = new Vue({
         dense
         nav
       >
-        <v-list-item-group>
-          <v-list-item 
-            v-for="(item, i) in nav"
-            :key="i"
-            :href="item.url"
-          >
-            <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-content >
-              <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
+        <v-list-item 
+          onClick="alert('正在撰写开发文档, 预计10月底完成');"
+        >
+          <v-list-item-icon>
+            <v-icon >mdi-book-open-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content >
+            <v-list-item-title>开发文档</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item 
+          v-for="(item, i) in nav"
+          :key="i"
+          :href="item.url"
+          target="_blank"
+        >
+          <v-list-item-icon>
+            <v-icon v-text="item.icon"></v-icon>
+          </v-list-item-icon>
+          <v-list-item-content >
+            <v-list-item-title v-text="item.title"></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
 
       <v-divider></v-divider>
-      <v-subheader>测试机器人</v-subheader>
+      <v-subheader>对话机器人 Demo</v-subheader>
       <v-list
         dense
         nav
       >
         <v-list-item-group>
+          <v-list-item
+            @click="changeScene('')"
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-home-circle</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>空妙助手</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item
             v-for="(item, i) in menu"
             :key="i"
@@ -96,9 +115,24 @@ const app = new Vue({
         </v-list-item-group>
         
       </v-list>
+
+      <div style="height:36px;"></div>
+      <v-footer
+        fixed
+        padless
+      >
+        <v-btn
+          href="http://www.beian.miit.gov.cn/"
+          target="_blank"
+          link
+          width="100%"
+          >
+          京ICP备19041094号
+        </v-btn>
+      </v-footer>
     </v-navigation-drawer>
 
-    <v-overlay :value="loading">
+    <v-overlay :value="loading" opacity="0.1">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
    
@@ -141,53 +175,53 @@ const app = new Vue({
         },
         codeHtml : '',
         nav : [
-          {
-            title : '首页',
-            url : 'https://communechatbot.com/',
-            icon : 'mdi-home-circle',
-          },
+          // {
+          //   title : '开发文档',
+          //   url : 'https://github.com/thirdgerb/studio-hyperf',
+          //   icon : 'mdi-book-open-outline',
+          // },
           {
             title : 'github仓库',
             url : 'https://github.com/thirdgerb/studio-hyperf',
             icon : 'mdi-github-circle',
           },
-          {
-            title : '开发文档',
-            url : 'https://github.com/thirdgerb/studio-hyperf',
-            icon : 'mdi-book-open-outline',
-          }
         ],
         menu: [
           {
-            scene: '',
-            title: 'Demo入口',
-            icon: 'mdi-account',
-          },
-          {
             scene: 'introduce',
             title: '项目介绍',
-            icon: 'mdi-account',
+            icon: 'mdi-account-circle',
           },
           {
-            scene: 'nlu',
-            title: '自然语言用例',
-            icon: 'mdi-account',
+            scene: 'app',
+            title: '应用领域',
+            icon: 'mdi-account-circle',
+          },
+          {
+            scene: 'special',
+            title: '框架特点',
+            icon: 'mdi-account-circle',
           },
           {
             scene: 'game',
             title: '对话小游戏',
-            icon: 'mdi-account',
+            icon: 'mdi-account-circle',
+          },
+          {
+            scene: 'story',
+            title: '情景游戏',
+            icon: 'mdi-account-circle',
           },
           {
             scene: 'nlu',
             title: '自然语言用例',
-            icon: 'mdi-account',
+            icon: 'mdi-account-circle',
           },
           {
-            scene: 'avg',
-            title: '情景游戏',
-            icon: 'mdi-account',
-          },
+            scene: 'command',
+            title: '命令行',
+            icon: 'mdi-account-circle',
+          }
         ]
     }),
     mounted() {
@@ -252,12 +286,24 @@ const app = new Vue({
                 maxRedirects : 2
             }).then(response => {
                 if (200 === response.status) {
-                    if (response.data.hasOwnProperty('replies')) {
-                        window.chatWindow.reply(response.data.replies);
-                    }
-                    if (response.data.hasOwnProperty('dialog')) {
-                        $this.dialog = response.data.dialog;
-                    }
+                  if (response.data.code != 0) {
+                    alert(response.data.msg);
+                    return;
+                  }
+
+                  let data = {};
+                  if (response.data.hasOwnProperty('data')) {
+                    data = response.data.data;
+                  }
+
+                  console.log(data);
+
+                  if (data.hasOwnProperty('replies')) {
+                      window.chatWindow.reply(data.replies);
+                  }
+                  if (data.hasOwnProperty('dialog')) {
+                      $this.dialog = data.dialog;
+                  }
 
                 } else {
                     alert(response);
@@ -302,7 +348,6 @@ const app = new Vue({
         },
         changeScene(scene) {
           let $this = this;          
-          $this.drawer = false;
           $this.scene = scene;
           $this.chat('#home');
 

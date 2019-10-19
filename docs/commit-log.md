@@ -1,5 +1,8 @@
-## 2019-10-16
+## 2019-10-19
 
--   创建了 API 端, 一个高性能的 web http 服务, 主要目的还是可以用接口直接调用 session 的绑定.
--   初步完成了 demo 版的前端页面, 实现了一个双模态交互网页版对话机器人.
--   优化了 web 端, 拆分了 apiRender, 方便定义自己的接口返回值.
+-   删掉了示范作用的 apps 目录.
+-   web 端改动
+    -   web component 增加了输入长度的限制.
+    -   web request 修改了返回值策略, 现在一般返回 status 200, 用code 标记错误.
+    -   web 端对 link 消息有了独立的渲染模板.
+-   基于 chatbot gc 的改动, 修改了 sessionDriver 的实现.

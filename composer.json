@@ -63,8 +63,7 @@
             "App\\": "app/",
             "Commune\\Studio\\": "app-studio/",
             "Commune\\Hyperf\\": "commune/Hyperf/",
-            "Commune\\Platform\\": "commune/Platform/",
-            "Commune\\Apps\\": "apps"
+            "Commune\\Platform\\": "commune/Platform/"
         },
         "files": []
     },

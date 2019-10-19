@@ -56,16 +56,17 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
     /**
      * @var int
      */
-    protected $errCode = 400;
+    protected $errCode = 0;
 
     /**
      * @var string
      */
-    protected $errMsg = 'invalid request';
+    protected $errMsg = 'success';
 
     public function __construct(HyperfBotOption $botOption, WebComponent $config, Server $server, SwooleRequest $request, SwooleResponse $response)
     {
         $input = $this->parseInput($request);
+        $this->config = $config;
         parent::__construct($botOption, $input, $server, $request, $response);
     }
 
@@ -93,14 +94,19 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
         $response->status(200);
         $response->header('Content-Type', 'application/json');
         $output = $this->getApiRender()->renderOutput();
-        $response->write(json_encode($output));
+        $data = [
+            'code' => $this->errCode,
+            'msg' => $this->errMsg,
+            'data' => empty($output) ? new \stdClass() : $output,
+        ];
+        $response->write(json_encode($data));
     }
 
     public function sendRejectResponse(): void
     {
-        $response = $this->getSwooleResponse();
-        $response->status($this->errCode);
-        $response->write($this->errMsg);
+        $this->errCode = $this->errCode > 0 ? $this->errCode : 400;
+        $this->errMsg = empty($this->errMsg) ? 'invalid message' : $this->errMsg;
+        $this->flushResponse();
     }
 
     public function parseInput(SwooleRequest $request) : string
@@ -119,9 +125,10 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
 
     protected function doValidate(): bool
     {
-        return $this->validateUserId()
-            ?? $this->validateMethod()
-            ?? false;
+        return $this->validateMethod()
+            ?? $this->validateUserId()
+            ?? $this->validateLength()
+            ?? true;
     }
 
     protected function validateUserId() : ? bool
@@ -129,25 +136,38 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
 
         $userId = $this->getSwooleRequest()->cookie[static::USER_ID_KEY] ?? '';
         if (!empty($userId)) {
-            return $this->userId = $userId;
+           $this->userId = $userId;
+        } else {
+            $this->userId = $this->createUuId();
+            $this->getSwooleResponse()->cookie(static::USER_ID_KEY, $this->userId);
         }
 
-        $this->userId = $this->createUuId();
-        $this->getSwooleResponse()->cookie(static::USER_ID_KEY, $this->userId);
         return null;
+    }
+
+    protected function validateLength() : ? bool
+    {
+        $input = $this->getInput();
+
+        if (mb_strlen($input) > $this->config->maxInputLength) {
+            $this->errCode = 400;
+            $this->errMsg = 'input is too long, must less then '. $this->config->maxInputLength;
+            return false;
+        }
+
+        return null;
+    }
+
+    protected function getMethod() : string
+    {
+        return $this->getSwooleRequest()->server['request_method'] ?? '';
     }
 
 
     protected function validateMethod() : ? bool
     {
-        if (
-            // 入参存在
-            strlen($this->input)
-            // post 方法
-            && (
-                ($request->server['request_method'] ?? '' ) === 'POST'
-            )
-        ) {
+        $method = $this->getMethod();
+        if ( $method === 'POST') {
             return null;
         }
 

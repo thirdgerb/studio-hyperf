@@ -31,6 +31,7 @@ return [
     'components' => [
         \Commune\Hyperf\Demo\HyperfDemoComponent::class,
         \Commune\Components\Story\StoryComponent::class,
+        \Commune\Components\SimpleChat\SimpleChatComponent::class,
     ],
 
     // 系统默认的服务注册.
@@ -92,6 +93,19 @@ return [
     ],
 
     'defaultSlots' => [
+        // 系统默认的slots, 所有的reply message 都会使用
+        // 多维数组会被抹平为 self.name 这样的形式
+        // default reply slots
+        // multi-dimension array will be flatten to dot pattern
+        // such as 'self.name'
+        'self' => [
+            'name' => 'CommuneChatbot',
+            'project' => 'commune/chatbot',
+            'fullname' => 'commune/chatbot demo',
+            'author' => 'thirdgerb',
+            'email' => 'thirdgerb@gmail.com',
+            'desc' => '多轮对话机器人开发框架',
+        ]
 
     ],
 
@@ -99,21 +113,6 @@ return [
 
     'host' => [
 
-        // 系统默认的slots, 所有的reply message 都会使用
-        // 多维数组会被抹平为 self.name 这样的形式
-        // default reply slots
-        // multi-dimension array will be flatten to dot pattern
-        // such as 'self.name'
-        'slots' => [
-            //'self' => [
-            //    'name' => 'CommuneChatbot',
-            //    'project' => 'commune/chatbot',
-            //    'fullname' => 'commune/chatbot demo',
-            //    'author' => 'thirdgerb',
-            //    'email' => 'thirdgerb@gmail.com',
-            //    'desc' => '多轮对话机器人开发框架',
-            //]
-        ],
 
         // 默认的根语境名
         'rootContextName' => \Commune\Demo\App\Contexts\DemoHome::class,
@@ -128,13 +127,13 @@ return [
             // event 转 message
             // transfer curtain event messages to other messages
             \Commune\Chatbot\App\SessionPipe\EventMsgPipe::class,
+            // 单纯用于测试的管道,#intentName# 模拟命中一个意图.
+            // use "#intentName#" pattern to mock intent
+            \Commune\Chatbot\App\SessionPipe\MarkedIntentPipe::class,
             // 用户可用的命令.
             SessionPipes\UserCommandsPipe::class,
             // 超级管理员可用的命令. for supervisor only
             SessionPipes\AnalyseCommandsPipe::class,
-            // 单纯用于测试的管道,#intentName# 模拟命中一个意图.
-            // use "#intentName#" pattern to mock intent
-            \Commune\Chatbot\App\SessionPipe\MarkedIntentPipe::class,
             // 优先级最高的意图, 通常用于导航.
             // 会优先匹配这些意图.
             // highest level intent

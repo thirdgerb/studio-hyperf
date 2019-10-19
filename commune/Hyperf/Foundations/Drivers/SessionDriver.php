@@ -26,6 +26,7 @@ class SessionDriver implements Contract
 
     const SNAPSHOT_KEY = 'snapshot:%s';
     const SESSION_KEY = "chatbot:session:%s";
+    const GC_COUNTS_KEY = "gc_counts";
 
     /**
      * @var ClientDriver
@@ -58,7 +59,7 @@ class SessionDriver implements Contract
         $belongsToId = $snapshot->belongsTo;
         $key =  $this->sessionKey($sessionId);
         $snapshotKey = $this->snapshotKey($belongsToId);
-        $caching = serialize($snapshot);
+        $caching = gzcompress(serialize($snapshot));
 
         $redis = $this->driver->getRedis();
         $result = $redis->hSet($key, $snapshotKey, $caching);
@@ -92,7 +93,7 @@ class SessionDriver implements Contract
         }
 
         try {
-            $snapshot = unserialize($serialized);
+            $snapshot = unserialize(gzuncompress($serialized));
             if ($snapshot instanceof Snapshot) {
                 return $snapshot;
             }
@@ -124,26 +125,6 @@ class SessionDriver implements Contract
 
         return $data instanceof Yielding ? $data : null;
     }
-
-    public function saveBreakpoint(Session $session, Breakpoint $breakpoint): void
-    {
-        // only cache
-        $this->setSessionDataCache(
-            $session->sessionId,
-            'bp-'.$breakpoint->getSessionDataId(),
-            $breakpoint
-        );
-    }
-
-    public function findBreakpoint(Session $session, string $id): ? Breakpoint
-    {
-        $data = $this->getSessionDataCache(
-            $session->sessionId,
-            'bp-'. $id
-        );
-        return $data instanceof Breakpoint ? $data : null;
-    }
-
 
     public function saveContext(Session $session, Context $context): void
     {
@@ -185,6 +166,16 @@ class SessionDriver implements Contract
         return null;
     }
 
+    public function gcContexts(Session $session, string ...$ids): void
+    {
+        $ids = array_map(function(string $id) : string {
+            return 'ct-' . $id;
+        }, $ids);
+
+        $this->removeSessionDataCache($session->sessionId, ...$ids);
+    }
+
+
     protected function setSessionDataCache(
         string $sessionId,
         string $id,
@@ -214,6 +205,16 @@ class SessionDriver implements Contract
         $data = unserialize($serialized);
 
         return $data instanceof SessionData ? $data : null;
+    }
+
+    protected function removeSessionDataCache(
+        string $sessionId,
+        string ...$ids
+    ) : void
+    {
+        $redis = $this->driver->getRedis();
+        $key = $this->sessionKey($sessionId);
+        $redis->hDel($key, ...$ids);
     }
 
     protected function saveSessionData(Session $session, SessionData $data)
@@ -262,4 +263,24 @@ class SessionDriver implements Contract
 
         return $unserialized instanceof SessionData ? $unserialized : null;
     }
+
+    public function getGcCounts(string $sessionId): array
+    {
+        $key = $this->sessionKey($sessionId);
+        $redis = $this->driver->getRedis();
+        $gcc = $redis->hGet($key, self::GC_COUNTS_KEY);
+        if (isset($gcc)) {
+            $gcc = unserialize($gcc);
+        }
+        return is_array($gcc) ? $gcc : [];
+    }
+
+    public function saveGcCounts(string $sessionId, array $counts): void
+    {
+        $key = $this->sessionKey($sessionId);
+        $redis = $this->driver->getRedis();
+        $redis->hSet($key, self::GC_COUNTS_KEY, serialize($counts));
+    }
+
+
 }

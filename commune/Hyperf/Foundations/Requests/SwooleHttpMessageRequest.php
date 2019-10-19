@@ -67,6 +67,7 @@ abstract class SwooleHttpMessageRequest extends AbstractMessageRequest implement
     {
         $response = $this->getSwooleResponse();
         $response->status(500);
+        $response->write('system error');
     }
 
 
