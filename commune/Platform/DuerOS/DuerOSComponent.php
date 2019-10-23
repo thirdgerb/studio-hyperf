@@ -25,8 +25,6 @@ use Commune\Platform\DuerOS\Providers\RenderServiceProvider;
  */
 class DuerOSComponent extends ComponentOption
 {
-    const IDENTITY = 'name';
-
 
     public static function stub(): array
     {
