@@ -50,13 +50,10 @@ class DuerOSComponent extends ComponentOption
                 // affirm
                 DuerIntents::COMMON_CONFIRM => Attitudes\AffirmInt::getContextName(),
 
-
                 // next
                 DuerIntents::COMMON_NEXT => Loop\NextInt::getContextName(),
                 // previous
                 DuerIntents::COMMON_PREVIOUS => Loop\PreviousInt::getContextName(),
-                // continue
-                DuerIntents::COMMON_CONTINUE => Loop\ContinueInt::getContextName(),
 
             ],
 
