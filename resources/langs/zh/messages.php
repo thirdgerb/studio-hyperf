@@ -1,9 +1,12 @@
 <?php
 
-
+/**
+ * 默认需要有的 文本内容。
+ */
 return [
     'hello' => [
         'world'  => '您好,世界, 你输入的是{input}',
+        'user' => '您好, {name}, 欢迎您来到 {appName} '
     ],
 
     'system' => [
@@ -16,10 +19,7 @@ return [
     'dialog' => [
         'farewell' => '再见!',
         'missMatched' => '没有明白什么意思',
-        'continue' => '输入 "." 继续',
-        'script' => [
-            'continue' => '输入 "." 继续, 输入".." 跳到最后'
-        ]
+        'noHelpInfoExists' => '不好意思, 当前内容没有帮助信息. 可以输入 #home 回到开头, 或输入 #repeat 重新开始对话. 输入 #help 查看更多指令.',
     ],
 
     'command' => [
@@ -37,8 +37,8 @@ return [
         'needs' => '您可能需要:',
         'needMore' => '您还有别的需要吗?',
         'continue' => '输入 "." 继续',
-        'yes' => 'y',
-        'no' => 'n',
+        'yes' => '是',
+        'no' => '否',
     ],
 
     'question' => [

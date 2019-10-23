@@ -8,7 +8,7 @@ use Commune\Studio\SessionPipes;
  *
  * @see \Commune\Chatbot\Config\ChatbotConfig
  */
-return [
+$chatbot = [
 
     // 系统用 chatbotName 来隔离会话. 必须要填.
     'chatbotName' => 'commune-studio-demo',
@@ -28,11 +28,7 @@ return [
 
     // 预加载的组件. 使用方法类似 configBindings
     // 但component 不仅会预加载配置, 而且还能注册各种组件, 进行初始化等.
-    'components' => [
-        \Commune\Hyperf\Demo\HyperfDemoComponent::class,
-        \Commune\Components\Story\StoryComponent::class,
-        \Commune\Components\SimpleChat\SimpleChatComponent::class,
-    ],
+    'components' => include __DIR__ .'/../configs/components.php',
 
     // 系统默认的服务注册.
     'baseServices' => \Commune\Chatbot\Config\Children\BaseServicesConfig::stub(),
@@ -92,22 +88,13 @@ return [
         'locking' => false,
     ],
 
-    'defaultSlots' => [
-        // 系统默认的slots, 所有的reply message 都会使用
-        // 多维数组会被抹平为 self.name 这样的形式
-        // default reply slots
-        // multi-dimension array will be flatten to dot pattern
-        // such as 'self.name'
-        'self' => [
-            'name' => 'CommuneChatbot',
-            'project' => 'commune/chatbot',
-            'fullname' => 'commune/chatbot demo',
-            'author' => 'thirdgerb',
-            'email' => 'thirdgerb@gmail.com',
-            'desc' => '多轮对话机器人开发框架',
-        ]
-
-    ],
+    // 系统默认的slots, 所有的reply message 都会使用
+    // 多维数组会被抹平
+    //  例如 self => [ 'name' => 'a'],  会变成 self_name 这样的形式
+    // default reply slots
+    // multi-dimension array will be flatten to dot pattern
+    // such as 'self.name'
+    'defaultSlots' => include __DIR__ . '/../configs/slots.php',
 
     'defaultMessages' => \Commune\Chatbot\Config\Children\DefaultMessagesConfig::stub(),
 
@@ -115,12 +102,17 @@ return [
 
 
         // 默认的根语境名
-        'rootContextName' => \Commune\Components\Demo\Contexts\DemoHome::getContextName(),
+        'rootContextName' => \Commune\Hyperf\Demo\Contexts\DemoHome::class,
 
         // 不同场景下的根语境名.
         'sceneContextNames' => [
-            'maze' => \Commune\Components\Demo\Cases\Maze\MazeInt::getContextName(),
+            'introduce' => 'sw.demo.intro',
+            'special' => 'sw.demo.intro.special',
+            'game' => \Commune\Components\Demo\Contexts\GameTestCases::class,
             'story' => 'story.examples.sanguo.changbanpo',
+            'nlu' => \Commune\Components\Demo\Contexts\NLTestCases::class,
+            'maze' => \Commune\Components\Demo\Cases\Maze\MazeInt::getContextName(),
+            'dev' => \Commune\Hyperf\Demo\Contexts\DevTools::class,
         ],
 
         'sessionPipes' => [
@@ -142,7 +134,9 @@ return [
 
         // hearing 模块系统默认的 defaultFallback 方法
         // 在 $dialog->hear()->end() 的时候调用.
-        'hearingFallback' => null,
+        'hearingFallback' => \Commune\Components\SimpleChat\Callables\SimpleChatAction::class,
     ],
 
 ];
+
+return $chatbot;

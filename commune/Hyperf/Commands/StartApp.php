@@ -72,7 +72,9 @@ class StartApp extends SymfonyCommand
             $output->writeln('<error>Error</error> chatbot '.$name.' not exists');
             exit(0);
         }
+
         $config['name'] = $name;
+        $config['chatbot']['debug'] = $config['debug'];
 
         // 绑定option
         $hyperfChatbotOption = new HyperfBotOption($config);
@@ -86,10 +88,6 @@ class StartApp extends SymfonyCommand
             ->get(HyperfChatServer::class)
             ->run();
     }
-
-
-
-
 
     protected function checkEnvironment(OutputInterface $output)
     {

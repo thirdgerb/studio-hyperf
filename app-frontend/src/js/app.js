@@ -97,7 +97,7 @@ const app = new Vue({
               <v-icon>mdi-home-circle</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>空妙助手</v-list-item-title>
+              <v-list-item-title>Demo 入口</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item
@@ -160,6 +160,7 @@ const app = new Vue({
 </v-app>`,
     data: () => ({
         drawer: null,
+        // 遮罩
         overlay : false,
         showCode : false,
         dialog: {
@@ -193,11 +194,6 @@ const app = new Vue({
             icon: 'mdi-account-circle',
           },
           {
-            scene: 'app',
-            title: '应用领域',
-            icon: 'mdi-account-circle',
-          },
-          {
             scene: 'special',
             title: '框架特点',
             icon: 'mdi-account-circle',
@@ -218,10 +214,11 @@ const app = new Vue({
             icon: 'mdi-account-circle',
           },
           {
-            scene: 'command',
-            title: '命令行',
-            icon: 'mdi-account-circle',
-          }
+              scene: 'dev',
+              title: '对话式开发工具',
+              icon: 'mdi-account-circle',
+          },
+          
         ]
     }),
     mounted() {
@@ -348,6 +345,7 @@ const app = new Vue({
         },
         changeScene(scene) {
           let $this = this;          
+          $this.showCode = false;
           $this.scene = scene;
           $this.chat('#home');
 

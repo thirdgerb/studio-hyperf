@@ -11,21 +11,35 @@ namespace Commune\Hyperf\Demo;
 use Commune\Chatbot\Framework\Component\ComponentOption;
 use Commune\Components\Demo\DemoComponent;
 
+/**
+ * @property-read string $langPath
+ */
 class HyperfDemoComponent extends ComponentOption
 {
-    protected function doBootstrap(): void
-    {
-        $this->loadSelfRegisterByPsr4(
-            "Commune\\Hyperf\\Demo\\",
-            __DIR__
-        );
-
-        $this->dependComponent(DemoComponent::class);
-    }
 
     public static function stub(): array
     {
-        return [];
+        return [
+            'langPath' => __DIR__ . '/resources/trans',
+        ];
+    }
+
+
+
+    protected function doBootstrap(): void
+    {
+        $path = realpath($this->langPath);
+
+        if (!empty($path)) {
+            $this->loadTranslationResource($path);
+        }
+
+        $this->loadSelfRegisterByPsr4(
+            "Commune\\Hyperf\\Demo\\Contexts\\",
+            __DIR__ . '/Contexts/'
+        );
+
+        $this->dependComponent(DemoComponent::class);
     }
 
 

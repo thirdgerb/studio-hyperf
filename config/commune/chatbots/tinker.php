@@ -29,10 +29,7 @@ return [
 
     // 预加载的组件. 使用方法类似 configBindings
     // 但component 不仅会预加载配置, 而且还能注册各种组件, 进行初始化等.
-    'components' => [
-        \Commune\Components\Demo\DemoComponent::class,
-        \Commune\Components\Story\StoryComponent::class,
-    ],
+    'components' => include __DIR__ .'/../configs/components.php',
 
     'baseServices' => [],
 
@@ -103,6 +100,8 @@ return [
         'messageMissMatched' => 'dialog.missMatched',
     ],
 
+    'defaultSlots' => include __DIR__ . '/../configs/slots.php',
+
     'host' => [
 
         // 系统默认的slots, 所有的reply message 都会使用
@@ -121,7 +120,11 @@ return [
             //]
         ],
 
-        'rootContextName' => \Commune\Components\Demo\Contexts\DemoHome::class,
+        'rootContextName' => \Commune\Hyperf\Demo\Contexts\DemoHome::class,
+
+        'scenes' => [
+            'test' => \Commune\Components\Demo\Contexts\DemoHome::class,
+        ],
 
         'sessionPipes' => [
             // event 转 message

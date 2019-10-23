@@ -2,7 +2,6 @@
 
 use Hyperf\Server\Server;
 use Hyperf\Server\SwooleEvent;
-use Hyperf\Framework\Bootstrap;
 
 $chatbot = include BASE_PATH . '/config/commune/chatbots/web.php';
 

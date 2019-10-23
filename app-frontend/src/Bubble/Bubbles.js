@@ -8,7 +8,7 @@ function Bubbles(container, self, options) {
   sidePadding = options.sidePadding || 6 // padding on both sides of chat bubbles
   recallInteractions = options.recallInteractions || 0 // number of interactions to be remembered and brought back upon restart
   this.inputCallbackFn = options.inputCallbackFn || false // should we display an input field?
-  maxTypingWait = options.maxTypingWait || 500;
+  maxTypingWait = options.maxTypingWait || 1000;
 
   // 增加功能.
   placeholder = options.placeholder || 'write something'
