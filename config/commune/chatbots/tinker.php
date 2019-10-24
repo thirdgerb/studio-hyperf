@@ -49,7 +49,7 @@ return [
     'conversationProviders' => [
 
         // 权限识别
-        'ability' => Providers\AbilityServiceProvider::class,
+        'ability' => Providers\FakeAbilityServiceProvider::class,
 
         // hyperf client driver . redis, db
         // hyperf 的协程客户端
