@@ -10,8 +10,12 @@ function Bubbles(container, self, options) {
   this.inputCallbackFn = options.inputCallbackFn || false // should we display an input field?
   maxTypingWait = options.maxTypingWait || 1000;
 
-  // 增加功能.
+  // 增加功能, 修改placeholder
   placeholder = options.placeholder || 'write something'
+    
+  // 加入字数限制
+  maxInput = options.maxInput || 100;
+  maxInputWarning = options.maxInputWarning || "字符数请不要超过100个";
 
   var _convo = {} // local memory for conversation JSON object
   //--> NOTE that this object is only assigned once, per session and does not change for this
@@ -83,6 +87,14 @@ function Bubbles(container, self, options) {
     inputText.addEventListener("keypress", function(e) {
       // register user input
       if (e.keyCode == 13) {
+        this.value = this.value.trim();
+        if (this.value.length < 1) {
+          return;
+        }
+        if (this.value.length > maxInput) {
+          alert(maxInputWarning);
+          return;
+        }
         e.preventDefault()
         typeof bubbleQueue !== false ? clearTimeout(bubbleQueue) : false // allow user to interrupt the bot
         var lastBubble = document.querySelectorAll(".bubble.say")
