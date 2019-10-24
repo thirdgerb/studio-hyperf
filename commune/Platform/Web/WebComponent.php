@@ -38,10 +38,6 @@ class WebComponent extends ComponentOption
                 $this->apiRender
             )
         );
-
-        $this->registerReplyRender([
-            ReplyIds::LINK => LinkTemp::class
-        ]);
     }
 
 
