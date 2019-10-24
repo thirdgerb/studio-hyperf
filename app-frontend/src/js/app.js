@@ -251,8 +251,12 @@ const app = new Vue({
                 recallInteractions : 2,
                 placeholder : "请输入...",
                 inputCallbackFn: function(o){
-                    let text = o.content ? o.content : '';
+                    let text = o.content ? o.content.trim() : '';
                     if (window._.isString(text) && text.length < 1) {
+                        alert("输入不能为空");
+                        return;
+                    } else if (text.length > 100) {
+                        alert("请控制在一百个字符以内");
                         return;
                     }
 
@@ -276,7 +280,7 @@ const app = new Vue({
             let scene = $this.scene;
 
             Vue.axios.post(WEB_URI, {text}, {
-                timeout : 500,
+                timeout : 1500,
                 params : {
                     scene : scene,
                 },

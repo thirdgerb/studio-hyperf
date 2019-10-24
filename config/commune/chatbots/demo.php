@@ -136,7 +136,17 @@ $chatbot = [
         // 在 $dialog->hear()->end() 的时候调用.
         'hearingFallback' => \Commune\Components\SimpleChat\Callables\SimpleChatAction::class,
     ],
-
 ];
+
+
+// 根据是否有 rasa 决定是否开启
+$hasRasa = env('RASA_API', '');
+if (!empty($hasRasa)) {
+    $sessionPipes = $chatbot['host']['sessionPipes'] ?? [];
+    $navigationPipe = array_pop($sessionPipes);
+    $sessionPipes[] = \Commune\Components\Rasa\RasaSessionPipe::class;
+    $sessionPipes[] = $navigationPipe;
+    $chatbot['host']['sessionPipes'] = $sessionPipes;
+}
 
 return $chatbot;

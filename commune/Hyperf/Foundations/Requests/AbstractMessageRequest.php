@@ -262,7 +262,12 @@ abstract class AbstractMessageRequest implements MessageRequest, SwooleMsgReq, H
             // 发送时间.
             $deliverAt = $cachedMessage->message->getDeliverAt();
 
-            if (!isset($deliverAt) || $deliverAt->timestamp < $now) {
+            if (
+                // 没有设置发送时间, 就立刻发送
+                !isset($deliverAt)
+                // 发送时间已经过了.
+                || $deliverAt->timestamp < $now
+            ) {
                 $rendering[] = $cachedMessage;
             } else {
                 $delay[] = $cachedMessage;

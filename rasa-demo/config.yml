@@ -3,17 +3,22 @@
 language: "zh"
 
 pipeline:
-- name: "MitieNLP"
-  model: "includes/total_word_feature_extractor_zh.dat"
-- name: "JiebaTokenizer"
-- name: "MitieEntityExtractor"
-- name: "EntitySynonymMapper"
-- name: "RegexFeaturizer"
-- name: "MitieIntentClassifier"
+#- name: "SpacyNLP"
+#  model: "includes/zh/"
+#- name: "SpacyTokenizer"
+#- name: "SpacyFeaturizer"
+#- name: "RegexFeaturizer"
+#- name: "CRFEntityExtractor"
+#- name: "EntitySynonymMapper"
 
-# Configuration for Rasa Core.
-# https://rasa.com/docs/rasa/core/policies/
-policies:
-  - name: MemoizationPolicy
-  - name: KerasPolicy
-  - name: MappingPolicy
+
+- name: "JiebaTokenizer"
+- name: "RegexFeaturizer"
+- name: "CRFEntityExtractor"
+- name: "EntitySynonymMapper"
+- name: "CountVectorsFeaturizer"
+- name: "CountVectorsFeaturizer"
+  analyzer: "char_wb"
+  min_ngram: 1
+  max_ngram: 4
+- name: "EmbeddingIntentClassifier"
