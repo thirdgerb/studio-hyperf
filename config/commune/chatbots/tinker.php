@@ -122,7 +122,7 @@ return [
 
         'rootContextName' => \Commune\Hyperf\Demo\Contexts\DemoHome::class,
 
-        'scenes' => [
+        'sceneContextNames' => [
             'test' => \Commune\Components\Demo\Contexts\DemoHome::class,
         ],
 

@@ -15,6 +15,7 @@ use Hyperf\Database\ConnectionResolverInterface;
 use Hyperf\Guzzle\ClientFactory;
 use Hyperf\Redis\RedisFactory;
 use Psr\Container\ContainerInterface as Container;
+use Psr\Container\ContainerInterface;
 
 /**
  * 通过 hyperf 的容器生成 commune chatbot 的进程级容器.
@@ -37,6 +38,7 @@ class ProcessContainer implements ContainerContract
     public function __construct(Container $container)
     {
         // 要提前绑定.
+        $this->instance(ContainerInterface::class, $container);
         $this->instance(self::HYPERF_CONTAINER_ID, $container);
         $this->instance(HyperfBotOption::class, $option = $container->get(HyperfBotOption::class));
 
