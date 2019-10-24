@@ -57,7 +57,8 @@ return [
     // rasa 组件
     \Commune\Components\Rasa\RasaComponent::class => [
         'server' => env('RASA_API', 'localhost:5050'),
-        'output' => realpath(__DIR__ . '/../../../rasa-demo/data/nlu.md'),
+        'output' => BASE_PATH . '/rasa-demo/data/nlu.md',
+        'domainOutput' => BASE_PATH . '/rasa-demo/domain.yml',
     ],
 ];
 
