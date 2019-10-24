@@ -156,9 +156,16 @@ function Bubbles(container, self, options) {
   }
   // navigate "answers"
   this.answer = function(key, content) {
+    content = content.trim();
     if (content.length < 1) {
       return;
     }
+    
+    if (content.length > 100) {
+      alert("请控制在一百个字符以内");
+      return;
+    }
+    
     // callback
     typeof this.inputCallbackFn === "function"
         ? this.inputCallbackFn({

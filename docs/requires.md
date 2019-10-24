@@ -6,3 +6,14 @@
     -   intl
 -   系统
     -   ICU
+
+
+nlu : 用 rasa
+
+rasa 依赖:
+-   python3
+-   pip3
+-   python-devel
+-   gcc
+-   rasa
+-   jieba
