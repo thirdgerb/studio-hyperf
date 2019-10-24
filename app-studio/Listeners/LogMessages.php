@@ -1,0 +1,32 @@
+<?php
+
+
+namespace Commune\Studio\Listeners;
+
+
+use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
+use Commune\Chatbot\Framework\Events\RequestIsFinish;
+
+class LogMessages
+{
+    public function log(RequestIsFinish $e)
+    {
+        $incomingMessage = $e->conversation
+            ->getIncomingMessage()
+            ->getMessage()
+            ->getText();
+
+        $replies = array_map(function(ConversationMessage $message){
+            return $message->getMessage()->getText();
+        }, $e->conversation->getReplies());
+
+        $e->conversation
+            ->getLogger()
+            ->info(__METHOD__, [
+                'query' => $incomingMessage,
+                'replies' => $replies
+            ]);
+
+    }
+
+}
