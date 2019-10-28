@@ -245,14 +245,14 @@ const app = new Vue({
             return Promise.reject(error);
         });
 
-        $this.scene = location.search ? location.search : '';
+        $this.scene = location.search ? location.search.scene : '';
         //this.$vuetify.theme.dark = true
         const chatWindow = new Bubbles(
             document.getElementById("chat"), // ...passing HTML container element...
             "window.chatWindow", // ...and name of the function as a parameter
             {
                 animationTime: 200,
-                typeSpeed : 5,
+                typeSpesed : 5,
                 recallInteractions : 2,
                 placeholder : "请输入...",
                 inputCallbackFn: function(o){
