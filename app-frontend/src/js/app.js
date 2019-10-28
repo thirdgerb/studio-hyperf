@@ -245,7 +245,7 @@ const app = new Vue({
             return Promise.reject(error);
         });
 
-        $this.scene = location.search && location.search.hasOwnProperty('scene')? location.search.scene : '';
+
         //this.$vuetify.theme.dark = true
         const chatWindow = new Bubbles(
             document.getElementById("chat"), // ...passing HTML container element...
@@ -272,10 +272,21 @@ const app = new Vue({
 
         window.chatWindow = chatWindow;
 
-        chatWindow.answer(
-            '', '#repeat'
-        );
+        let search = location.search
+        if (search.length > 0) {
+            search = search.substr(1);
+            let searchArr = search.split('&');
+            for (var i = 0; i < searchArr.length; i++) {
+                let parts = searchArr[i].split('=');
+                if (parts[0] == 'scene') {
+                    $this.scene = parts[1];
+                    $this.chat('#home');
+                    return;
+                }
+            }
+        }
 
+        $this.chat('#repeat');
         
     },
     methods : {
@@ -283,6 +294,7 @@ const app = new Vue({
         chat : function(text) {
             let $this = this;
             let scene = $this.scene;
+            console.log(scene);
 
             Vue.axios.post(WEB_URI, {text}, {
                 timeout : 1500,
@@ -301,8 +313,6 @@ const app = new Vue({
                   if (response.data.hasOwnProperty('data')) {
                     data = response.data.data;
                   }
-
-                  console.log(data);
 
                   if (data.hasOwnProperty('replies')) {
                       window.chatWindow.reply(data.replies);
