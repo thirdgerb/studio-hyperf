@@ -48,6 +48,9 @@ return [
     // 情景游戏组件.
     \Commune\Components\Story\StoryComponent::class,
 
+    // 疑案追声模式 demo 组件
+    \Commune\Components\UnheardLike\UnheardLikeComponent::class,
+
     // 闲聊组件
     \Commune\Components\SimpleChat\SimpleChatComponent::class,
 

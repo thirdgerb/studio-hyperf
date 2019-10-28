@@ -199,14 +199,19 @@ const app = new Vue({
             icon: 'mdi-account-circle',
           },
           {
-            scene: 'game',
-            title: '对话小游戏',
-            icon: 'mdi-account-circle',
+              scene: 'unheard',
+              title: '对话侦探游戏DEMO',
+              icon: 'mdi-account-circle',
           },
           {
-            scene: 'story',
-            title: '情景游戏',
-            icon: 'mdi-account-circle',
+              scene: 'story',
+              title: '情景游戏DEMO',
+              icon: 'mdi-account-circle',
+          },
+          {
+              scene: 'game',
+              title: '对话小游戏',
+              icon: 'mdi-account-circle',
           },
           {
             scene: 'nlu',

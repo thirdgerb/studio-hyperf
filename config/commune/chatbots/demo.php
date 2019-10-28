@@ -109,6 +109,7 @@ $chatbot = [
             'introduce' => 'sw.demo.intro',
             'special' => 'sw.demo.intro.special',
             'game' => \Commune\Components\Demo\Contexts\GameTestCases::class,
+            'unheard' => 'unheard-like.episodes.who-is-lizhongwen',
             'story' => 'story.examples.sanguo.changbanpo',
             'nlu' => \Commune\Components\Demo\Contexts\NLTestCases::class,
             'maze' => \Commune\Components\Demo\Cases\Maze\MazeInt::getContextName(),
