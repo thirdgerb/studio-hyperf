@@ -245,7 +245,7 @@ const app = new Vue({
             return Promise.reject(error);
         });
 
-        $this.scene = location.search ? location.search.scene : '';
+        $this.scene = location.search && location.search.hasOwnProperty('scene')? location.search.scene : '';
         //this.$vuetify.theme.dark = true
         const chatWindow = new Bubbles(
             document.getElementById("chat"), // ...passing HTML container element...
