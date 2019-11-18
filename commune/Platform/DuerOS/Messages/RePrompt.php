@@ -9,7 +9,7 @@ namespace Commune\Platform\DuerOS\Messages;
 
 
 use Commune\Chatbot\Blueprint\Message\Message;
-use Commune\Chatbot\Blueprint\Message\SSML;
+use Commune\Chatbot\Blueprint\Message\Replies\SSML;
 use Commune\Chatbot\Blueprint\Message\Tags\NoTranslate;
 use Commune\Chatbot\Framework\Messages\Reply;
 

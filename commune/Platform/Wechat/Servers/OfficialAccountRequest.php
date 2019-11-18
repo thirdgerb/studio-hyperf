@@ -5,7 +5,7 @@ namespace Commune\Platform\Wechat\Servers;
 
 
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
-use Commune\Chatbot\Blueprint\Message\VerboseMsg;
+use Commune\Chatbot\Blueprint\Message\VerbalMsg;
 use Commune\Hyperf\Support\HttpBabel;
 use Commune\Platform\Wechat\Contracts\MessageBabel;
 use EasyWeChat\Kernel\Contracts\MessageInterface;
@@ -340,7 +340,7 @@ class OfficialAccountRequest extends SwooleHttpMessageRequest
         if ($msg instanceof WechatMessages\TemplateMessage) {
             $this->sendWechatTemplateMessage($msg);
 
-        } elseif ($msg instanceof VerboseMsg) {
+        } elseif ($msg instanceof VerbalMsg) {
             $this->output = new EasyWechatMessages\Text($msg->getText());
 
         } elseif ($msg instanceof WechatMessages\WechatMessage) {
@@ -385,7 +385,7 @@ class OfficialAccountRequest extends SwooleHttpMessageRequest
         $text = [];
 
         foreach ($msgs as $message) {
-            if ($message instanceof VerboseMsg) {
+            if ($message instanceof VerbalMsg) {
                 $text[] = $message->getText();
 
             // 微信公众号不允许多个回复消息, 因此多个消息时, 应该用发送模板消息的方式来解决.

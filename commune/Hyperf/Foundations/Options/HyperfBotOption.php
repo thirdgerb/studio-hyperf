@@ -16,12 +16,13 @@ use Hyperf\Framework\Bootstrap;
 
 /**
  *
- * @property-read bool $debug
+ * @property-read bool $debug 是否开启debug模式, 会覆盖 ChatbotConfig 的 debug
  *
- * @property-read ChatbotConfig $chatbot
+ * @property-read ChatbotConfig $chatbot ChatbotConfig 配置
  *
  * @property-read bool $bufferMessage
- * 是否在发送消息之前, 先缓存消息到队列里. 这样避免异步消息发送失败导致的语序混乱.
+ * 是否在发送消息之前, 先缓存消息到队列里.
+ * 这样避免异步消息发送失败导致的语序混乱, 还可以实现延迟发送消息
  * whether buffer sending message to cache.
  *
  * @property-read string $redisPool

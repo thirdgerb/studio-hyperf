@@ -8,7 +8,7 @@ use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Conversation\Speech;
 use Commune\Chatbot\Blueprint\Message\Media\ImageMsg;
 use Commune\Chatbot\Blueprint\Message\Replies\LinkMsg;
-use Commune\Chatbot\Blueprint\Message\VerboseMsg;
+use Commune\Chatbot\Blueprint\Message\VerbalMsg;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
 use Commune\Platform\Web\Contracts\ResponseRender;
 
@@ -56,7 +56,7 @@ class DemoResponseRender implements ResponseRender
             }
 
             // 级别渲染.
-            $this->messages[] = $msg instanceof VerboseMsg ? $this->wrapLevel($msg->getLevel(), $text) : $text;
+            $this->messages[] = $msg instanceof VerbalMsg ? $this->wrapLevel($msg->getLevel(), $text) : $text;
         }
     }
 

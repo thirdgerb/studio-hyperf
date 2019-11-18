@@ -4,7 +4,7 @@
 namespace Commune\Studio\Commands;
 
 
-use Commune\Chatbot\Blueprint\Message\Command\CmdMessage;
+use Commune\Chatbot\Blueprint\Message\Transformed\CommandMsg;
 use Commune\Chatbot\Contracts\CacheAdapter;
 use Commune\Chatbot\OOHost\Command\SessionCommand;
 use Commune\Chatbot\OOHost\Command\SessionCommandPipe;
@@ -36,7 +36,7 @@ class WhosYourDaddyCmd extends SessionCommand
         $this->cache = $cacheAdapter;
     }
 
-    public function handle(CmdMessage $message, Session $session, SessionCommandPipe $pipe): void
+    public function handle(CommandMsg $message, Session $session, SessionCommandPipe $pipe): void
     {
         $token = env('SUPERVISOR_TOKEN', '');
         $spell = $message['spell'] ?? '';
@@ -73,7 +73,7 @@ class WhosYourDaddyCmd extends SessionCommand
 
         // 重输命令取消 supervisor 身份.
         if ($this->cache->has($key)) {
-            $this->say()->info('falwell my lord');
+            $this->say()->info('farewell my lord');
             $this->cache->forget($key);
 
         } else {

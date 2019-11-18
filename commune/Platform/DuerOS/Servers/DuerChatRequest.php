@@ -13,8 +13,8 @@ use Commune\Chatbot\App\Messages\Text;
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Conversation\NLU;
 use Commune\Chatbot\Blueprint\Message\Message;
-use Commune\Chatbot\Blueprint\Message\SSML;
-use Commune\Chatbot\Blueprint\Message\VerboseMsg;
+use Commune\Chatbot\Blueprint\Message\Replies\SSML;
+use Commune\Chatbot\Blueprint\Message\VerbalMsg;
 use Commune\Chatbot\App\Messages\Events\QuitEvt;
 use Commune\Chatbot\App\Messages\Events\StartEvt;
 use Commune\Platform\DuerOS\Constants\EndSession;
@@ -332,7 +332,7 @@ class DuerChatRequest extends SwooleHttpMessageRequest
             $this->cards[] = $message->toCardArray();
 
         // verbose
-        } elseif ($message instanceof VerboseMsg) {
+        } elseif ($message instanceof VerbalMsg) {
             $this->outSpeech .= $message->getText();
         }
 

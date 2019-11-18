@@ -12,7 +12,7 @@ use Commune\Chatbot\App\Messages\Text;
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Conversation\MessageRequest;
 use Commune\Chatbot\Blueprint\Message\Message;
-use Commune\Chatbot\Blueprint\Message\VerboseMsg;
+use Commune\Chatbot\Blueprint\Message\VerbalMsg;
 use Commune\Chatbot\Framework\Conversation\MessageRequestHelper;
 use Commune\Support\Uuid\HasIdGenerator;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -121,13 +121,13 @@ class TinkerMessageRequest implements MessageRequest, HasIdGenerator
             $msg = $message->getMessage();
             $text = $msg->getText();
 
-            if ($msg instanceof VerboseMsg) {
+            if ($msg instanceof VerbalMsg) {
 
                 switch($msg->getLevel()) {
-                    case VerboseMsg::ERROR :
+                    case VerbalMsg::ERROR :
                         $this->output->error($text);
                         break;
-                    case VerboseMsg::WARN :
+                    case VerbalMsg::WARN :
                         $this->output->warning($text);
                         break;
                     default :

@@ -64,8 +64,11 @@ $chatbot = [
     'chatbotPipes' =>
         [
             'onUserMessage' => [
+                // 发送 conversation, 并且管理所有的异常
                 \Commune\Chatbot\App\ChatPipe\MessengerPipe::class,
+                // 用于锁定 chat, 避免用户输入消息太频繁导致歧义
                 \Commune\Chatbot\App\ChatPipe\ChattingPipe::class,
+                // 多轮对话管理内核
                 \Commune\Chatbot\OOHost\OOHostPipe::class,
             ],
         ],
