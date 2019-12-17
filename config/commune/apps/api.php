@@ -5,10 +5,7 @@ use Hyperf\Server\SwooleEvent;
 
 $chatbot = include BASE_PATH . '/config/commune/chatbots/api.php';
 
-
 return [
-
-    'debug' => true,
 
     'chatbot' => $chatbot,
 
@@ -17,6 +14,8 @@ return [
     'dbPool' => 'default',
 
     'bufferMessage' => false,
+
+    'shares' => [],
 
     'server' => [
         'mode' => SWOOLE_PROCESS,

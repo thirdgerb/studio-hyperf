@@ -28,9 +28,21 @@ use Swoole\Coroutine;
  * - swoole server : swoole 的服务端
  * - hyperf server : hyperf 对 swoole server 的封装
  * - chat server : commune chatbot 自己要求的 server 对象.
+ *
+ * 容易让人陷入混乱. 这里简单介绍一下.
+ *
+ * CommuneChatbot 项目自带的 ChatServer 现在全部是当前类, HyperfChatServer
+ * 通过 php bin/hyperf.php commune:start [appName] 启动, 都是启动当前类.
+ *
+ * 而原本应该在 ChatServer::run() 方法里实现的平台逻辑, 现在封装到了 Hyperf Server
+ * 中.
  */
 class HyperfChatServer implements ChatServer
 {
+    /**
+     * @var Application
+     */
+    protected $chatApp;
 
     /**
      * @var ContainerInterface
@@ -42,24 +54,23 @@ class HyperfChatServer implements ChatServer
      */
     protected $hyperfServer;
 
-    /**
-     * HyperfChatServer constructor.
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Application $chatApp)
     {
-        $this->container = $container;
+        $this->chatApp = $chatApp;
+        $this->container = $chatApp
+            ->getProcessContainer()
+            ->get(ProcessContainer::HYPERF_CONTAINER_ID);
     }
 
 
     public function run(): void
     {
         // 查看 ChatAppFactory, 已绑定工厂方法在 config/dependencies.php
-        $chatApp = $this->container->get(Application::class);
+        $chatApp = $this->chatApp;
 
         // 初始化chatbot
         $chatApp->getProcessContainer()->instance(ChatServer::class, $this);
-        $chatApp->bootApp();
+        $chatApp->getConversationContainer()->instance(ChatServer::class, $this);
 
         // 运行 hyperf server
         $botOption = $this->container->get(HyperfBotOption::class);
@@ -67,6 +78,10 @@ class HyperfChatServer implements ChatServer
         // 初始化 hyperf server
         $dispatcher = $this->container->get(EventDispatcherInterface::class);
         $stdLogger = $this->container->get(StdoutLoggerInterface::class);
+
+        /**
+         * @var ServerFactory $serverFactory
+         */
         $serverFactory = $this->container
             ->get(ServerFactory::class)
             ->setEventDispatcher($dispatcher)
@@ -118,6 +133,26 @@ class HyperfChatServer implements ChatServer
             $fd = $request->getFd();
             $this->getHyperfServer()->getServer()->close($fd);
         }
+    }
+
+    /**
+     * 暂时没有终止所有服务的方法.
+     * 需要自定义.
+     * 定义新的 Server 后, 注册到配置文件中就可以了
+     *
+     * ChatbotConfig::$server;
+     *
+     * @see \Commune\Chatbot\Config\ChatbotConfig
+     * @return bool
+     */
+    public function isAvailable(): bool
+    {
+        return true;
+    }
+
+    public function setAvailable(bool $boolean): void
+    {
+        return;
     }
 
 

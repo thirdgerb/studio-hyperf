@@ -7,8 +7,6 @@ use Hyperf\Framework\Bootstrap;
 $chatbot = include BASE_PATH . '/config/commune/chatbots/tcp.php';
 
 return [
-    'debug' => true,
-
     'chatbot' => $chatbot,
 
     'redisPool' => 'default',
@@ -16,6 +14,8 @@ return [
     'dbPool' => 'default',
 
     'bufferMessage' => true,
+
+    'shares' => [],
 
     'server' => [
         'mode' => SWOOLE_PROCESS,

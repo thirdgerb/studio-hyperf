@@ -170,7 +170,7 @@ class OfficialAccountRequest extends SwooleHttpMessageRequest
             $cache = $this->conversation->make(CacheAdapter::class);
 
             $id = $this->fetchUserId();
-            $key = "chatbot:wechat:user:$id";
+            $key = "wechat:user:$id";
 
             if ($cache->has($key)) {
                 $data = $cache->get($key);

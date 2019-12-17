@@ -10,7 +10,6 @@ namespace Commune\Hyperf\Foundations\Drivers;
 use Commune\Chatbot\Framework\Conversation\RunningSpyTrait;
 use Commune\Chatbot\OOHost\Context\Context;
 use Commune\Chatbot\OOHost\Context\Memory\Memory;
-use Commune\Chatbot\OOHost\History\Breakpoint;
 use Commune\Chatbot\OOHost\History\Yielding;
 use Commune\Chatbot\OOHost\Session\Driver as Contract;
 use Commune\Chatbot\OOHost\Session\Session;
@@ -25,7 +24,7 @@ class SessionDriver implements Contract
     use RunningSpyTrait;
 
     const SNAPSHOT_KEY = 'snapshot:%s';
-    const SESSION_KEY = "chatbot:session:%s";
+    const SESSION_KEY = "session:%s";
     const GC_COUNTS_KEY = "gc_counts";
 
     /**

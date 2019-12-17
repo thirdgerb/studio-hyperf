@@ -6,7 +6,7 @@ $chatbot = include __DIR__ . '/demo.php';
 
 $chatbot['chatbotPipes'] = [
     'onUserMessage' => [
-        \Commune\Chatbot\App\ChatPipe\MessengerPipe::class,
+        \Commune\Chatbot\App\ChatPipe\UserMessengerPipe::class,
         // api 不需要锁用户.
         // \Commune\Chatbot\App\ChatPipe\ChattingPipe::class,
         \Commune\Chatbot\OOHost\OOHostPipe::class,

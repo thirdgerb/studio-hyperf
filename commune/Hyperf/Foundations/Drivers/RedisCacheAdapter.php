@@ -49,7 +49,7 @@ class RedisCacheAdapter implements CacheAdapter
         $this->driver = $driver;
         $this->traceId = $driver->getTraceId();
         // 每个 chatbot 独享一个前缀. 最好在 database 也做出分割.
-        $this->prefix = md5($config->chatbotName).':';
+        $this->prefix = 'chatbot:' . md5($config->chatbotName) . ':';
         static::addRunningTrace($this->traceId, $this->traceId);
     }
 

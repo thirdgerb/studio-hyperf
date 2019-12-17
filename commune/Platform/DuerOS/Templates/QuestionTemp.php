@@ -14,7 +14,7 @@ use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\Blueprint\Message\QA\Question;
 use Commune\Chatbot\Blueprint\Message\ReplyMsg;
 use Commune\Chatbot\Contracts\Translator;
-use Commune\Chatbot\Framework\Exceptions\ConfigureException;
+use Commune\Chatbot\Framework\Exceptions\ChatbotLogicException;
 use Commune\Platform\DuerOS\Messages\Directives\OrdinalDirective;
 
 class QuestionTemp extends AbstractTemp
@@ -37,8 +37,8 @@ class QuestionTemp extends AbstractTemp
     public function doRender(ReplyMsg $reply, Conversation $conversation): array
     {
         if (!$reply instanceof Question) {
-            throw new ConfigureException(
-                static::class
+            throw new ChatbotLogicException(
+                __METHOD__
                 . ' only accept QuestionMsg'
             );
         }

@@ -10,6 +10,7 @@ namespace Commune\Hyperf\Commands;
 use Commune\Chatbot\Contracts\ChatServer;
 use Commune\Chatbot\Framework\ChatApp;
 use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
+use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Hyperf\Foundations\ProcessContainer;
 use Commune\Hyperf\Servers\Tinker\TinkerChatServer;
 use Hyperf\Contract\ConfigInterface;
@@ -53,18 +54,22 @@ class Tinker extends SymfonyCommand
         $communeConfig = $config->get('commune');
         $tinkerConfig = $communeConfig[self::CONFIG_KEY] ?? [];
 
+        $tinkerOption = new HyperfBotOption($tinkerConfig);
+
         if (empty($tinkerConfig)) {
             $output->error('tinker config not found, should be in config/autoload/commune.php ');
             exit(0);
         }
 
-
         // process container
-        $workerContainer = new ProcessContainer($this->container);
+        $workerContainer = new ProcessContainer(
+            $this->container,
+            $tinkerOption->shares
+        );
 
         // chatbot app
         $chatApp = new ChatApp(
-            $tinkerConfig,
+            $tinkerOption->chatbot,
             $workerContainer,
             $this->container->get(StdConsoleLogger::class)
         );
@@ -73,6 +78,7 @@ class Tinker extends SymfonyCommand
 
         // server
         $server = new TinkerChatServer($chatApp, $output, $scene);
+        // 传入实例, 而非依赖注入生成.
         $workerContainer->instance(ChatServer::class, $server);
 
         $server->run();

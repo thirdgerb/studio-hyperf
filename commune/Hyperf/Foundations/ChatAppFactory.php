@@ -11,6 +11,7 @@ namespace Commune\Hyperf\Foundations;
 use Commune\Chatbot\Framework\ChatApp;
 use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class ChatAppFactory
@@ -32,16 +33,14 @@ class ChatAppFactory
 
     public function __invoke()
     {
-        $processContainer = $this->container->get(ProcessContainer::class);
         $botOption = $this->container->get(HyperfBotOption::class);
+        $processContainer = new ProcessContainer($this->container, $botOption->shares);
 
         $chatbotConfig = $botOption->chatbot->toArray();
-        // 会被 botOption 的 debug 给覆盖.
-        $chatbotConfig['debug'] = $botOption->debug;
 
-
-        $logger = $this->container->get(StdConsoleLogger::class);
-        $chatApp = new ChatApp($chatbotConfig, $processContainer, $logger);
+        $hyperfStdLogger = $this->container->get(StdoutLoggerInterface::class);
+        $consoleLogger = new StdConsoleLogger($hyperfStdLogger);
+        $chatApp = new ChatApp($chatbotConfig, $processContainer, $consoleLogger);
         return $chatApp;
     }
 

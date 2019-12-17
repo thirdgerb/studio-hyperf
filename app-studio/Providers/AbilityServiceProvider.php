@@ -17,7 +17,7 @@ use Commune\Chatbot\Framework\Providers\BaseServiceProvider;
  */
 class AbilityServiceProvider extends BaseServiceProvider
 {
-    const IS_PROCESS_SERVICE_PROVIDER = false;
+    const IS_PROCESS_SERVICE_PROVIDER = true;
 
     public function boot($app)
     {

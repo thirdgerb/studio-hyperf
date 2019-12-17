@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class AbstractMessageRequest
- * @package Commune\Hyperf\Foundations\Requests
- */
-
 namespace Commune\Hyperf\Foundations\Requests;
 
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;

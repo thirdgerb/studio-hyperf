@@ -12,7 +12,7 @@ use Commune\Chatbot\App\Messages\Text;
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\Blueprint\Message\VerbalMsg;
-use Commune\Chatbot\Framework\Predefined\SimpleConsoleLogger;
+use Commune\Chatbot\Framework\Impl\SimpleConsoleLogger;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Hyperf\Foundations\Requests\AbstractMessageRequest;
 use Swoole\Server;

@@ -35,14 +35,11 @@ class ProcessContainer implements ContainerContract
         ConnectionResolverInterface::class,
     ];
 
-    public function __construct(Container $container)
+    public function __construct(Container $container, array $bindings = [])
     {
         // 要提前绑定.
         $this->instance(ContainerInterface::class, $container);
         $this->instance(self::HYPERF_CONTAINER_ID, $container);
-        $this->instance(HyperfBotOption::class, $option = $container->get(HyperfBotOption::class));
-
-        $bindings = array_unique(array_merge($this->fromHyperf, $option->shares));
 
         // 分享 sharing
         foreach ($bindings as $sharing) {

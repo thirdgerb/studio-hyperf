@@ -91,4 +91,17 @@ class TinkerChatServer implements ChatServer
     }
 
 
+    protected $available = true;
+
+    public function isAvailable(): bool
+    {
+        return $this->available;
+    }
+
+    public function setAvailable(bool $boolean): void
+    {
+        $this->available = $boolean;
+    }
+
+
 }

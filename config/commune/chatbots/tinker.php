@@ -14,6 +14,8 @@ return [
 
     'chatbotName' => 'tinker',
 
+    'server' => \Commune\Hyperf\Servers\Tinker\TinkerChatServer::class,
+
     'debug' => true,
 
     // 在这里可以预先绑定一些用 Option 类封装的配置.
@@ -31,26 +33,23 @@ return [
     // 但component 不仅会预加载配置, 而且还能注册各种组件, 进行初始化等.
     'components' => include __DIR__ .'/../configs/components.php',
 
-    'baseServices' => [],
+    'baseServices' => \Commune\Chatbot\Config\Children\BaseServicesConfig::stub(),
 
     // 进程级别的服务注册
     'processProviders' => [
-        // 基础service
-        'exp' => Providers\ExceptionHandlerServiceProvider::class,
+
         // 注册 feel emotion 模块
         'feeling' => Providers\FeelingServiceProvider::class,
         // register chatbot event
         'event' => Providers\EventServiceProvider::class,
         // 公共d的rendering
         'render' =>  Providers\RenderServiceProvider::class,
+        // 权限识别
+        'ability' => Providers\FakeAbilityServiceProvider::class,
     ],
 
     // 在worker中注册的服务, 多个请求共享
     'conversationProviders' => [
-
-        // 权限识别
-        'ability' => Providers\FakeAbilityServiceProvider::class,
-
         // hyperf client driver . redis, db
         // hyperf 的协程客户端
         'client' => \Commune\Hyperf\Foundations\Providers\ClientDriverServiceProvider::class,
@@ -67,7 +66,7 @@ return [
     'chatbotPipes' =>
         [
             'onUserMessage' => [
-                \Commune\Chatbot\App\ChatPipe\MessengerPipe::class,
+                \Commune\Chatbot\App\ChatPipe\UserMessengerPipe::class,
                 \Commune\Chatbot\App\ChatPipe\ChattingPipe::class,
                 \Commune\Chatbot\OOHost\OOHostPipe::class,
             ],

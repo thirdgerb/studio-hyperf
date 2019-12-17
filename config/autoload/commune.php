@@ -4,7 +4,7 @@
 return [
 
     // tinker 机器人的配置
-    'tinker' => include BASE_PATH . '/config/commune/chatbots/tinker.php',
+    'tinker' => include BASE_PATH . '/config/commune/apps/tinker.php',
 
     // 可以通过 commune:start 命令启动的, 真实客户端.
     // 配置内容请查看 Commune\Hyperf\Foundations\Options\HyperfBotOption

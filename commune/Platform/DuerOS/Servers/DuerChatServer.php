@@ -110,7 +110,7 @@ class DuerChatServer implements OnRequestInterface
     protected function generateRequest(SwooleRequest $request, SwooleResponse $response) : DuerChatRequest
     {
         $mock = DuerChatRequest::getMockingQuery($request);
-        if ($this->botOption->debug && !empty($mock)) {
+        if ($this->botOption->chatbot->debug && !empty($mock)) {
             return $this->makeMockDuerChatRequest($request, $response, $mock);
         }
 

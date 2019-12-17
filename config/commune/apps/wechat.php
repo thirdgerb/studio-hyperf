@@ -2,13 +2,10 @@
 
 use Hyperf\Server\Server;
 use Hyperf\Server\SwooleEvent;
-use Hyperf\Framework\Bootstrap;
 
 $chatbot = include BASE_PATH . '/config/commune/chatbots/wechat.php';
 
 return [
-
-    'debug' => env('WECHAT_DEBUG', true),
 
     'chatbot' => $chatbot,
 
@@ -17,6 +14,8 @@ return [
     'dbPool' => 'default',
 
     'bufferMessage' => true,
+
+    'shares' => [],
 
     'server' => [
         'mode' => SWOOLE_PROCESS,

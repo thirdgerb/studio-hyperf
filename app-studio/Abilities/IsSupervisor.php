@@ -19,25 +19,16 @@ use Commune\Studio\Commands\WhosYourDaddyCmd;
  */
 class IsSupervisor implements Supervise
 {
-    /**
-     * @var CacheAdapter
-     */
-    protected $cache;
-
-    /**
-     * IsSupervisor constructor.
-     * @param CacheAdapter $cache
-     */
-    public function __construct(CacheAdapter $cache)
-    {
-        $this->cache = $cache;
-    }
 
     public function isAllowing(Conversation $conversation): bool
     {
         $id = $conversation->getChat()->getChatId();
+        /**
+         * @var CacheAdapter $cache
+         */
+        $cache = $conversation->get(CacheAdapter::class);
         $key = static::supervisorKey($id);
-        return $this->cache->has($key);
+        return $cache->has($key);
     }
 
     public static function supervisorKey(string $chatId) : string

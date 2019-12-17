@@ -15,9 +15,6 @@ use Hyperf\Framework\Bootstrap;
 
 
 /**
- *
- * @property-read bool $debug 是否开启debug模式, 会覆盖 ChatbotConfig 的 debug
- *
  * @property-read ChatbotConfig $chatbot ChatbotConfig 配置
  *
  * @property-read bool $bufferMessage

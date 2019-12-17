@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class MessageQueue
- * @package Commune\Hyperf\Foundations\Contracts
- */
-
 namespace Commune\Hyperf\Foundations\Contracts;
 
 

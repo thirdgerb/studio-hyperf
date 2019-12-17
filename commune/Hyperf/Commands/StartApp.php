@@ -7,9 +7,9 @@
 
 namespace Commune\Hyperf\Commands;
 
+use Commune\Chatbot\Blueprint\Application;
 use Commune\Hyperf\Foundations\Options\HyperfBotOption;
 use Commune\Hyperf\Foundations\Factories\HyperfBotOptionFactory;
-use Commune\Hyperf\Foundations\HyperfChatServer;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +20,7 @@ use Hyperf\Command\Annotation\Command;
 
 /**
  * @Command
+ * 在hyperf中启动 commune chatbot app 的命令.
  */
 class StartApp extends SymfonyCommand
 {
@@ -74,9 +75,7 @@ class StartApp extends SymfonyCommand
         }
 
         $config['name'] = $name;
-        $config['chatbot']['debug'] = $config['debug'];
-
-        // 绑定option
+        // 使用配置数组, 绑定hyperf option
         $hyperfChatbotOption = new HyperfBotOption($config);
         /**
          * @var HyperfBotOptionFactory $factory
@@ -84,9 +83,14 @@ class StartApp extends SymfonyCommand
         $factory = $this->container->get(HyperfBotOptionFactory::class);
         $factory->set($hyperfChatbotOption);
 
-        $this->container
-            ->get(HyperfChatServer::class)
-            ->run();
+        /**
+         * @var Application $app
+         */
+        $app = $this->container->get(Application::class);
+
+        // 启动.
+        $app->getServer()->run();
+
     }
 
     protected function checkEnvironment(OutputInterface $output)

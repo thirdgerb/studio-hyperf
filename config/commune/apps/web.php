@@ -8,8 +8,6 @@ $chatbot = include BASE_PATH . '/config/commune/chatbots/web.php';
 
 return [
 
-    'debug' => true,
-
     'chatbot' => $chatbot,
 
     'redisPool' => 'default',
@@ -17,6 +15,8 @@ return [
     'dbPool' => 'default',
 
     'bufferMessage' => true,
+
+    'shares' => [],
 
     'server' => [
         'mode' => SWOOLE_PROCESS,

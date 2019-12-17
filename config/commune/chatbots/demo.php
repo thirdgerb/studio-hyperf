@@ -14,7 +14,9 @@ $chatbot = [
     'chatbotName' => 'commune-studio-demo',
 
     // 会被 botOption 的 debug 覆盖.
-    'debug' => true,
+    'debug' => env('CHATBOT_DEBUG', false),
+
+    'server' => \Commune\Hyperf\Foundations\HyperfChatServer::class,
 
     // 在这里可以预先绑定一些用 Option 类封装的配置.
     // 会将该配置预绑定到worker容器上, 作为单例.
@@ -35,20 +37,18 @@ $chatbot = [
 
     // 进程级别的服务注册
     'processProviders' => [
-        // 基础service
-        'exp' => Providers\ExceptionHandlerServiceProvider::class,
         // 注册 feel emotion 模块
         'feeling' => Providers\FeelingServiceProvider::class,
         // register chatbot event
         'event' => Providers\EventServiceProvider::class,
         // 公共的rendering
         'render' =>  Providers\RenderServiceProvider::class,
+        // 权限识别
+        'ability' => Providers\AbilityServiceProvider::class,
     ],
 
     // 在worker中注册的服务, 多个请求共享
     'conversationProviders' => [
-        // 权限识别
-        'ability' => Providers\AbilityServiceProvider::class,
         // hyperf client driver . redis, db
         // hyperf 的协程客户端
         'client' => \Commune\Hyperf\Foundations\Providers\ClientDriverServiceProvider::class,
@@ -65,7 +65,7 @@ $chatbot = [
         [
             'onUserMessage' => [
                 // 发送 conversation, 并且管理所有的异常
-                \Commune\Chatbot\App\ChatPipe\MessengerPipe::class,
+                \Commune\Chatbot\App\ChatPipe\UserMessengerPipe::class,
                 // 用于锁定 chat, 避免用户输入消息太频繁导致歧义
                 \Commune\Chatbot\App\ChatPipe\ChattingPipe::class,
                 // 多轮对话管理内核

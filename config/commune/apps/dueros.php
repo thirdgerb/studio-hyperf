@@ -8,8 +8,6 @@ $chatbot = include BASE_PATH . '/config/commune/chatbots/dueros.php';
 
 return [
 
-    'debug' => env('DUEROS_DEBUG', true),
-
     'chatbot' => $chatbot,
 
     'redisPool' => 'dueros',
@@ -17,6 +15,8 @@ return [
     'dbPool' => 'default',
 
     'bufferMessage' => true,
+
+    'shares' => [],
 
     'server' => [
         'mode' => SWOOLE_PROCESS,
