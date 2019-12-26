@@ -10,7 +10,7 @@ namespace Commune\Hyperf\Foundations;
 
 use Commune\Container\ContainerContract;
 use Commune\Container\ContainerTrait;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Hyperf\Database\ConnectionResolverInterface;
 use Hyperf\Guzzle\ClientFactory;
 use Hyperf\Redis\RedisFactory;

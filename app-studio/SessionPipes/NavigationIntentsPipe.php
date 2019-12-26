@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class NavigationPipe
- * @package Commune\Studio\SessionPipes
- */
-
 namespace Commune\Studio\SessionPipes;
 
 use Commune\Chatbot\App\SessionPipe\NavigationPipe as Example;

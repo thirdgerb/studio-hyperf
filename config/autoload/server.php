@@ -30,7 +30,7 @@ return [
     'settings' => [
         'enable_coroutine' => true,
         'worker_num' => 1,
-        'pid_file' => BASE_PATH . '/runtime/hyperf.pid',
+        'pid_file' => BASE_PATH . '/runtime/pid/hyperf.pid',
         'open_tcp_nodelay' => true,
         'max_coroutine' => 100000,
         'open_http2_protocol' => true,

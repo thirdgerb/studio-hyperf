@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class RenderServiceProvider
- * @package Commune\Studio\Providers
- */
-
 namespace Commune\Studio\Providers;
 
 

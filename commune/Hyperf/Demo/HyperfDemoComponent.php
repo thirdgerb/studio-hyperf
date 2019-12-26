@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class DemoComponent
- * @package Commune\Hyperf\Demo
- */
-
 namespace Commune\Hyperf\Demo;
 
 

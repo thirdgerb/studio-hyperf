@@ -11,7 +11,7 @@ namespace Commune\Platform\DuerOS\Servers;
 use Commune\Chatbot\Blueprint\Application;
 use Commune\Platform\DuerOS\DuerOSComponent;
 use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Hyperf\Contract\OnRequestInterface;
 use Hyperf\Server\ServerFactory;
 use Psr\Container\ContainerInterface;
@@ -32,7 +32,7 @@ class DuerChatServer implements OnRequestInterface
     protected $chatApp;
 
     /**
-     * @var HyperfBotOption
+     * @var AppServerOption
      */
     protected $botOption;
 
@@ -56,7 +56,7 @@ class DuerChatServer implements OnRequestInterface
      * DuerOSServer constructor.
      * @param StdConsoleLogger $logger
      */
-    public function __construct(ContainerInterface $container, Application $chatApp, HyperfBotOption $botOption)
+    public function __construct(ContainerInterface $container, Application $chatApp, AppServerOption $botOption)
     {
         $this->chatApp = $chatApp;
         $this->botOption = $botOption;

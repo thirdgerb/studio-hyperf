@@ -24,7 +24,7 @@ use EasyWeChat\Kernel\Messages as EasyWechatMessages;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\App\Messages\Unsupported;
 use EasyWeChat\OfficialAccount\Application as Wechat;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Commune\Chatbot\Framework\Exceptions\RequestException;
 use Commune\Hyperf\Foundations\Requests\SwooleHttpMessageRequest;
 use GuzzleHttp\Exception\GuzzleException;
@@ -69,7 +69,7 @@ class OfficialAccountRequest extends SwooleHttpMessageRequest
     protected $output;
 
     public function __construct(
-        HyperfBotOption $botOption,
+        AppServerOption $botOption,
         Server $server,
         SwooleRequest $request,
         SwooleResponse $response

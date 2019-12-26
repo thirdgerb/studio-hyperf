@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class HyperfServerOption
- * @package Commune\Hyperf\Options
- */
-
 namespace Commune\Hyperf\Foundations\Options;
 
 use Commune\Chatbot\Config\ChatbotConfig;
@@ -15,6 +10,7 @@ use Hyperf\Framework\Bootstrap;
 
 
 /**
+ *
  * @property-read ChatbotConfig $chatbot ChatbotConfig 配置
  *
  * @property-read bool $bufferMessage
@@ -35,7 +31,7 @@ use Hyperf\Framework\Bootstrap;
  * 定义需要从Hyperf框架传递到 chatApp 的单例.
  *
  */
-class HyperfBotOption extends Option
+class AppServerOption extends Option
 {
 
     protected static $associations = [
@@ -45,8 +41,6 @@ class HyperfBotOption extends Option
     public static function stub(): array
     {
         return [
-
-            'debug' => false,
 
             'chatbot' => ChatbotConfig::stub(),
 

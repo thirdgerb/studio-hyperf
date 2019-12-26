@@ -10,7 +10,7 @@ use Commune\Chatbot\Framework\Conversation\MessageRequestHelper;
 use Commune\Chatbot\Framework\Conversation\RunningSpyTrait;
 use Commune\Hyperf\Foundations\Contracts\MessageQueue;
 use Commune\Hyperf\Foundations\Contracts\SwooleMsgReq;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Commune\Support\Uuid\HasIdGenerator;
 use Swoole\Server;
 
@@ -37,7 +37,7 @@ abstract class AbstractMessageRequest implements MessageRequest, SwooleMsgReq, H
     protected $input;
 
     /**
-     * @var HyperfBotOption
+     * @var AppServerOption
      */
     protected $botOption;
 
@@ -78,12 +78,12 @@ abstract class AbstractMessageRequest implements MessageRequest, SwooleMsgReq, H
     /**
      * AbstractMessageRequest constructor.
      * @param Message|mixed $input
-     * @param HyperfBotOption $botOption
+     * @param AppServerOption $botOption
      * @param int $fd
      * @param Server $server
      */
     public function __construct(
-        HyperfBotOption $botOption,
+        AppServerOption $botOption,
         $input,
         int $fd,
         Server $server

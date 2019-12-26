@@ -1,16 +1,10 @@
 <?php
 
-/**
- * Class RenderServiceProvider
- * @package Commune\Platform\DuerOS\Providers
- */
-
 namespace Commune\Platform\DuerOS\Providers;
 
 use Commune\Chatbot\App\Messages\Templates\TranslateTemp;
 use Commune\Chatbot\Blueprint\Conversation\Renderer;
 use Commune\Chatbot\Framework\Providers\ReplyRendererServiceProvider;
-use Commune\Chatbot\App\Messages\System\QuitSessionReply;
 use Commune\Platform\DuerOS\Templates\QuitTemp;
 use Commune\Chatbot\App\Messages\QA;
 use Commune\Platform\DuerOS\Templates;
@@ -30,9 +24,7 @@ class RenderServiceProvider extends ReplyRendererServiceProvider
 
         // default
         Renderer::DEFAULT_ID => TranslateTemp::class,
-
-        // event
-        QuitSessionReply::REPLY_ID => QuitTemp::class,
+        Renderer::QUIT_ID => QuitTemp::class,
 
         // base question
         QA\VbQuestion::REPLY_ID => Templates\QuestionTemp::class,

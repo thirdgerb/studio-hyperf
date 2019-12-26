@@ -15,8 +15,8 @@ return [
     'dependencies' => [
 
         // commune chatbot 所需的两个工厂方法.
-        \Commune\Hyperf\Foundations\Options\HyperfBotOption::class
-            => \Commune\Hyperf\Foundations\Factories\HyperfBotOptionFactory::class,
+        \Commune\Hyperf\Foundations\Options\AppServerOption::class
+            => \Commune\Hyperf\Foundations\Factories\AppServerOptionFactory::class,
 
         \Commune\Chatbot\Blueprint\Application::class
             => \Commune\Hyperf\Foundations\ChatAppFactory::class

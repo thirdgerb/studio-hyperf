@@ -25,7 +25,7 @@ use Commune\Platform\DuerOS\Messages\AbsDirective;
 use Commune\Platform\DuerOS\Messages\RePrompt;
 use Commune\Platform\DuerOS\Mod\DirectivePlaceHolder;
 use Commune\Platform\DuerOS\Templates\AbstractTemp;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Commune\Hyperf\Foundations\Requests\SwooleHttpMessageRequest;
 use Commune\Hyperf\Support\HttpBabel;
 use Psr\Log\LoggerInterface;
@@ -116,7 +116,7 @@ class DuerChatRequest extends SwooleHttpMessageRequest
 
     /**
      * DuerChatRequest constructor.
-     * @param HyperfBotOption $option
+     * @param AppServerOption $option
      * @param DuerOSComponent $duerOSOption
      * @param DuerChatServer $server
      * @param SwooleRequest $input
@@ -125,7 +125,7 @@ class DuerChatRequest extends SwooleHttpMessageRequest
      * @param string $privateKeyContent
      */
     public function __construct(
-        HyperfBotOption $option,
+        AppServerOption $option,
         DuerOSComponent $duerOSOption,
         Server $server,
         LoggerInterface $logger,

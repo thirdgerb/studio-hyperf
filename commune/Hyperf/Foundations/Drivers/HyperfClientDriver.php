@@ -11,7 +11,7 @@ namespace Commune\Hyperf\Foundations\Drivers;
 use Commune\Chatbot\Blueprint\Conversation\Conversation;
 use Commune\Chatbot\Framework\Conversation\RunningSpyTrait;
 use Commune\Hyperf\Foundations\Contracts\ClientDriver;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Hyperf\Database\ConnectionInterface;
 use Hyperf\Database\ConnectionResolverInterface;
 use Hyperf\Redis\RedisFactory;
@@ -35,7 +35,7 @@ class HyperfClientDriver implements ClientDriver
     protected $traceId;
 
     /**
-     * @var HyperfBotOption
+     * @var AppServerOption
      */
     protected $botOption;
 
@@ -58,13 +58,13 @@ class HyperfClientDriver implements ClientDriver
     /**
      * HyperfDriver constructor.
      * @param Conversation $conversation
-     * @param HyperfBotOption $botOption
+     * @param AppServerOption $botOption
      * @param RedisFactory $redisResolver
      * @param ConnectionResolverInterface $dbResolver
      */
     public function __construct(
         Conversation $conversation,
-        HyperfBotOption $botOption,
+        AppServerOption $botOption,
         RedisFactory $redisResolver,
         ConnectionResolverInterface $dbResolver
     )

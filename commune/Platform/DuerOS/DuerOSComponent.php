@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class DuerOSComponent
- * @package Commune\Platform\DuerOS
- */
-
 namespace Commune\Platform\DuerOS;
 
 use Commune\Chatbot\Framework\Component\ComponentOption;
@@ -13,7 +8,6 @@ use Commune\Components\Predefined\Intents\Attitudes;
 use Commune\Components\Predefined\Intents\Loop;
 use Commune\Platform\DuerOS\Constants\Dictionary;
 use Commune\Platform\DuerOS\Providers\RenderServiceProvider;
-
 
 /**
  * @property-read string $privateKey 私钥的文件路径.

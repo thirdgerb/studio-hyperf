@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class SessionDriver
- * @package Commune\Hyperf\Foundations\Drivers
- */
-
 namespace Commune\Hyperf\Foundations\Drivers;
 
 use Commune\Chatbot\Framework\Conversation\RunningSpyTrait;

@@ -5,7 +5,7 @@ namespace Commune\Platform\Wechat\Servers;
 
 
 use Commune\Chatbot\Blueprint\Application;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Hyperf\Server\ServerFactory;
 use Hyperf\Contract\OnRequestInterface;
 use Psr\Container\ContainerInterface;
@@ -26,7 +26,7 @@ class OfficialAccountServer implements OnRequestInterface
     protected $chatApp;
 
     /**
-     * @var HyperfBotOption
+     * @var AppServerOption
      */
     protected $botOption;
 
@@ -36,7 +36,7 @@ class OfficialAccountServer implements OnRequestInterface
     protected $swooleServer;
 
 
-    public function __construct(ContainerInterface $container, Application $chatApp, HyperfBotOption $botOption)
+    public function __construct(ContainerInterface $container, Application $chatApp, AppServerOption $botOption)
     {
         $this->chatApp = $chatApp;
         $this->botOption = $botOption;

@@ -9,7 +9,7 @@ use Commune\Chatbot\App\Messages\Text;
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\OOHost\Dialogue\Dialog;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Commune\Hyperf\Foundations\Requests\SwooleHttpMessageRequest;
 use Commune\Platform\Web\Contracts\ResponseRender;
 use Commune\Platform\Web\WebComponent;
@@ -63,7 +63,7 @@ class WebRequest extends SwooleHttpMessageRequest implements NeedDialogStatus
      */
     protected $errMsg = 'success';
 
-    public function __construct(HyperfBotOption $botOption, WebComponent $config, Server $server, SwooleRequest $request, SwooleResponse $response)
+    public function __construct(AppServerOption $botOption, WebComponent $config, Server $server, SwooleRequest $request, SwooleResponse $response)
     {
         $input = $this->parseInput($request);
         $this->config = $config;

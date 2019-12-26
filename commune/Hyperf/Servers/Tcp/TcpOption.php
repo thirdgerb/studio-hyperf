@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class TcpOption
- * @package Commune\Hyperf\Servers\Tcp
- */
-
 namespace Commune\Hyperf\Servers\Tcp;
 
 

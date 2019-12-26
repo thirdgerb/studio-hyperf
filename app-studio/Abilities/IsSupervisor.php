@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class IsSupervisor
- * @package Commune\Studio\Abilities
- */
-
 namespace Commune\Studio\Abilities;
 
 

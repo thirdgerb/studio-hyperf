@@ -1,15 +1,10 @@
 <?php
 
-/**
- * Class StartApp
- * @package Commune\Hyperf\Servers
- */
-
 namespace Commune\Hyperf\Commands;
 
 use Commune\Chatbot\Blueprint\Application;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
-use Commune\Hyperf\Foundations\Factories\HyperfBotOptionFactory;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
+use Commune\Hyperf\Foundations\Factories\AppServerOptionFactory;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -76,11 +71,11 @@ class StartApp extends SymfonyCommand
 
         $config['name'] = $name;
         // 使用配置数组, 绑定hyperf option
-        $hyperfChatbotOption = new HyperfBotOption($config);
+        $hyperfChatbotOption = new AppServerOption($config);
         /**
-         * @var HyperfBotOptionFactory $factory
+         * @var AppServerOptionFactory $factory
          */
-        $factory = $this->container->get(HyperfBotOptionFactory::class);
+        $factory = $this->container->get(AppServerOptionFactory::class);
         $factory->set($hyperfChatbotOption);
 
         /**

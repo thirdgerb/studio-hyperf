@@ -1,7 +1,5 @@
 <?php
 
-use Commune\Studio\Providers;
-
 $chatbot = include __DIR__ . '/demo.php';
 
 $chatbot['chatbotPipes'] = [
@@ -18,7 +16,7 @@ $chatbot['host']['sessionPipes'] = [
 ];
 
 $chatbot['logger'] = [
-    'path' => BASE_PATH . '/runtime/commune_api.log',
+    'path' => BASE_PATH . '/runtime/logs/commune_api.log',
     'days' => 7,
     'level' => 'debug',
     'bubble' => true,

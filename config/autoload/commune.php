@@ -7,7 +7,7 @@ return [
     'tinker' => include BASE_PATH . '/config/commune/apps/tinker.php',
 
     // 可以通过 commune:start 命令启动的, 真实客户端.
-    // 配置内容请查看 Commune\Hyperf\Foundations\Options\HyperfBotOption
+    // 配置内容请查看 Commune\Hyperf\Foundations\Options\AppServerOption
     'apps' => [
         // 默认的tcp端. 通常供测试用.
         'tcp' => include BASE_PATH . '/config/commune/apps/tcp.php',

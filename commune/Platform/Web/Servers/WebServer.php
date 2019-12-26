@@ -5,7 +5,7 @@ namespace Commune\Platform\Web\Servers;
 
 
 use Commune\Chatbot\Blueprint\Application;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Commune\Platform\Web\WebComponent;
 use Hyperf\Contract\OnRequestInterface;
 use Hyperf\Server\ServerFactory;
@@ -26,7 +26,7 @@ class WebServer implements OnRequestInterface
     protected $chatApp;
 
     /**
-     * @var HyperfBotOption
+     * @var AppServerOption
      */
     protected $botOption;
 
@@ -41,7 +41,7 @@ class WebServer implements OnRequestInterface
      */
     protected $config;
 
-    public function __construct(ContainerInterface $container, Application $chatApp, HyperfBotOption $botOption)
+    public function __construct(ContainerInterface $container, Application $chatApp, AppServerOption $botOption)
     {
         $this->chatApp = $chatApp;
         $this->botOption = $botOption;

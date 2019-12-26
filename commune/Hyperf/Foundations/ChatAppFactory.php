@@ -10,7 +10,7 @@ namespace Commune\Hyperf\Foundations;
 
 use Commune\Chatbot\Framework\ChatApp;
 use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
 
@@ -33,7 +33,7 @@ class ChatAppFactory
 
     public function __invoke()
     {
-        $botOption = $this->container->get(HyperfBotOption::class);
+        $botOption = $this->container->get(AppServerOption::class);
         $processContainer = new ProcessContainer($this->container, $botOption->shares);
 
         $chatbotConfig = $botOption->chatbot->toArray();

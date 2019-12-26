@@ -1,16 +1,11 @@
 <?php
 
-/**
- * Class Tinker
- * @package Commune\Hyperf\Commands
- */
-
 namespace Commune\Hyperf\Commands;
 
 use Commune\Chatbot\Contracts\ChatServer;
 use Commune\Chatbot\Framework\ChatApp;
 use Commune\Hyperf\Foundations\Drivers\StdConsoleLogger;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Commune\Hyperf\Foundations\ProcessContainer;
 use Commune\Hyperf\Servers\Tinker\TinkerChatServer;
 use Hyperf\Contract\ConfigInterface;
@@ -54,7 +49,7 @@ class Tinker extends SymfonyCommand
         $communeConfig = $config->get('commune');
         $tinkerConfig = $communeConfig[self::CONFIG_KEY] ?? [];
 
-        $tinkerOption = new HyperfBotOption($tinkerConfig);
+        $tinkerOption = new AppServerOption($tinkerConfig);
 
         if (empty($tinkerConfig)) {
             $output->error('tinker config not found, should be in config/autoload/commune.php ');

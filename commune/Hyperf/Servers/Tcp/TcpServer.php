@@ -8,7 +8,7 @@
 namespace Commune\Hyperf\Servers\Tcp;
 
 
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Swoole\Server;
 use Commune\Chatbot\Blueprint\Application as ChatApp;
 use Commune\Chatbot\App\Messages\Events\ConnectionEvt;
@@ -33,7 +33,7 @@ class TcpServer
     protected $tcpOption;
 
     /**
-     * @var HyperfBotOption
+     * @var AppServerOption
      */
     protected $botOption;
 
@@ -41,7 +41,7 @@ class TcpServer
      * TcpServer constructor.
      * @param ChatApp $chatApp
      */
-    public function __construct(ChatApp $chatApp, HyperfBotOption $option)
+    public function __construct(ChatApp $chatApp, AppServerOption $option)
     {
         $this->chatApp = $chatApp;
         $this->botOption = $option;

@@ -16,6 +16,7 @@ $chatbot = [
     // 会被 botOption 的 debug 覆盖.
     'debug' => env('CHATBOT_DEBUG', false),
 
+    // ChatServer 使用的类
     'server' => \Commune\Hyperf\Foundations\HyperfChatServer::class,
 
     // 在这里可以预先绑定一些用 Option 类封装的配置.
@@ -61,33 +62,53 @@ $chatbot = [
         'message' => \Commune\Hyperf\Foundations\Providers\MessageQueueServiceProvider::class,
     ],
 
-    'chatbotPipes' =>
-        [
-            'onUserMessage' => [
-                // 发送 conversation, 并且管理所有的异常
-                \Commune\Chatbot\App\ChatPipe\UserMessengerPipe::class,
-                // 用于锁定 chat, 避免用户输入消息太频繁导致歧义
-                \Commune\Chatbot\App\ChatPipe\ChattingPipe::class,
-                // 多轮对话管理内核
-                \Commune\Chatbot\OOHost\OOHostPipe::class,
-            ],
+    // 响应消息请求的管道
+    'chatbotPipes' => [
+        'onUserMessage' => [
+            // 发送 conversation, 并且管理所有的异常
+            \Commune\Chatbot\App\ChatPipe\UserMessengerPipe::class,
+            // 用于锁定 chat, 避免用户输入消息太频繁导致歧义
+            \Commune\Chatbot\App\ChatPipe\ChattingPipe::class,
+            // 多轮对话管理内核
+            \Commune\Chatbot\OOHost\OOHostPipe::class,
         ],
-
-    // translation module
-    'translation' => [
-        'loader' => 'php',
-        'resourcesPath' => BASE_PATH . '/resources/langs',
-        'defaultLocale' => 'zh',
-        'cacheDir' => NULL,
     ],
 
-    // logger module
+    // 消息请求加锁的自动过期时间
+    'chatLockerExpire' => 3,
+
+    /**
+     * 翻译模块配置
+     * @see \Commune\Chatbot\Framework\Providers\TranslatorServiceProvider
+     */
+    'translation' => [
+        // 默认配置文件的类型. 也支持 yaml 等.
+        'loader' => 'php',
+        // 语言包所在的目录, 目录下每一个子目录对应一种语言.
+        // 例如 /resources/langs/zh 对应 zh
+        // 每个目录里应该都有一个 messages.php 文件, 而且文本变量应该按照 intl 方式定义.
+        'resourcesPath' => BASE_PATH . '/resources/langs',
+        // 默认使用的语言包.
+        'defaultLocale' => 'zh',
+        // cache 文件所在路径.
+        'cacheDir' => BASE_PATH . '/runtime/cache/langs/',
+    ],
+
+    /**
+     * 日志文件配置
+     * @see Monolog\Handler\StreamHandler
+     */
     'logger' => [
+        // 日志文件路径
         'path' => BASE_PATH . '/runtime/commune_demo.log',
+        // 日志保存的天数, 默认每天会生成一个日志文件
         'days' => 7,
-        'level' => 'debug',
+        // 记录日志的级别,
+        'level' => \Psr\Log\LogLevel::DEBUG,
         'bubble' => true,
+        // 指定日志文件的权限.
         'permission' => NULL,
+        // 写日志文件时是否加锁.
         'locking' => false,
     ],
 
@@ -99,10 +120,11 @@ $chatbot = [
     // such as 'self.name'
     'defaultSlots' => include __DIR__ . '/../configs/slots.php',
 
+    // 系统在一些特殊场景, 默认回复用户的消息
     'defaultMessages' => \Commune\Chatbot\Config\Children\DefaultMessagesConfig::stub(),
 
+    // 多轮对话管理内核的配置
     'host' => [
-
 
         // 默认的根语境名
         'rootContextName' => \Commune\Hyperf\Demo\Contexts\DemoHome::class,
@@ -119,21 +141,41 @@ $chatbot = [
             'dev' => \Commune\Hyperf\Demo\Contexts\DevTools::class,
         ],
 
+        // 可 "返回上一步" 的最大次数
+        'maxBreakpointHistory' => 2,
+        // 单次请求, 多轮对话状态变更的最大次数
+        'maxRedirectTimes' => 20,
+        // 是否记录多轮对话状态变更路径 到日志
+        'logRedirectTracking' => true,
+        // Session 的过期时间
+        'sessionExpireSeconds' => 3600,
+        // 默认扫描, 加载的 Context 类所在路径, 按 psr-4 规范
+        'autoloadPsr4' => [
+            "Commune\\Studio\\Contexts\\" => BASE_PATH . '/app-studio/Contexts',
+        ],
+
         'sessionPipes' => [
             // event 转 message
             // transfer curtain event messages to other messages
-            \Commune\Chatbot\App\SessionPipe\EventMsgPipe::class,
+            0 => \Commune\Chatbot\App\SessionPipe\EventMsgPipe::class,
             // 单纯用于测试的管道,#intentName# 模拟命中一个意图.
             // use "#intentName#" pattern to mock intent
-            \Commune\Chatbot\App\SessionPipe\MarkedIntentPipe::class,
+            1 => \Commune\Chatbot\App\SessionPipe\MarkedIntentPipe::class,
             // 用户可用的命令.
-            SessionPipes\UserCommandsPipe::class,
+            2 => SessionPipes\UserCommandsPipe::class,
             // 超级管理员可用的命令. for supervisor only
-            SessionPipes\AnalyseCommandsPipe::class,
+            3 => SessionPipes\AnalyseCommandsPipe::class,
+
+            // 4. 的位置留给 NLU 中间件
+
             // 优先级最高的意图, 通常用于导航.
             // 会优先匹配这些意图.
             // highest level intent
-            SessionPipes\NavigationIntentsPipe::class,
+            5 => SessionPipes\NavigationIntentsPipe::class,
+        ],
+
+        // 通过配置定义的上下文记忆
+        'memories' => [
         ],
 
         // hearing 模块系统默认的 defaultFallback 方法
@@ -146,11 +188,7 @@ $chatbot = [
 // 根据是否有 rasa 决定是否开启
 $hasRasa = env('RASA_API', '');
 if (!empty($hasRasa)) {
-    $sessionPipes = $chatbot['host']['sessionPipes'] ?? [];
-    $navigationPipe = array_pop($sessionPipes);
-    $sessionPipes[] = \Commune\Components\Rasa\RasaSessionPipe::class;
-    $sessionPipes[] = $navigationPipe;
-    $chatbot['host']['sessionPipes'] = $sessionPipes;
+    $chatbot['host']['sessionPipes'][4] = \Commune\Components\Rasa\RasaSessionPipe::class;
 }
 
 return $chatbot;

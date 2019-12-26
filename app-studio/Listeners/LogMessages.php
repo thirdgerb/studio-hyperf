@@ -5,11 +5,11 @@ namespace Commune\Studio\Listeners;
 
 
 use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
-use Commune\Chatbot\Framework\Events\RequestIsFinish;
+use Commune\Chatbot\Framework\Events\FinishingRequest;
 
 class LogMessages
 {
-    public function log(RequestIsFinish $e)
+    public function log(FinishingRequest $e)
     {
         $incomingMessage = $e->conversation
             ->getIncomingMessage()

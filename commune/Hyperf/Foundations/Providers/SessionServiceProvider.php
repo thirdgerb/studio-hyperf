@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Class SessionServiceProvider
- * @package Commune\Hyperf\Foundations\Providers
- */
-
 namespace Commune\Hyperf\Foundations\Providers;
 
 

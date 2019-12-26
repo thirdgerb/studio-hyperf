@@ -5,7 +5,7 @@ namespace Commune\Hyperf\Foundations\Requests;
 
 use Commune\Hyperf\Foundations\Contracts\SwooleHttpMsgReq;
 use Commune\Hyperf\Foundations\Contracts\SwooleMsgReq;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Swoole\Http\Request as SwooleRequest;
 use Swoole\Http\Response as SwooleResponse;
 use Swoole\Server;
@@ -23,7 +23,7 @@ abstract class SwooleHttpMessageRequest extends AbstractMessageRequest implement
     protected $response;
 
     public function __construct(
-        HyperfBotOption $botOption,
+        AppServerOption $botOption,
         $input,
         Server $server,
         SwooleRequest $request,

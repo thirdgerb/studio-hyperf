@@ -12,7 +12,7 @@ use Commune\Chatbot\Blueprint\Conversation\Conversation;
 use Commune\Chatbot\Contracts\ChatServer;
 use Commune\Hyperf\Foundations\Contracts\SwooleHttpMsgReq;
 use Commune\Hyperf\Foundations\Contracts\SwooleMsgReq;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Hyperf\Server\ServerInterface as HyperfServer;
 use Psr\Container\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -73,7 +73,7 @@ class HyperfChatServer implements ChatServer
         $chatApp->getConversationContainer()->instance(ChatServer::class, $this);
 
         // 运行 hyperf server
-        $botOption = $this->container->get(HyperfBotOption::class);
+        $botOption = $this->container->get(AppServerOption::class);
 
         // 初始化 hyperf server
         $dispatcher = $this->container->get(EventDispatcherInterface::class);

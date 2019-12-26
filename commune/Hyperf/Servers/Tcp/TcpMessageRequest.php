@@ -13,7 +13,7 @@ use Commune\Chatbot\Blueprint\Conversation\ConversationMessage;
 use Commune\Chatbot\Blueprint\Message\Message;
 use Commune\Chatbot\Blueprint\Message\VerbalMsg;
 use Commune\Chatbot\Framework\Impl\SimpleConsoleLogger;
-use Commune\Hyperf\Foundations\Options\HyperfBotOption;
+use Commune\Hyperf\Foundations\Options\AppServerOption;
 use Commune\Hyperf\Foundations\Requests\AbstractMessageRequest;
 use Swoole\Server;
 
@@ -31,13 +31,13 @@ class TcpMessageRequest extends AbstractMessageRequest
 
     /**
      * TcpMessageRequest constructor.
-     * @param HyperfBotOption $option
+     * @param AppServerOption $option
      * @param Server $server
      * @param int $fd
      * @param $input
      */
     public function __construct(
-        HyperfBotOption $option,
+        AppServerOption $option,
         $input,
         int $fd,
         Server $server
