@@ -5,7 +5,7 @@ use \Commune\Chatbot\App\Callables\Actions\Redirector;
 return [
 
     // 官方的基础 demo
-    \Commune\Hyperf\Demo\HyperfDemoComponent::class,
+    \Commune\Studio\Components\Demo\HyperfDemoComponent::class,
 
     // 系统自带的 NLU 单元 配置
     // 包括本地语料库, 自然语言单元等配置

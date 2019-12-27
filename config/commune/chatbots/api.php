@@ -2,6 +2,8 @@
 
 $chatbot = include __DIR__ . '/demo.php';
 
+$chatbot['chatbotName'] = 'commune-web-demo';
+
 $chatbot['chatbotPipes'] = [
     'onUserMessage' => [
         \Commune\Chatbot\App\ChatPipe\UserMessengerPipe::class,
@@ -9,6 +11,17 @@ $chatbot['chatbotPipes'] = [
         // \Commune\Chatbot\App\ChatPipe\ChattingPipe::class,
         \Commune\Chatbot\OOHost\OOHostPipe::class,
     ],
+];
+
+// 定义路由.
+$chatbot['components'][\Commune\Platform\WebApi\WebApiComponent::class] = [
+    'getActions' => [
+        'hello-world' => \Commune\Platform\WebApi\Demo\HelloWorldAction::class,
+        'context-code' => \Commune\Platform\WebApi\Demo\GetContextCode::class,
+    ],
+    'postActions' => [
+
+    ]
 ];
 
 $chatbot['host']['sessionPipes'] = [

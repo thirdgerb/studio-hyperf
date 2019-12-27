@@ -119,7 +119,7 @@ return [
             //]
         ],
 
-        'rootContextName' => \Commune\Hyperf\Demo\Contexts\DemoHome::class,
+        'rootContextName' => \Commune\Studio\Components\Demo\Contexts\DemoHome::class,
 
         'sceneContextNames' => [
             'test' => \Commune\Components\Demo\Contexts\DemoHome::class,

@@ -127,7 +127,7 @@ $chatbot = [
     'host' => [
 
         // 默认的根语境名
-        'rootContextName' => \Commune\Hyperf\Demo\Contexts\DemoHome::class,
+        'rootContextName' => \Commune\Studio\Components\Demo\Contexts\DemoHome::class,
 
         // 不同场景下的根语境名.
         'sceneContextNames' => [
@@ -138,7 +138,7 @@ $chatbot = [
             'story' => 'story.examples.sanguo.changbanpo',
             'nlu' => \Commune\Components\Demo\Contexts\NLTestCases::class,
             'maze' => \Commune\Components\Demo\Cases\Maze\MazeInt::getContextName(),
-            'dev' => \Commune\Hyperf\Demo\Contexts\DevTools::class,
+            'dev' => \Commune\Studio\Components\Demo\Contexts\DevTools::class,
         ],
 
         // 可 "返回上一步" 的最大次数

@@ -11,4 +11,6 @@ declare(strict_types=1);
  */
 
 return [
+    \Commune\Hyperf\Commands\StartApp::class,
+    \Commune\Hyperf\Commands\Tinker::class,
 ];
