@@ -59,7 +59,7 @@ const app = new Vue({
         nav
       >
         <v-list-item 
-          onClick="alert('正在撰写开发文档, 预计10月底完成');"
+          href="/docs/zh-cn"
         >
           <v-list-item-icon>
             <v-icon >mdi-book-open-outline</v-icon>

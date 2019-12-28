@@ -14,8 +14,6 @@ return [
     'scan' => [
         'paths' => [
             BASE_PATH . '/app',
-            BASE_PATH . '/commune/Hyperf/Preloads/',
-            BASE_PATH . '/commune/Hyperf/Commands',
         ],
         'ignore_annotations' => [
             'mixin',

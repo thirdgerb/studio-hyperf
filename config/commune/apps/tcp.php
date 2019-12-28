@@ -22,7 +22,7 @@ return [
         'servers' => [
             [
                 'name' => 'tcp',
-                'type' => Server::SERVER_TCP,
+                'type' => Server::SERVER_BASE,
                 'host' => 'localhost',
                 'port' => intval(env('CHAT_TCP_PORT', 9527)),
                 'sock_type' => SWOOLE_SOCK_TCP,

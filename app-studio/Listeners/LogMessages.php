@@ -17,7 +17,7 @@ class LogMessages
             ->getText();
 
         $replies = array_map(function(ConversationMessage $message){
-            return $message->getMessage()->getText();
+            return str_replace(' ', '', $message->getMessage()->getText());
         }, $e->conversation->getReplies());
 
         $e->conversation

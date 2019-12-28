@@ -30,7 +30,7 @@ class HyperfDemoComponent extends ComponentOption
         }
 
         $this->loadSelfRegisterByPsr4(
-            "Commune\\Hyperf\\Demo\\Contexts\\",
+            "Commune\\Studio\\Components\\Demo\\Contexts\\",
             __DIR__ . '/Contexts/'
         );
 

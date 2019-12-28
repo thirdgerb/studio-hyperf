@@ -11,20 +11,22 @@
     ],
     "description": "commune/chatbot studio base on swoole coroutine framework hyperf",
     "license": "Apache-2.0",
+    "minimum-stability": "RC",
     "require": {
         "php": ">=7.2",
         "ext-swoole": ">=4.4",
         "commune/chatbot-hyperf": "~0.1.0",
         "commune/platform-wechat": "~0.1.0",
         "commune/platform-dueros": "~0.1.0",
+        "commune/compnt-rasa": "~0.1.0",
         "hyperf/cache": "~1.1.0",
         "hyperf/command": "~1.1.0",
+        "hyperf/di": "~1.1.0",
         "hyperf/config": "~1.1.0",
         "hyperf/contract": "~1.1.0",
         "hyperf/database": "~1.1.0",
         "hyperf/db-connection": "~1.1.0",
         "hyperf/devtool": "~1.1.0",
-        "hyperf/di": "~1.1.0",
         "hyperf/dispatcher": "~1.1.0",
         "hyperf/event": "~1.1.0",
         "hyperf/exception-handler": "~1.1.0",
@@ -73,16 +75,11 @@
             "Commune\\Test\\Studio\\" : "commune/tests"
         }
     },
-    "minimum-stability": "dev",
     "prefer-stable": true,
     "extra": [],
     "scripts": {
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-        ],
-        "test": "co-phpunit -c phpunit.xml --colors=always",
-        "cs-fix": "php-cs-fixer fix $1",
-        "analyze": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./app ./config",
-        "start": "php ./bin/hyperf.php start"
+        ]
     }
 }
