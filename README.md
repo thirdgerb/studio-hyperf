@@ -35,6 +35,10 @@
     # composer 安装依赖
     composer install
 
+或者使用 composer 安装
+
+    composer create-project commune/studio-hyperf
+
 确认依赖:
 
 - php >= 7.2
