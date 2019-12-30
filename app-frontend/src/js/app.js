@@ -59,7 +59,7 @@ const app = new Vue({
         nav
       >
         <v-list-item 
-          href="/docs/zh-cn"
+          href="/docs"
         >
           <v-list-item-icon>
             <v-icon >mdi-book-open-outline</v-icon>
