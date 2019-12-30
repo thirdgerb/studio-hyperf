@@ -3,7 +3,7 @@
 // 系统自带的全局 slots
 // 用于 $dialog->say()->info($replyId, $slots);
 return [
-    'version' => 'beta 测试版',
+    'version' => 'v0.1.0',
     'self' => [
         'name' => 'CommuneChatbot',
         'project' => 'commune/chatbot',
