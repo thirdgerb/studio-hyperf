@@ -104,7 +104,7 @@ $chatbot = [
         // 日志保存的天数, 默认每天会生成一个日志文件
         'days' => 7,
         // 记录日志的级别,
-        'level' => \Psr\Log\LogLevel::DEBUG,
+        'level' => \Psr\Log\LogLevel::INFO,
         'bubble' => true,
         // 指定日志文件的权限.
         'permission' => NULL,
