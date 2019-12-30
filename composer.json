@@ -11,7 +11,6 @@
     ],
     "description": "commune/chatbot studio base on swoole coroutine framework hyperf",
     "license": "Apache-2.0",
-    "minimum-stability": "RC",
     "require": {
         "php": ">=7.2",
         "ext-swoole": ">=4.4",
@@ -76,7 +75,11 @@
         }
     },
     "prefer-stable": true,
-    "extra": [],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    },
     "scripts": {
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
