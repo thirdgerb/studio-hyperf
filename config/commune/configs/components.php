@@ -133,6 +133,8 @@ return [
         'output' => BASE_PATH . '/rasa-demo/data/nlu.md',
         // domain 配置地址.
         'domainOutput' => BASE_PATH . '/rasa-demo/domain.yml',
+        // 命中语境的阈值.
+        'threshold' => 60,
     ],
 ];
 
