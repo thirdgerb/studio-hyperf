@@ -15,7 +15,16 @@ class CreateChatbotSessionDataTable extends Migration
         Schema::create(TableSchema::SESSION_DATA_TABLE, function (Blueprint $table) {
             $table->bigIncrements('id');
             TableSchema::id(TableSchema::SESSION_DATA_ID, $table);
-            TableSchema::scope($table);
+
+            // 暂时无法控制 id 的长度. dueros message_id 超长, 导致了错误.
+            TableSchema::id('message_id', $table,100);
+            TableSchema::id('session_id', $table,100);
+            TableSchema::id('chat_id', $table,100);
+            TableSchema::id('user_id', $table,100);
+            TableSchema::id('platform_id', $table, 100);
+            TableSchema::id('chatbot_name', $table, 100);
+            TableSchema::id('conversation_id', $table,100);
+
             TableSchema::serialized($table);
             $table->string(TableSchema::SESSION_DATA_TYPE, 100)->default('');
 
