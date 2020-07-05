@@ -1,141 +1,36 @@
-# CommuneChatbot Studio
+# Introduction
 
-本项目是为 [CommuneChatbot](https://github.com/thirdgerb/chatbot) 开发的工作站, 用于搭建生产环境下可用的多轮对话机器人.
+This is a skeleton application using the Hyperf framework. This application is meant to be used as a starting place for those looking to get their feet wet with Hyperf Framework.
 
-[CommuneChatbot](https://github.com/thirdgerb/chatbot) 是一个多轮对话机器人框架, 拥有两部分功能:
+# Requirements
 
--   framework: 作为对话机器人框架, 可以接入即时通讯或语音平台服务端, 整合NLU, 搭建对话机器人
--   OOHost: 多轮对话内核, 可以用工程化的手段开发能实现复杂多轮对话的机器人.
+Hyperf has some requirements for the system environment, it can only run under Linux and Mac environment, but due to the development of Docker virtualization technology, Docker for Windows can also be used as the running environment under Windows.
 
-工作站使用 [Swoole](https://github.com/swoole/swoole-src) + 协程框架 [Hyperf](https://github.com/hyperf-cloud/hyperf-skeleton) 提供高性能的服务端.
+The various versions of Dockerfile have been prepared for you in the [hyperf\hyperf-docker](https://github.com/hyperf/hyperf-docker) project, or directly based on the already built [hyperf\hyperf](https://hub.docker.com/r/hyperf/hyperf) Image to run.
 
-## Demo
+When you don't want to use Docker as the basis for your running environment, you need to make sure that your operating environment meets the following requirements:  
 
-目前的 Demo 有:
+ - PHP >= 7.2
+ - Swoole PHP extension >= 4.4，and Disabled `Short Name`
+ - OpenSSL PHP extension
+ - JSON PHP extension
+ - PDO PHP extension （If you need to use MySQL Client）
+ - Redis PHP extension （If you need to use Redis Client）
+ - Protobuf PHP extension （If you need to use gRPC Server of Client）
 
-* 官方网站 : <https://communechatbot.com/>
-* 开发文档 : <https://communechatbot.com/docs/>
-* 微信公众号 Demo: 搜索 "CommuneChatbot"
-* 百度智能音箱: 对音箱说 "打开三国群英传", "打开方向迷宫"
+# Installation using Composer
 
-## 项目构成
+The easiest way to create a new Hyperf project is to use Composer. If you don't have it already installed, then please install as per the documentation.
 
-- [Chatbot](https://github.com/thirdgerb/chatbot) : 机器人核心框架
-- [Studio](https://github.com/thirdgerb/studio-hyperf) : 工作站, 基于 [Swoole](https://github.com/swoole/swoole-src) + [Hyperf](https://github.com/hyperf/hyperf) 开发, 可创建和运行应用服务端
-- [Chatbot-book](https://github.com/thirdgerb/chatbot-book) : 机器人开发手册项目
+To create your new Hyperf project:
 
-## 快速启动
+$ composer create-project hyperf/hyperf-skeleton path/to/install
 
-确认依赖:
+Once installed, you can run the server immediately using the command below.
 
-- php >= 7.2
-- php 基础扩展
-- swoole >= 4.4
-- php 扩展 [intl](https://www.php.net/manual/en/book.intl.php) 用于国际化
+$ cd path/to/install
+$ php bin/hyperf.php start
 
+This will start the cli-server on port `9501`, and bind it to all network interfaces. You can then visit the site at `http://localhost:9501/`
 
-安装项目:
-
-    # 安装项目
-    git clone https://github.com/thirdgerb/studio-hyperf.git
-    cd studio-hyperf/
-
-    # composer 安装依赖
-    composer install
-
-或者使用 composer 安装
-
-    composer create-project commune/studio-hyperf
-
-运行命令行 demo :
-
-    php bin/hyperf.php commune:tinker
-
-更多细节请查看 [CommuneChatbot 手册](https://communechatbot.com/docs/).
-
-用 CommuneChatbot 开发多轮对话, 一个简单的示例如下 :
-
-```php
-/**
- * Context for hello world
- *
- * @property string $name userName
- */
-class HelloWorldContext extends OOContext
-{
-    const DESCRIPTION = 'hello world!';
-
-    // stage "start"
-    public function __onStart(Stage $stage) : Navigator
-    {
-        return $stage->buildTalk()
-
-            // send message to user
-            ->info('hello world!!')
-
-            // ask user name
-            ->goStage('askName')
-    }
-
-    // stage "askName"
-    public function __onAskName(Stage $stage) : Navigator
-    {
-        return $stage->buildTalk()
-            // ask user for name
-            ->askVerbal('How may I address you?')
-
-            // wait for user message
-            ->hearing()
-
-            // message is answer
-            ->isAnswer(function(Answer $answer, Dialog $dialog) {
-
-                // set Context memory
-                $this->name = $answer->toResult();
-
-                // go to "menu" stage
-                return $this->goStage('menu');
-            })
-
-            // finish building Hearing AIP
-            ->end();
-    }
-
-    // stage "menu"
-    public function __onMenu(Stage $stage) : Navigator
-    {
-        // build menu component
-        $menu = new Menu(
-            // menu question
-            'What can I help you?',
-
-            // answer suggesions
-            [
-
-                // go to play game context
-                PlayGameContext::class,
-
-                // go to order drinks
-                OrderDrinkContext::class,
-
-                // go to simple chat
-                SimpleChatContext::class,
-            ]
-        );
-
-        return $stage
-
-            // after target context fulfilled
-            ->onFallback(function(Dialog $dialog) {
-                // repeat current menu stage
-                return $dialog->repeat();
-            });
-
-            // use component
-            ->component($menu);
-    }
-}
-```
-
-
-
+which will bring up Hyperf default home page.
