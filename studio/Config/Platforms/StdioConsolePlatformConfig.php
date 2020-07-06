@@ -11,8 +11,8 @@ namespace Commune\HfStudio\Config\Platforms;
 use Commune\Platform\Libs;
 use Commune\Framework\Providers;
 use Commune\Platform\IPlatformConfig;
-use Commune\Platform\Shell\Stdio\StdioPlatform;
 use Commune\Support\Utils\TypeUtils;
+use Commune\Platform\Shell\Stdio\StdioConsolePlatform;
 
 class StdioConsolePlatformConfig extends IPlatformConfig
 {
@@ -26,7 +26,7 @@ class StdioConsolePlatformConfig extends IPlatformConfig
             'name' => '',
             'desc' => '使用 Clue\React\Stdio 实现的本地机器人',
 
-            'concrete' => StdioPlatform::class,
+            'concrete' => StdioConsolePlatform::class,
 
             'bootShell' => null,
             'bootGhost' => true,

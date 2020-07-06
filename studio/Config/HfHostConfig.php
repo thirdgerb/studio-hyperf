@@ -97,7 +97,7 @@ class HfHostConfig extends IHostConfig
                 /**
                  * 本地 Console 的 Shell 端.
                  */
-                'console' => new Shells\HfShellConfig([
+                new Shells\HfShellConfig([
                     'id' => 'console',
                     'name' => 'console',
                 ]),
@@ -105,7 +105,7 @@ class HfHostConfig extends IHostConfig
             ],
             'platforms' => [
 
-                'tcp_ghost' => new TcpGhostPlatformConfig([
+                new TcpGhostPlatformConfig([
                     'id' => 'tcp_ghost',
                     'name' => 'ghost服务端',
                     'desc' => '基于 Swoole 协程实现的 Ghost Tcp 服务端. 使用 Babel 类传输协议.',
@@ -113,11 +113,10 @@ class HfHostConfig extends IHostConfig
                     'bootGhost' => true,
                 ]),
 
+                new StdioConsolePlatformConfig([
+                    'id' => 'stdio_console',
 
-                'stdio' => new StdioConsolePlatformConfig([
-                    'id' => 'stdio',
-
-                    'name' => 'stdio测试端',
+                    'name' => 'stdio 本地端',
                     'desc' => '使用 Clue\React\Stdio 实现的本地机器人',
 
                     'bootShell' => 'console',

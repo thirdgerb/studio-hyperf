@@ -26,7 +26,7 @@ class TcpGhostPlatformConfig extends IPlatformConfig
                 // 日志
                 Providers\LoggerByMonologProvider::class => [
                     'name' => 'CmuGhost',
-                    'file' => 'commune_ghost.log',
+                    'file' => 'cmu_ghost.log',
                 ],
             ],
             'options' => [
