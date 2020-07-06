@@ -4,6 +4,7 @@ namespace Commune\HfStudio\Config;
 
 use Commune\Framework;
 use Commune\HfStudio\Config\Platforms\StdioConsolePlatformConfig;
+use Commune\HfStudio\Config\Platforms\StdioShellPlatformConfig;
 use Commune\HfStudio\Config\Platforms\TcpGhostPlatformConfig;
 use Commune\Host\IHostConfig;
 use Commune\Blueprint\Configs\HostConfig;
@@ -52,14 +53,15 @@ class HfHostConfig extends IHostConfig
                     'redis' => 'default',
                 ],
 
+                // 消息保存
+                HfProviders\HfMessageDBServiceProvider::class => [
+                ],
+
                 // 文件缓存. 不一定用到.
                 Framework\Providers\FileCacheServiceProvider::class,
 
                 // i18n 多语言模块
                 HfProviders\HfTranslatorServiceProvider::class,
-
-                // 注册 mind set 的基本模块
-                GhostProviders\MindsetServiceProvider::class,
 
                 // 注册 mind set 的配置缓存.
                 HfProviders\HfMindsetStorageServiceProvider::class,
@@ -76,6 +78,11 @@ class HfHostConfig extends IHostConfig
                     'ghostPort' => env('TCP_GHOST_PORT', '12315'),
                     'connectTimeout' => 0.3,
                     'receiveTimeout' => 0.3,
+                ],
+
+                // 广播模块
+                HfProviders\HfBroadcasterServiceProvider::class => [
+
                 ],
 
                 /* req services */
@@ -121,6 +128,16 @@ class HfHostConfig extends IHostConfig
 
                     'bootShell' => 'console',
                     'bootGhost' => true,
+
+                ]),
+
+                new StdioShellPlatformConfig([
+                    'id' => 'stdio_shell',
+
+                    'name' => 'stdio shell',
+                    'desc' => '使用 Clue\React\Stdio 实现的本地 Shell',
+
+                    'bootShell' => 'console',
 
                 ]),
 

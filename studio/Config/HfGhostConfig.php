@@ -33,6 +33,12 @@ class HfGhostConfig extends IGhostConfig
 
             'providers' => [
 
+                /* process service */
+
+                // 注册 mind set 的基本模块
+                GhostProviders\MindsetServiceProvider::class,
+
+
                 /* req service */
 
                 // runtime driver
