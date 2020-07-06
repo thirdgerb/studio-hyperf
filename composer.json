@@ -47,14 +47,13 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Commune\\Studio\\": "app-studio/"
+            "Commune\\HfStudio\\": "studio/"
         },
         "files": []
     },
     "autoload-dev": {
         "psr-4": {
-            "HyperfTest\\": "./test/",
-            "Commune\\Test\\Studio\\" : "commune/tests"
+            "HyperfTest\\": "./test/"
         }
     },
     "minimum-stability": "dev",
