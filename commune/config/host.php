@@ -5,7 +5,7 @@ use Commune\HfStudio\Config\HfHostConfig;
 use Commune\HfStudio\Config\Platforms\StdioConsolePlatformConfig;
 use Commune\HfStudio\Config\Platforms\StdioShellPlatformConfig;
 use Commune\HfStudio\Config\Platforms\TcpGhostPlatformConfig;
-use Commune\Chatlog\Platform\ChatlogSocketIOPlatformConfig;
+use Commune\Chatlog\ChatlogSocketIOPlatformConfig;
 
 
 /**
