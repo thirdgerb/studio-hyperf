@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: BrightRed
- * Date: 2020/7/6
- * Time: 3:09 PM
- */
 
 namespace Commune\HfStudio\Config\Platforms;
 
