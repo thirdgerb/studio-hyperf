@@ -31,7 +31,7 @@ return new HfHostConfig([
             'name' => 'console',
         ]),
 
-        new \Commune\Chatlog\Shell\ChatlogShellConfig([
+        new Shells\HfShellConfig([
             'id' => 'chatlog',
             'name' => 'chatlog shell',
         ]),

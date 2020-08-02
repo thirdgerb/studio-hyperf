@@ -63,6 +63,7 @@ class HfHostConfig extends IHostConfig
                 // 注册 mind set 的配置缓存.
                 HfProviders\HfMindsetStorageServiceProvider::class,
 
+
                 // 异常上报模块.
                 Framework\Providers\ExpReporterByConsoleProvider::class,
 

@@ -35,9 +35,9 @@ class HfGhostConfig extends IGhostConfig
 
                 /* process service */
 
-                // 注册 mind set 的基本模块
-                GhostProviders\MindsetServiceProvider::class,
-
+                // 注册 mind set 的基本模块. 目前注册到 host 里.
+                 GhostProviders\MindsetServiceProvider::class,
+                // GhostProviders\MindsetStorageConfigProvider::class,
 
                 /* req service */
 
