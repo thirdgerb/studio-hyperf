@@ -34,8 +34,8 @@ class StdioConsolePlatformConfig extends IPlatformConfig
                 Providers\MessengerFakeByArrProvider::class,
                 // 日志
                 Providers\LoggerByMonologProvider::class => [
-                    'name' => 'CmuConsole',
-                    'file' => 'cmu_console.log',
+                    'name' => 'stdio_console',
+                    'forceRegister' => true,
                 ],
             ],
         ];

@@ -25,8 +25,8 @@ class StdioShellPlatformConfig extends IPlatformConfig
             'bootGhost' => false,
             'providers' => [
                 LoggerByMonologProvider::class => [
-                    'name' => 'CmuStdioShell',
-                    'file' => 'cmu_stdio_shell.log',
+                    'name' => 'stdio_shell',
+                    'forceRegister' => true,
                 ],
             ],
             'options' => [
