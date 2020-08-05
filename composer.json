@@ -46,8 +46,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "Commune\\HfStudio\\": "studio/"
+            "App\\": "app/"
         },
         "files": []
     },

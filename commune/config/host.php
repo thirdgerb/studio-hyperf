@@ -1,10 +1,10 @@
 <?php
 
-use Commune\HfStudio\Config\Shells;
-use Commune\HfStudio\Config\HfHostConfig;
-use Commune\HfStudio\Config\Platforms\StdioConsolePlatformConfig;
-use Commune\HfStudio\Config\Platforms\StdioShellPlatformConfig;
-use Commune\HfStudio\Config\Platforms\TcpGhostPlatformConfig;
+use Commune\Chatbot\Hyperf\Config\Shells;
+use Commune\Chatbot\Hyperf\Config\HfHostConfig;
+use Commune\Chatbot\Hyperf\Config\Platforms\StdioConsolePlatformConfig;
+use Commune\Chatbot\Hyperf\Config\Platforms\StdioShellPlatformConfig;
+use Commune\Chatbot\Hyperf\Config\Platforms\TcpGhostPlatformConfig;
 use Commune\Chatlog\ChatlogSocketIOPlatformConfig;
 
 
@@ -15,7 +15,7 @@ return new HfHostConfig([
     'id' => 'commune_studio',
     'name' => 'commune_studio',
 
-    'ghost' => new \Commune\HfStudio\Config\HfGhostConfig([
+    'ghost' => new \Commune\Chatbot\Hyperf\Config\HfGhostConfig([
         'id' => 'commune',
         'name' => 'commune chatbot',
     ]),
