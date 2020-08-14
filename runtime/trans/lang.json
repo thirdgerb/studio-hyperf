@@ -278,5 +278,189 @@
         "domain": "messages",
         "temp": "当前可用命令:\n{cmdList}",
         "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.command.error",
+        "transId": "system.command.error",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "命令 {command} 格式错误: \n {error}",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.command.miss",
+        "transId": "system.command.miss",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "命令 {command} 不存在!",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.command.desc",
+        "transId": "system.command.desc",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "{command}: {desc}\n{arguments}\n{options}",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.session.busy",
+        "transId": "system.session.busy",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "机器人正忙",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.session.quit",
+        "transId": "system.session.quit",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "退出会话, 再见!",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.session.fail",
+        "transId": "system.session.fail",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "系统异常",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.request.fail",
+        "transId": "system.request.fail",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "请求异常, 请重试",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.dialog.yield",
+        "transId": "system.dialog.yield",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "任务在等待中",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.dialog.confuse",
+        "transId": "system.dialog.confuse",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "意图无法理解",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.dialog.require",
+        "transId": "system.dialog.require",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "请输入 {attrName} :",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.dialog.forbid",
+        "transId": "system.dialog.forbid",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "无权限访问当前功能",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.dialog.yes",
+        "transId": "system.dialog.yes",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "是",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:system.dialog.no",
+        "transId": "system.dialog.no",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "否",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.application",
+        "transId": "predefined.join.application",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "来自 {shell} 的用户 {userName} [{userId}] 申请加入当前会话. 请问是否允许?",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.error.session_not_found",
+        "transId": "predefined.join.error.session_not_found",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "目标会话不存在",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.error.session_is_same",
+        "transId": "predefined.join.error.session_is_same",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "目标 session 不能和当前一致!",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.apply.ask",
+        "transId": "predefined.join.apply.ask",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "接到加入会话申请, 来自 {fromApp} 的用户 {userName}, 请问是否通过?",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.apply.cancel",
+        "transId": "predefined.join.apply.cancel",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "已忽略加入会话的申请.",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.apply.reject",
+        "transId": "predefined.join.apply.reject",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "已拒绝加入会话的申请",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.apply.prove",
+        "transId": "predefined.join.apply.prove",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "已通过加入会话的申请",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.reply.canceled",
+        "transId": "predefined.join.reply.canceled",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "得到通知, 加入会话申请被忽略",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.reply.proved",
+        "transId": "predefined.join.reply.proved",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "得到通知, 加入会话申请得到通过. 接下来双方会话会同步.",
+        "intl": false
+    },
+    {
+        "id": "zh-cn:messages:predefined.join.reply.rejected",
+        "transId": "predefined.join.reply.rejected",
+        "locale": "zh-cn",
+        "domain": "messages",
+        "temp": "得到通知, 加入会话申请被拒绝.",
+        "intl": false
     }
 ]
