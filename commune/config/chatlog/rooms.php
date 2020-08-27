@@ -2,6 +2,7 @@
 
 use Commune\Blueprint\Framework\Auth\Supervise;
 use Commune\Chatlog\SocketIO\Coms\RoomOption;
+use Commune\Components\Demo\Maze\Maze;
 
 return [
 
@@ -25,6 +26,30 @@ return [
         'autoJoin' => true,
         'recommend' => false,
     ],
+
+    // commune 助手. 机器人起点
+    [
+        'scene' => 'maze',
+        'private' => true,
+
+        'title' => '方向迷宫',
+        'desc' => '方向迷宫小游戏',
+        'icon' => 'mdi-gamepad-square',
+
+        'category' => 'commune',
+        'closable' => true,
+
+        'bot' => true,
+        'botName' => '方向迷宫',
+        'entry' => Maze::genUcl()->encode(),
+
+        'level' => Supervise::GUEST,
+        'levelMode' => RoomOption::LEVEL_MODE_ABOVE,
+
+        'supervised' => false,
+        'autoJoin' => false,
+        'recommend' => true,
+    ],
     // commune 交流群.
     [
         'scene' => 'commune-chat',
@@ -45,7 +70,6 @@ return [
 
         'autoJoin' => true,
         'recommend' => false,
-
     ],
 
     // 与作者交流.
@@ -100,7 +124,7 @@ return [
 
         'title' => '机器人教学',
         'desc' => '机器人教学任务',
-        'icon' => 'mdi-account-question',
+        'icon' => 'mdi-teach',
 
         'category' => 'supervisor',
         'closable' => false,
@@ -113,7 +137,31 @@ return [
 
         'supervised' => false,
 
-        'autoJoin' => true,
-        'recommend' => false,
+        'autoJoin' => false,
+        'recommend' => true,
+    ],
+
+    // 机器人教学.
+    [
+        'scene' => 'nluManager',
+        'private' => false,
+
+        'title' => 'NLU 管理',
+        'desc' => 'NLU 管理',
+        'icon' => 'mdi-tools',
+
+        'category' => 'supervisor',
+        'closable' => false,
+        'bot' => true,
+        'botName' => 'commune',
+        'entry' => \Commune\Ghost\Predefined\Manager\NLUManagerContext::genUcl()->encode(),
+
+        'level' => Supervise::SUPERVISOR,
+        'levelMode' => RoomOption::LEVEL_MODE_ABOVE,
+
+        'supervised' => false,
+
+        'autoJoin' => false,
+        'recommend' => true,
     ],
 ];
