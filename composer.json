@@ -70,15 +70,5 @@
         "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./app ./config",
         "start": "php ./bin/hyperf.php start",
         "init-proxy": "init-proxy.sh"
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../chatbot-hyperf"
-        },
-        {
-            "type": "path",
-            "url": "../chatbot"
-        }
-    ]
+    }
 }
