@@ -98,18 +98,18 @@ return [
         'scene' => 'teacher',
         'private' => false,
 
-        'title' => '联系管理员',
-        'desc' => '与管理员通讯',
+        'title' => '机器人教学',
+        'desc' => '机器人教学任务',
         'icon' => 'mdi-account-question',
 
         'category' => 'supervisor',
         'closable' => false,
-        'bot' => false,
+        'bot' => true,
         'botName' => 'commune',
         'entry' => \Commune\Components\HeedFallback\Context\TeachTasks::genUcl()->encode(),
 
         'level' => Supervise::SUPERVISOR,
-        'levelMode' => RoomOption::LEVEL_MODE_BELOW,
+        'levelMode' => RoomOption::LEVEL_MODE_ABOVE,
 
         'supervised' => false,
 
