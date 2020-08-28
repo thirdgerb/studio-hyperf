@@ -15,6 +15,7 @@
         "php": ">=7.2",
         "ext-swoole": ">=4.5",
         "commune/chatbot-hyperf": "dev-master",
+        "commune/platform-wechat": "dev-master",
         "hyperf/cache": "~2.0.0",
         "hyperf/command": "~2.0.0",
         "hyperf/config": "~2.0.0",

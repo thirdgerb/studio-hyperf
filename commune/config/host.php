@@ -6,6 +6,7 @@ use Commune\Chatbot\Hyperf\Config\Platforms\StdioConsolePlatformConfig;
 use Commune\Chatbot\Hyperf\Config\Platforms\StdioShellPlatformConfig;
 use Commune\Chatbot\Hyperf\Config\Platforms\TcpGhostPlatformConfig;
 use Commune\Chatlog\ChatlogSocketIOPlatformConfig;
+use Commune\Platform\Wechat\WechatPlatformConfig;
 
 
 /**
@@ -31,9 +32,16 @@ return new HfHostConfig([
             'name' => 'console',
         ]),
 
+        // chatlog shell
         new Shells\HfShellConfig([
             'id' => 'chatlog',
             'name' => 'chatlog shell',
+        ]),
+
+        // wechat shell
+        new Shells\HfShellConfig([
+            'id' => 'wechat',
+            'name' => 'wechat shell',
         ]),
     ],
 
@@ -68,10 +76,19 @@ return new HfHostConfig([
 
         ]),
 
+        // socket io
         new ChatlogSocketIOPlatformConfig([
             'id' => 'chatlog_socketio',
             'name' => 'chatlog socket.io 平台',
             'desc' => '基于 Socket.io 启动的 Websocket 平台, 与前端对接',
+            'bootShell' => 'chatlog',
+        ]),
+
+        new WechatPlatformConfig([
+            'id' => 'wechat',
+            'name' => 'wechat official account server',
+            'desc' => '基于 EasyWechat 的微信公众号的服务端',
+            'bootShell' => 'wechat',
         ])
     ],
 ]);
