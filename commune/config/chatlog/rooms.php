@@ -94,6 +94,54 @@ return [
         'recommend' => true,
     ],
 
+    // commune 项目介绍.
+    [
+        'scene' => 'commune-intro',
+        'private' => true,
+
+        'title' => 'Commune项目介绍',
+        'desc' => 'Commune Chatbot v0.2 版介绍',
+        'icon' => 'mdi-book-open-blank-variant',
+
+        'category' => 'commune',
+        'closable' => true,
+        'bot' => true,
+        'botName' => 'Commune项目介绍',
+        'entry' => 'md.demo.commune_v2_intro',
+
+        'level' => Supervise::USER,
+        'levelMode' => RoomOption::LEVEL_MODE_BELOW,
+
+        'supervised' => false,
+
+        'autoJoin' => false,
+        'recommend' => true,
+    ],
+
+    // 对话式视频介绍.
+    [
+        'scene' => 'conversational-video-demo',
+        'private' => true,
+
+        'title' => '对话式视频 Demo',
+        'desc' => '对话式视频相关介绍',
+        'icon' => 'mdi-book-open-blank-variant',
+
+        'category' => 'commune',
+        'closable' => true,
+        'bot' => true,
+        'botName' => '对话式视频介绍',
+        'entry' => 'md.demo.conversational_video_app',
+
+        'level' => Supervise::USER,
+        'levelMode' => RoomOption::LEVEL_MODE_BELOW,
+
+        'supervised' => false,
+
+        'autoJoin' => false,
+        'recommend' => true,
+    ],
+
     /*---------- 管理员房间 ----------*/
 
     // supervisor 管理员群.
@@ -144,14 +192,14 @@ return [
     // 机器人教学.
     [
         'scene' => 'nluManager',
-        'private' => false,
+        'private' => true,
 
         'title' => 'NLU 管理',
         'desc' => 'NLU 管理',
         'icon' => 'mdi-tools',
 
         'category' => 'supervisor',
-        'closable' => false,
+        'closable' => true,
         'bot' => true,
         'botName' => 'commune',
         'entry' => \Commune\Ghost\Predefined\Manager\NLUManagerContext::genUcl()->encode(),
