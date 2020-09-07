@@ -31,6 +31,7 @@ return new HfHostConfig([
             Components\Demo\Maze\Maze::genUcl()->encode(),
             Components\HeedFallback\Context\TeachTasks::genUcl()->encode(),
             Ghost\Predefined\Manager\NLUManagerContext::genUcl()->encode(),
+            \Commune\App\Contexts\SimpleChatContext::genUcl()->encode(),
             'md.demo.*',
             'app.markdown.*'
         ],

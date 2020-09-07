@@ -118,6 +118,30 @@ return [
         'recommend' => true,
     ],
 
+
+    // 与作者交流.
+    [
+        'scene' => 'chatbot',
+        'private' => true,
+
+        'title' => '闲聊机器人',
+        'desc' => '测试用闲聊机器人模块',
+        'icon' => 'mdi-robot',
+
+        'category' => 'commune',
+        'closable' => true,
+        'bot' => true,
+        'botName' => 'iRobot',
+        'entry' => \Commune\App\Contexts\SimpleChatContext::genUcl()->encode(),
+
+        'level' => Supervise::GUEST,
+        'levelMode' => RoomOption::LEVEL_MODE_ABOVE,
+
+        'supervised' => false,
+        'autoJoin' => false,
+        'recommend' => true,
+    ],
+
     // 对话式视频介绍.
     [
         'scene' => 'conversational-video-demo',
