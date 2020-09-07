@@ -5,7 +5,7 @@ return [
     'app' => [
 
         'welcome' => "欢迎您! {name}, 这是您第 {times} 次访问!",
-
+        'falwell' => "好的,再见!",
 
 
         'ask' => [

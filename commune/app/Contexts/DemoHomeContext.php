@@ -24,6 +24,7 @@ class DemoHomeContext extends ACodeContext
         return new CodeContextOption([
             'priority' => 0,
             'strategy' => [
+                'onCancel' => 'cancel',
                 'stageRoutes' => ['*'],
                 'contextRoutes' => ['*'],
             ],
@@ -90,6 +91,17 @@ class DemoHomeContext extends ACodeContext
                     ->then($dialog->redirectTo(Ucl::make('app.markdown.kanban')))
                     ->end();
             });
+    }
+
+    public function __on_cancel(StageBuilder $stage): StageBuilder
+    {
+        return $stage->onActivate(function(Dialog $dialog) {
+            return $dialog
+                ->send()
+                ->info('app.falwell')
+                ->over()
+                ->quit();
+        });
     }
 
 
