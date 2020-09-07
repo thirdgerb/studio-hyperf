@@ -38,7 +38,7 @@ return new HfHostConfig([
         'mindPsr4Registers' => [
             "Commune\\App\\" => StringUtils::gluePath(
                 CommuneEnv::getBasePath(),
-                'App'
+                'app'
             ),
 
         ],
