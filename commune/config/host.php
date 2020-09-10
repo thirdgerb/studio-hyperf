@@ -26,7 +26,7 @@ return new HfHostConfig([
         'name' => 'commune chatbot',
 
 
-        'defaultContextName' => \Commune\App\Contexts\DemoHomeContext::genUcl()->encode(),
+        'defaultContextName' => 'app.markdown.kanban',
         'sceneContextNames' => [
             Components\Demo\Maze\Maze::genUcl()->encode(),
             Components\HeedFallback\Context\TeachTasks::genUcl()->encode(),
