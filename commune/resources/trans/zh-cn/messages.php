@@ -7,6 +7,11 @@ return [
         'welcome' => "欢迎您! {name}, 这是您第 {times} 次访问!",
         'falwell' => "好的,再见!",
 
+        'wechat' => [
+            'officialAccount' => '微信公众号请关注 CommuneChatbot',
+            'join' => "在与公众号对话中输入命令:   #join {session}\n\n就可以申请加入了"
+
+        ],
 
         'ask' => [
             'ifWantIntro' => '您需要我来介绍一下 CommuneChatbot 这个项目吗?'

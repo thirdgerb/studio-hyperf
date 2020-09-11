@@ -11,10 +11,11 @@ CommuneChatbot 的 Demo 还在建设中，只有部分内容对外呈现。您�
 [//]: # (@askChoose 推荐的内容：)
 [//]: # (@routeUcl md.demo.complete_demo_video)
 [//]: # (@routeUcl md.demo.commune_v2_intro)
-[//]: # (@routeUcl md.demo.half_open_conversational_system)
 [//]: # (@routeUcl md.demo.conversational_video_app)
+[//]: # (@routeUcl Commune\App\Contexts\WechatJoinCtx)
+[//]: # (@routeUcl app.markdown.thoughts)
+[//]: # (@routeUcl app.markdown.releases)
 [//]: # (@routeUcl commune.components.demo.contexts.demohome/maze)
-[//]: # (@routeUcl commune.components.demo.git.gitservice)
 
 
 
