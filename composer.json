@@ -12,7 +12,7 @@
     "description": "commune/chatbot studio base on swoole coroutine framework hyperf",
     "license": "Apache-2.0",
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.3",
         "ext-swoole": ">=4.5",
         "commune/chatbot-hyperf": "dev-master",
         "commune/platform-wechat": "dev-master",
